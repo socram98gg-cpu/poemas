@@ -12,12 +12,14 @@
     color: #333;
   }
 
-  .portada {
-    background: #111;
-    color: white;
-    text-align: center;
-    padding: 60px 20px;
-  }
+.portada {
+  background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url("IMG_5262.jpeg");
+  background-size: cover;
+  background-position: center;
+  color: white;
+  text-align: center;
+  padding: 100px 20px;
+}
 
   .portada h1 {
     margin: 0;
@@ -63,12 +65,14 @@
     background: #44445a;
   }
 
-  .contenido {
-    display: none;
-    margin-top: 15px;
-    white-space: pre-line;
-    line-height: 1.6;
-  }
+.contenido {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s ease;
+  margin-top: 15px;
+  white-space: pre-line;
+  line-height: 1.6;
+}
 </style>
 </head>
 <body>
@@ -297,11 +301,20 @@ Mi redención su recaudo
   </div>
 <script>
 function mostrar(boton) {
+  var todos = document.querySelectorAll(".contenido");
+  
+  todos.forEach(function(item) {
+    if (item !== boton.nextElementSibling) {
+      item.style.maxHeight = null;
+    }
+  });
+
   var contenido = boton.nextElementSibling;
-  if (contenido.style.display === "none" || contenido.style.display === "") {
-    contenido.style.display = "block";
+
+  if (contenido.style.maxHeight) {
+    contenido.style.maxHeight = null;
   } else {
-    contenido.style.display = "none";
+    contenido.style.maxHeight = contenido.scrollHeight + "px";
   }
 }
 </script>
