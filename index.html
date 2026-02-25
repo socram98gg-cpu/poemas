@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Mis Poemas</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+    }
+    .poema {
+      background: white;
+      padding: 15px;
+      margin: 15px 0;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    button {
+      margin-top: 10px;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+    .contenido {
+      display: none;
+      margin-top: 10px;
+      white-space: pre-line;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Mis 10 Poemas</h1>
+
+<div class="poema">
+  <h2>Poema 1</h2>
+  <button onclick="mostrar(this)">Mostrar / Ocultar</button>
+  <div class="contenido">
+
+    "Su Nombre"
+    
+    Yo le digo Laura, ese es su nombre y no tiene otro, por eso la llamo así, 
+    y en mi contacto la tengo como Laura, porque ella es Laura para mí, ese es su nombre. 
+    No sigo la tendencia generalizada de poner nombrecitos tiernos a la gente especial, 
+    para expresar dulzura o intimidad. Nuestra intimidad consiste en que lo que eres para mi 
+    es mucho más de lo que me hagas sentir o me ofrezcas, en que nos conocemos uno al otro 
+    por lo que somos, por lo especial en uno mismo, por eso te llamo Laura, no mi Laura, 
+    no mi amorcito, no cosita linda, mi cielito o mi corazón. 
+    Eres más de lo que percibo, más de lo que me das, y si no fuera así estaría limitando tu esencia 
+    y no te amaría a ti sino a tus efectos en mí, pero me estaría perdiendo mucho. 
+    Yo quiero la fuente, la causa, quiero a Laura, te quiero conmigo pero por separada, 
+    osea que somos dos y uno, no eres “mi Laura”, quiero que seamos “Laura y Marcos”.
+
+  </div>
+</div>
+
+<div class="poema">
+  <h2>Poema 2</h2>
+  <button onclick="mostrar(this)">Mostrar / Ocultar</button>
+  <div class="contenido">
+“Opacadora de astros”
+
+Dile a la estrella que te quede más cerca, 
+que jamás se verá su brillo si permanece a tu lado,
+pero se apagaría si se aleja. 
+
+Son tus destellos a mis ojos, 
+como mi ojos a mi carne, 
+como mi carne a mi ser, 
+como mi ser a mi vida, 
+tus destellos son mi vida,
+mis ojos, mi carne y mi ser.
+
+Dile que se aleje o se resigne…
+o se enamore.
+
+  </div>
+</div>
+
+<script>
+function mostrar(boton) {
+  var contenido = boton.nextElementSibling;
+  if (contenido.style.display === "none" || contenido.style.display === "") {
+    contenido.style.display = "block";
+  } else {
+    contenido.style.display = "none";
+  }
+}
+</script>
+
+</body>
+</html>
