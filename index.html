@@ -2,15 +2,15 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>index</title>
+  <title>Fragmentos del Edén</title>
 
   <style>
     body {
       margin: 0;
       padding: 0;
-      font-family: Georgia, serif;
-      background-color: #111;
-      color: white;
+      background-color: #0e0e0e;
+      font-family: "Georgia", serif;
+      color: #f5f1e8;
     }
 
     .portada {
@@ -20,51 +20,65 @@
       justify-content: center;
       align-items: center;
       text-align: center;
-      background: 
-        linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)),
-        url("IMG_5264.jpeg");
-      background-size: contain;
-      background-repeat: no-repeat;
-      background-position: center;
-      background-color: #000;
       padding: 20px;
     }
 
+    /* Contenedor de imagen en proporción vertical */
+    .imagen-fondo {
+      position: absolute;
+      width: 70vw;
+      max-width: 420px;
+      aspect-ratio: 9 / 16;
+      background:
+        linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
+        url("IMG_5264.jpeg");
+      background-size: cover;
+      background-position: center;
+      border-radius: 18px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.7);
+      z-index: -1;
+    }
+
     .portada h1 {
-      font-size: 65px;
+      font-size: 72px;
+      letter-spacing: 4px;
       margin: 0;
-      letter-spacing: 3px;
+      font-weight: normal;
+      color: #f8e7c9;
     }
 
     .frase {
-      margin-top: 20px;
-      font-size: 22px;
+      margin-top: 25px;
+      font-size: 20px;
       font-style: italic;
-      max-width: 90%;
-      opacity: 0.9;
+      max-width: 320px;
+      line-height: 1.6;
+      color: #e6d8bd;
     }
 
     .menu {
-      margin-top: 60px;
+      margin-top: 70px;
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 18px;
     }
 
     .menu a {
-      color: white;
       text-decoration: none;
-      font-size: 22px;
-      font-weight: bold;
-      padding: 10px 20px;
-      border: 2px solid white;
-      border-radius: 8px;
-      transition: 0.3s;
+      font-size: 20px;
+      letter-spacing: 1px;
+      color: #f5f1e8;
+      padding: 12px 28px;
+      border: 1px solid #c8b98f;
+      border-radius: 30px;
+      transition: all 0.4s ease;
+      backdrop-filter: blur(4px);
     }
 
     .menu a:hover {
-      background-color: white;
-      color: black;
+      background-color: #c8b98f;
+      color: #111;
+      transform: translateY(-3px);
     }
 
   </style>
@@ -72,6 +86,9 @@
 <body>
 
 <div class="portada">
+  
+  <div class="imagen-fondo"></div>
+
   <h1>Fragmentos del Edén</h1>
 
   <div class="frase">
@@ -79,10 +96,11 @@
   </div>
 
   <div class="menu">
-    <a href="poemitas.html">Poemitas pra ti</a>
+    <a href="poemitas.html">Poemitas para ti</a>
     <a href="prosa.html">Prosa</a>
     <a href="otros.html">Otros</a>
   </div>
+
 </div>
 
 </body>
