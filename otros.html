@@ -8,75 +8,63 @@
 
   <style>
   body {
-    body {
-  font-family: 'Cormorant Garamond', serif;
-    background: linear-gradient(to bottom, #1e1e2f, #2c2c3e);
     margin: 0;
-    padding: 0;
-    color: #333;
+    background: #f4f4f4;
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    justify-content: center;
   }
 
-.portada {
-  background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url("IMG_5262.jpeg");
-  background-size: cover;
-  background-position: center;
-  color: white;
-  text-align: center;
-  padding: 100px 20px;
-}
-
-  .portada h1 {
-    margin: 0;
-    font-size: 40px;
-    letter-spacing: 2px;
-  }
-
-  .portada p {
-    margin-top: 10px;
-    font-style: italic;
-    opacity: 0.8;
-  }
-
-  .contenedor {
-    padding: 30px;
-    max-width: 800px;
-    margin: auto;
-  }
-
-  .poema {
+  .app {
+    width: 100%;
+    max-width: 480px;
+    min-height: 100vh;
     background: white;
+    box-shadow: 0 0 40px rgba(0,0,0,0.08);
+  }
+
+  .header {
+    padding: 40px 25px 25px 25px;
+  }
+
+  .header h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 600;
+  }
+
+  .header p {
+    margin-top: 8px;
+    color: #777;
+    font-size: 14px;
+  }
+
+  .menu {
     padding: 20px;
-    margin: 20px 0;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
   }
 
-  .poema h2 {
-    margin-top: 0;
+  .card {
+    padding: 20px;
+    border-radius: 16px;
+    background: #fafafa;
+    text-decoration: none;
+    color: #111;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    transition: 0.3s ease;
   }
 
-  button {
-    margin-top: 10px;
-    padding: 8px 12px;
-    background: #2c2c3e;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
   }
 
-  button:hover {
-    background: #44445a;
+  .card span {
+    font-size: 16px;
+    font-weight: 500;
   }
-
-.contenido {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.5s ease;
-  margin-top: 15px;
-  white-space: pre-line;
-  line-height: 1.6;
-}
 </style>
 </head>
 <body>
