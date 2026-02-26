@@ -8,8 +8,8 @@
     body {
       margin: 0;
       padding: 0;
-      background-color: #0e0e0e;
-      font-family: "Georgia", serif;
+      font-family: Georgia, serif;
+      background-color: #000;
       color: #f5f1e8;
     }
 
@@ -20,23 +20,12 @@
       justify-content: center;
       align-items: center;
       text-align: center;
-      padding: 20px;
-    }
-
-    /* Contenedor de imagen en proporción vertical */
-    .imagen-fondo {
-      position: absolute;
-      width: 70vw;
-      max-width: 420px;
-      aspect-ratio: 9 / 16;
       background:
-        linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
+        linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)),
         url("IMG_5264.jpeg");
       background-size: cover;
       background-position: center;
-      border-radius: 18px;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.7);
-      z-index: -1;
+      padding: 20px;
     }
 
     .portada h1 {
@@ -51,7 +40,7 @@
       margin-top: 25px;
       font-size: 20px;
       font-style: italic;
-      max-width: 320px;
+      max-width: 90%;
       line-height: 1.6;
       color: #e6d8bd;
     }
@@ -60,7 +49,7 @@
       margin-top: 70px;
       display: flex;
       flex-direction: column;
-      gap: 18px;
+      gap: 20px;
     }
 
     .menu a {
@@ -68,15 +57,15 @@
       font-size: 20px;
       letter-spacing: 1px;
       color: #f5f1e8;
-      padding: 12px 28px;
-      border: 1px solid #c8b98f;
+      padding: 12px 30px;
+      border: 1px solid rgba(255,255,255,0.6);
       border-radius: 30px;
       transition: all 0.4s ease;
-      backdrop-filter: blur(4px);
+      background-color: rgba(0,0,0,0.3);
     }
 
     .menu a:hover {
-      background-color: #c8b98f;
+      background-color: #f8e7c9;
       color: #111;
       transform: translateY(-3px);
     }
@@ -86,8 +75,6 @@
 <body>
 
 <div class="portada">
-  
-  <div class="imagen-fondo"></div>
 
   <h1>Fragmentos del Edén</h1>
 
