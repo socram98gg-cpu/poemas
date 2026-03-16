@@ -1,403 +1,389 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Fragmentos del Edén · Galaxia</title>
-  <style>
-    /* Reset y tipografía */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Georgia', 'Times New Roman', serif;
-      background-color: #03050a;   // color de fondo mientras carga canvas
-      color: #f5f1e8;
-      overflow-x: hidden;
-    }
-
-    /* Canvas que ocupará toda la pantalla y actuará como fondo fijo */
-    #galaxia-canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      z-index: 0;
-      pointer-events: none;  /* para poder hacer click en los botones */
-      display: block;
-    }
-
-    /* Contenedor principal que agrupa todo el contenido encima del canvas */
-    .contenido {
-      position: relative;
-      z-index: 10;
-      min-height: 100vh;
-      width: 100%;
-    }
-
-    /* BOTONES: ahora en columna a la derecha */
-    .botonera {
-      position: fixed;
-      top: 50%;
-      right: 30px;
-      transform: translateY(-50%);
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      z-index: 30;
-    }
-
-    .boton {
-      text-decoration: none;
-      font-size: 1.2rem;
-      letter-spacing: 1px;
-      color: #f5f1e8;
-      padding: 12px 28px;
-      border: 1px solid rgba(255, 240, 200, 0.7);
-      border-radius: 40px;
-      background-color: rgba(10, 5, 20, 0.4);
-      backdrop-filter: blur(3px);
-      transition: all 0.3s ease;
-      text-align: center;
-      min-width: 160px;
-      font-family: 'Georgia', serif;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-    }
-
-    .boton:hover {
-      background-color: #f0e4d0;
-      color: #0a0c14;
-      border-color: #b88a5e;
-      transform: scale(1.05);
-      box-shadow: 0 0 20px #c3a07f;
-    }
-
-    /* SECCIONES DE TEXTO (versículos de Job) */
-    .seccion-texto {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px 15%;
-      text-align: center;
-      z-index: 20;
-      position: relative;
-      pointer-events: none;  /* para que el scroll pase a través y no bloquee la interacción con botones */
-      color: #fcf8f0;
-      text-shadow: 0 2px 10px #00000080, 0 0 30px #4a2e6d;
-    }
-
-    .cita {
-      max-width: 900px;
-      background-color: rgba(0, 0, 0, 0.3);
-      backdrop-filter: blur(2px);
-      padding: 40px 50px;
-      border-radius: 15px;
-      border-left: 4px solid #9f8ab0;
-      border-right: 4px solid #4a3f5e;
-      font-size: 2.2rem;
-      line-height: 1.5;
-      font-style: italic;
-      font-weight: 300;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-    }
-
-    .cita small {
-      display: block;
-      margin-top: 30px;
-      font-size: 1.1rem;
-      font-style: normal;
-      color: #dac9b0;
-      letter-spacing: 2px;
-    }
-
-    /* Ajustes para pantallas pequeñas */
-    @media (max-width: 800px) {
-      .botonera {
-        right: 15px;
-        gap: 12px;
-      }
-      .boton {
-        font-size: 1rem;
-        padding: 8px 16px;
-        min-width: 120px;
-      }
-      .cita {
-        font-size: 1.5rem;
-        padding: 25px 20px;
-      }
-      .seccion-texto {
-        padding: 10px 8%;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <title>Fragmentos del Edén · Galaxia 3D</title>
+    <style>
+        body {
+            margin: 0;
+            overflow-x: hidden;
+            font-family: 'Georgia', serif;
+            color: #f0e9dd;
+        }
+        /* Canvas de Three.js ocupará toda la pantalla como fondo */
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+        }
+        /* Contenido HTML por encima */
+        .content {
+            position: relative;
+            z-index: 10;
+            pointer-events: none; /* Permite hacer clic a través de los textos, pero los botones tienen pointer-events auto */
+            min-height: 300vh; /* Altura para scroll */
+        }
+        /* Botones en columna derecha */
+        .botonera {
+            position: fixed;
+            top: 50%;
+            right: 30px;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            z-index: 30;
+            pointer-events: auto;
+        }
+        .boton {
+            text-decoration: none;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+            color: #f5f1e8;
+            padding: 12px 28px;
+            border: 1px solid rgba(255, 240, 200, 0.7);
+            border-radius: 40px;
+            background-color: rgba(10, 5, 20, 0.4);
+            backdrop-filter: blur(3px);
+            transition: all 0.3s ease;
+            text-align: center;
+            min-width: 160px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        .boton:hover {
+            background-color: #f0e4d0;
+            color: #0a0c14;
+            border-color: #b88a5e;
+            transform: scale(1.05);
+            box-shadow: 0 0 20px #c3a07f;
+        }
+        /* Secciones de texto (versículos) */
+        .seccion {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 20%;
+            text-align: center;
+            pointer-events: none;
+        }
+        .cita {
+            background-color: rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(4px);
+            padding: 40px 50px;
+            border-radius: 20px;
+            border-left: 4px solid #8a6ea0;
+            border-right: 4px solid #4a3f5e;
+            font-size: 2.2rem;
+            line-height: 1.5;
+            font-style: italic;
+            color: #fff4e6;
+            text-shadow: 0 0 20px #3a2a4a;
+            max-width: 900px;
+        }
+        .cita small {
+            display: block;
+            margin-top: 30px;
+            font-size: 1.1rem;
+            color: #dac9b0;
+            letter-spacing: 2px;
+        }
+        @media (max-width: 800px) {
+            .cita { font-size: 1.5rem; padding: 30px 20px; }
+            .botonera { right: 15px; }
+            .boton { font-size: 1rem; padding: 8px 16px; min-width: 120px; }
+        }
+    </style>
 </head>
 <body>
+    <div id="canvas-container"></div>
 
-  <!-- Canvas para la galaxia -->
-  <canvas id="galaxia-canvas"></canvas>
+    <div class="botonera">
+        <a href="poemitas.html" class="boton">Poemitas para ti</a>
+        <a href="prosa.html" class="boton">Prosa</a>
+        <a href="otros.html" class="boton">Otros</a>
+    </div>
 
-  <!-- Botones a la derecha (vertical) -->
-  <div class="botonera">
-    <a href="poemitas.html" class="boton">Poemitas para ti</a>
-    <a href="prosa.html" class="boton">Prosa</a>
-    <a href="otros.html" class="boton">Otros</a>
-  </div>
+    <div class="content">
+        <section class="seccion">
+            <div class="cita">
+                ¿Podrás tú atar los lazos de las Pléyades,<br>o desatarás las ligaduras de Orión?
+            </div>
+        </section>
+        <section class="seccion">
+            <div class="cita">
+                ¿Sacarás tú a su tiempo las constelaciones de los cielos,<br>o guiarás a la Osa Mayor con sus hijos?
+            </div>
+        </section>
+        <section class="seccion">
+            <div class="cita">
+                ¿Supiste tú las ordenanzas de los cielos?
+            </div>
+        </section>
+        <section class="seccion">
+            <div class="cita">
+                ¿Dispondrás tú de su potestad en la tierra?
+                <small>Job 38:31-33 (RVR1960)</small>
+            </div>
+        </section>
+    </div>
 
-  <!-- Contenedor de las secciones de texto (scroll) -->
-  <div class="contenido">
-    
-    <section class="seccion-texto">
-      <div class="cita">
-        ¿Podrás tú atar los lazos de las Pléyades,<br>o desatarás las ligaduras de Orión?
-      </div>
-    </section>
-
-    <section class="seccion-texto">
-      <div class="cita">
-        ¿Sacarás tú a su tiempo las constelaciones de los cielos,<br>o guiarás a la Osa Mayor con sus hijos?
-      </div>
-    </section>
-
-    <section class="seccion-texto">
-      <div class="cita">
-        ¿Supiste tú las ordenanzas de los cielos?
-      </div>
-    </section>
-
-    <section class="seccion-texto">
-      <div class="cita">
-        ¿Dispondrás tú de su potestad en la tierra?
-        <small>Job 38:31-33 (RVR1960)</small>
-      </div>
-    </section>
-
-    <!-- Espacio extra para que el scroll sea suave -->
-    <div style="height: 20vh;"></div>
-  </div>
-
-  <script>
-    (function() {
-      // --- CONFIGURACIÓN DE LA GALAXIA (VÍA LÁCTEA MEJORADA) ---
-      const canvas = document.getElementById('galaxia-canvas');
-      const ctx = canvas.getContext('2d', { alpha: false }); // fondo siempre opaco
-
-      // Dimensiones
-      let width, height;
-      
-      // Estrellas (partículas)
-      let stars = [];
-      const STAR_COUNT = 5000;        // cantidad de estrellas
-
-      // Parámetros de la galaxia
-      let coreX, coreY;               // centro (se calculará después)
-      const arms = 4;                  // 4 brazos espirales
-      const spiralTightness = 3.5;      // qué tan apretados
-      const coreRadius = 0.18;          // tamaño del núcleo (relativo)
-      const dustLayers = 40;            // capas de gas/polvo
-
-      // Control de zoom con scroll (valor entre 0.5 y 2.5)
-      let zoomFactor = 1.0;
-      const ZOOM_MIN = 0.5;
-      const ZOOM_MAX = 2.8;            // bastante dramático
-
-      // Inicializar estrellas
-      function initStars() {
-        stars = [];
-        for (let i = 0; i < STAR_COUNT; i++) {
-          // Generar coordenadas polares para que sigan forma espiral
-          const armIndex = Math.floor(Math.random() * arms);
-          const angleOffset = (armIndex / arms) * Math.PI * 2;
-          
-          // Radio normalizado (0 a 1) con más densidad cerca del centro
-          let r;
-          if (Math.random() < 0.4) {
-            // núcleo
-            r = Math.pow(Math.random(), 1.2) * 0.25;
-          } else {
-            // brazos
-            r = 0.25 + Math.pow(Math.random(), 1.5) * 0.7;
-          }
-          
-          // Ángulo base con forma espiral: ángulo = r * constante + offset
-          const angle = r * spiralTightness * 8 + angleOffset + (Math.random() - 0.5) * 0.8;
-          
-          // Convertir a cartesianas (primero sin desplazar al centro)
-          let x = r * Math.cos(angle);
-          let y = r * Math.sin(angle) * 0.6;  // achatamiento vertical (disco galáctico)
-          
-          // Añadir aleatoriedad para dar grosor al brazo
-          x += (Math.random() - 0.5) * 0.07;
-          y += (Math.random() - 0.5) * 0.07;
-          
-          // Tamaño variable (más grandes cerca del centro)
-          const size = 0.5 + Math.random() * 2.0 * (1.2 - r * 0.7);
-          
-          // Color: matiz según zona (azul/morado/amarillo)
-          let rCol, gCol, bCol;
-          if (r < 0.25) {
-            // núcleo: tonos más cálidos (amarillo/naranja)
-            rCol = 255;
-            gCol = 220 + Math.random() * 35;
-            bCol = 160 + Math.random() * 50;
-          } else {
-            // brazos: azules, morados, blancos
-            const t = Math.random();
-            if (t < 0.5) {
-              // azulados
-              rCol = 150 + Math.random() * 80;
-              gCol = 180 + Math.random() * 75;
-              bCol = 255;
-            } else {
-              // morados/rosas (polvo)
-              rCol = 210 + Math.random() * 45;
-              gCol = 160 + Math.random() * 60;
-              bCol = 240 + Math.random() * 15;
+    <!-- Incluir Three.js desde CDN -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.128.0/build/three.module.js"
             }
-          }
-          
-          // Almacenar en coordenadas polares también para facilitar zoom/rotación
-          stars.push({
-            x, y,
-            baseX: x, baseY: y,   // coordenadas base en espacio normalizado (-1 a 1 aprox)
-            r: r,
-            angle: angle,
-            size: size,
-            color: `rgb(${Math.floor(rCol)}, ${Math.floor(gCol)}, ${Math.floor(bCol)})`
-          });
         }
-      }
+    </script>
 
-      // Función para actualizar zoom según scroll
-      function updateZoom() {
-        const scrollY = window.scrollY;
-        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-        const progress = docHeight > 0 ? scrollY / docHeight : 0;
-        
-        // Mapear progreso a zoom: empezamos en 1.0, y avanzamos hasta ZOOM_MAX
-        // queremos que al inicio (progress=0) zoom=1.0, al final (progress=1) zoom=ZOOM_MAX
-        zoomFactor = 1.0 + (ZOOM_MAX - 1.0) * progress;
-        
-        // También podemos hacer que se acerque y luego se aleje? pero con dramático: solo acerca
-        // límite de seguridad
-        if (zoomFactor > ZOOM_MAX) zoomFactor = ZOOM_MAX;
-      }
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'https://unpkg.com/three@0.128.0/examples/jsm/controls/OrbitControls.js';
 
-      // Dibujar la galaxia completa con zoom
-      function drawGalaxy() {
-        ctx.fillStyle = '#030514'; // fondo oscuro azulado/morado
-        ctx.fillRect(0, 0, width, height);
-        
-        // Centro de la galaxia en canvas
-        coreX = width / 2;
-        coreY = height / 2;
-        
-        // Escala base: cuanto más zoom, más grande se ve todo (aleja o acerca)
-        // con zoomFactor >1, las estrellas se alejan del centro? mejor: escala base * zoomFactor
-        const baseScale = Math.min(width, height) * 0.35; // tamaño de referencia
-        
-        // Dibujar capas de polvo estelar (nebulosas) - fondos difusos
-        ctx.globalCompositeOperation = 'lighter';
-        for (let d = 0; d < dustLayers; d++) {
-          const rLayer = 0.1 + Math.random() * 0.8;
-          const angleLayer = Math.random() * Math.PI * 2;
-          const xLayer = coreX + Math.cos(angleLayer) * rLayer * baseScale * 1.2 / zoomFactor;
-          const yLayer = coreY + Math.sin(angleLayer) * rLayer * baseScale * 0.8 / zoomFactor;
-          const radiusLayer = 40 + Math.random() * 150;
-          
-          const gradient = ctx.createRadialGradient(xLayer, yLayer, 10, xLayer, yLayer, radiusLayer);
-          if (Math.random() > 0.5) {
-            gradient.addColorStop(0, 'rgba(80, 60, 140, 0.12)');  // morado
-          } else {
-            gradient.addColorStop(0, 'rgba(40, 60, 130, 0.1)');   // azul
-          }
-          gradient.addColorStop(1, 'transparent');
-          ctx.fillStyle = gradient;
-          ctx.beginPath();
-          ctx.arc(xLayer, yLayer, radiusLayer, 0, 2 * Math.PI);
-          ctx.fill();
+        // --- Configuración inicial ---
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x030514); // azul muy oscuro
+
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, 2, 12); // posición inicial: ligeramente arriba, atrás
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // limitar para rendimiento
+        container.appendChild(renderer.domElement);
+
+        // --- Crear nebulosas de fondo (sprites difusos) ---
+        function createNebulaTexture() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 64;
+            canvas.height = 64;
+            const ctx = canvas.getContext('2d');
+            const gradient = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+            gradient.addColorStop(0, 'rgba(180, 140, 255, 1)');
+            gradient.addColorStop(0.5, 'rgba(90, 70, 180, 0.6)');
+            gradient.addColorStop(1, 'rgba(20, 10, 40, 0)');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, 64, 64);
+            return new THREE.CanvasTexture(canvas);
         }
-        
-        // Dibujar estrellas
-        for (let s of stars) {
-          // Aplicar zoom: las coordenadas base se alejan del centro si zoomFactor > 1?
-          // Para simular acercamiento, queremos que las estrellas se expandan hacia afuera.
-          // Es decir: nueva posición = centro + (base * zoomFactor)
-          // OJO: base x,y ya están en rango -1..1 aprox, multiplicar por zoomFactor las aleja.
-          let screenX = coreX + s.baseX * baseScale * zoomFactor;
-          let screenY = coreY + s.baseY * baseScale * zoomFactor;
-          
-          // Tamaño también aumenta ligeramente con zoom
-          let starSize = s.size * (0.8 + 0.4 * zoomFactor);
-          
-          // Descartar si está muy fuera de la pantalla (optimización)
-          if (screenX < -50 || screenX > width + 50 || screenY < -50 || screenY > height + 50) continue;
-          
-          ctx.beginPath();
-          ctx.arc(screenX, screenY, starSize, 0, 2 * Math.PI);
-          ctx.fillStyle = s.color;
-          ctx.shadowColor = s.color;
-          ctx.shadowBlur = 8 * (s.size / 1.5);
-          ctx.fill();
+
+        const nebulaTexture = createNebulaTexture();
+        for (let i = 0; i < 30; i++) {
+            const material = new THREE.SpriteMaterial({ 
+                map: nebulaTexture, 
+                color: new THREE.Color(Math.random() * 0.5 + 0.5, Math.random() * 0.3, 0.8 + Math.random() * 0.2),
+                blending: THREE.AdditiveBlending,
+                depthWrite: false
+            });
+            const sprite = new THREE.Sprite(material);
+            // Posiciones aleatorias en un volumen grande
+            const r = 8 + Math.random() * 15;
+            const theta = Math.random() * Math.PI * 2;
+            const phi = (Math.random() - 0.5) * 0.8; // inclinación
+            sprite.position.x = r * Math.cos(theta) * Math.cos(phi);
+            sprite.position.y = r * Math.sin(phi) * 3; // estirar vertical
+            sprite.position.z = r * Math.sin(theta) * Math.cos(phi);
+            sprite.scale.set(4 + Math.random()*4, 4 + Math.random()*4, 1);
+            scene.add(sprite);
         }
-        
-        // Añadir brillo central (núcleo)
-        ctx.shadowBlur = 0;
-        ctx.globalCompositeOperation = 'screen';
-        const gradCore = ctx.createRadialGradient(coreX, coreY, 10, coreX, coreY, baseScale * 0.4);
-        gradCore.addColorStop(0, 'rgba(255, 230, 170, 0.25)');
-        gradCore.addColorStop(0.5, 'rgba(140, 100, 180, 0.12)');
-        gradCore.addColorStop(1, 'transparent');
-        ctx.fillStyle = gradCore;
-        ctx.beginPath();
-        ctx.arc(coreX, coreY, baseScale * 0.45, 0, 2*Math.PI);
-        ctx.fill();
-        
-        // reset composite
-        ctx.globalCompositeOperation = 'source-over';
-        ctx.shadowBlur = 0;
-      }
 
-      // Función de animación (dibuja continuamente, aunque ahora depende de scroll)
-      function animate() {
-        updateZoom();      // recalcular zoom según scroll
-        drawGalaxy();      // dibujar con ese zoom
-        requestAnimationFrame(animate);
-      }
+        // --- Parámetros de la galaxia ---
+        const starCount = 4000;
+        const arms = 4;
+        const spiralTightness = 2.8;
+        const coreRadius = 2.0;
+        const armLength = 12.0;
 
-      // Redimensionar canvas
-      function resizeCanvas() {
-        width = window.innerWidth;
-        height = window.innerHeight;
-        canvas.width = width;
-        canvas.height = height;
-        // No necesitamos reiniciar estrellas, solo redibujar
-      }
+        // Geometría para las estrellas
+        const geometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(starCount * 3);
+        const colors = new Float32Array(starCount * 3);
+        const sizes = new Float32Array(starCount);
 
-      // Inicializar
-      initStars();
-      resizeCanvas();
-      window.addEventListener('resize', () => {
-        resizeCanvas();
-      });
+        // Colores base
+        const coreColor1 = new THREE.Color(0xffaa55); // amarillo anaranjado
+        const coreColor2 = new THREE.Color(0xffdd99);
+        const armColor1 = new THREE.Color(0xaaccff); // azul claro
+        const armColor2 = new THREE.Color(0xcc88ff); // morado
 
-      // Escuchar scroll para actualizar zoom (aunque animate lo hará)
-      window.addEventListener('scroll', () => {
-        // simplemente el próximo frame recogerá el nuevo scroll
-      });
+        for (let i = 0; i < starCount; i++) {
+            // Decidir si es estrella del núcleo (20%) o de brazos
+            const isCore = Math.random() < 0.2;
+            
+            let r, angle, yOffset;
+            if (isCore) {
+                // Núcleo: esfera
+                r = Math.pow(Math.random(), 1.5) * coreRadius;
+                angle = Math.random() * Math.PI * 2;
+                yOffset = (Math.random() - 0.5) * 0.8;
+            } else {
+                // Brazos espirales
+                const armIndex = Math.floor(Math.random() * arms);
+                const baseAngle = (armIndex / arms) * Math.PI * 2;
+                // Radio: desde cerca del núcleo hasta el exterior
+                r = coreRadius + Math.pow(Math.random(), 1.2) * armLength;
+                // Ángulo espiral: base + factor * r + aleatorio
+                angle = baseAngle + r * spiralTightness + (Math.random() - 0.5) * 0.6;
+                yOffset = (Math.random() - 0.5) * 1.2 * (r / 8); // más grueso en bordes
+            }
 
-      // Iniciar animación
-      animate();
+            // Convertir a coordenadas cartesianas
+            const x = r * Math.cos(angle);
+            const z = r * Math.sin(angle);
+            const y = yOffset * 1.5;
 
-      // Forzar actualización al inicio
-      setTimeout(() => {
-        resizeCanvas();
-      }, 50);
+            positions[i*3] = x;
+            positions[i*3+1] = y;
+            positions[i*3+2] = z;
 
-    })();
-  </script>
+            // Color según posición
+            let color;
+            if (isCore) {
+                const mix = Math.random();
+                color = coreColor1.clone().lerp(coreColor2, mix);
+            } else {
+                // Brazos: mezcla entre azul y morado según distancia
+                const t = (r - coreRadius) / armLength;
+                const mix1 = Math.random() * 0.7 + 0.3;
+                if (Math.random() > 0.5) {
+                    color = armColor1.clone().lerp(armColor2, mix1);
+                } else {
+                    color = armColor2.clone().lerp(new THREE.Color(0x88aaff), Math.random());
+                }
+                // Añadir variación aleatoria
+                color.multiplyScalar(0.8 + 0.4 * Math.random());
+            }
+
+            colors[i*3] = color.r;
+            colors[i*3+1] = color.g;
+            colors[i*3+2] = color.b;
+
+            // Tamaño: más grandes en el núcleo y aleatorio
+            sizes[i] = isCore ? 0.3 + Math.random()*0.3 : 0.15 + Math.random()*0.2;
+        }
+
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+        geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+
+        // Crear material para puntos con textura circular suave
+        const createStarTexture = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = 32;
+            canvas.height = 32;
+            const ctx = canvas.getContext('2d');
+            ctx.beginPath();
+            ctx.arc(16, 16, 14, 0, 2 * Math.PI);
+            const gradient = ctx.createRadialGradient(16, 16, 0, 16, 16, 14);
+            gradient.addColorStop(0, 'rgba(255,255,255,1)');
+            gradient.addColorStop(0.5, 'rgba(200,200,255,0.8)');
+            gradient.addColorStop(1, 'rgba(255,255,255,0)');
+            ctx.fillStyle = gradient;
+            ctx.fill();
+            return new THREE.CanvasTexture(canvas);
+        };
+
+        const starTexture = createStarTexture();
+
+        const pointsMaterial = new THREE.PointsMaterial({
+            size: 0.25,
+            map: starTexture,
+            vertexColors: true,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false,
+            transparent: true,
+            sizeAttenuation: true
+        });
+
+        const galaxy = new THREE.Points(geometry, pointsMaterial);
+        scene.add(galaxy);
+
+        // Añadir un pequeño brillo central con una esfera difusa
+        const glowGeometry = new THREE.SphereGeometry(1.2, 16, 16);
+        const glowMaterial = new THREE.MeshBasicMaterial({
+            color: 0xffaa55,
+            transparent: true,
+            opacity: 0.15,
+            blending: THREE.AdditiveBlending
+        });
+        const glowSphere = new THREE.Mesh(glowGeometry, glowMaterial);
+        scene.add(glowSphere);
+
+        // Añadir algunas estrellas de fondo muy lejanas (fondo fijo)
+        const bgGeometry = new THREE.BufferGeometry();
+        const bgPositions = [];
+        for (let i = 0; i < 800; i++) {
+            const r = 30 + Math.random() * 40;
+            const theta = Math.random() * Math.PI * 2;
+            const phi = (Math.random() - 0.5) * Math.PI;
+            const x = r * Math.cos(theta) * Math.cos(phi);
+            const y = r * Math.sin(phi);
+            const z = r * Math.sin(theta) * Math.cos(phi);
+            bgPositions.push(x, y, z);
+        }
+        bgGeometry.setAttribute('position', new THREE.Float32BufferAttribute(bgPositions, 3));
+        const bgMaterial = new THREE.PointsMaterial({ color: 0x8899aa, size: 0.3, sizeAttenuation: false });
+        const bgStars = new THREE.Points(bgGeometry, bgMaterial);
+        scene.add(bgStars);
+
+        // --- Control de scroll ---
+        let targetZ = 12; // posición inicial de cámara en Z
+        const minZ = 2;   // cerca del núcleo
+        const maxZ = 18;  // lejos
+
+        window.addEventListener('scroll', () => {
+            const scrollY = window.scrollY;
+            const maxScroll = document.body.scrollHeight - window.innerHeight;
+            const progress = Math.min(1, scrollY / maxScroll);
+            // Mapear progreso a posición Z: queremos que al inicio (progress=0) esté en maxZ (lejos)
+            // y al final (progress=1) en minZ (cerca)
+            targetZ = maxZ - (maxZ - minZ) * progress;
+        });
+
+        // --- Animación ---
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Suavizar movimiento de cámara (interpolación lineal)
+            camera.position.z += (targetZ - camera.position.z) * 0.05;
+            // También mover ligeramente en Y para efecto de entrada
+            camera.position.y = 1.5 + (targetZ - 12) * 0.1; 
+
+            // Rotar la galaxia lentamente
+            galaxy.rotation.y += 0.0005;
+            glowSphere.rotation.y += 0.0005;
+            bgStars.rotation.y -= 0.0001; // fondo contrario para dar profundidad
+
+            // Nebulosas rotan muy lentamente
+            scene.children.forEach(child => {
+                if (child.isSprite) {
+                    child.rotation.z += 0.0002;
+                }
+            });
+
+            camera.lookAt(0, 0, 0);
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        // --- Ajustar tamaño al cambiar ventana ---
+        window.addEventListener('resize', onWindowResize, false);
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        // --- Pequeña ayuda visual: desactivar el control de órbita si se desea, pero lo dejamos comentado ---
+        // const controls = new OrbitControls(camera, renderer.domElement);
+        // controls.enableDamping = true;
+        // controls.enableZoom = false;
+    </script>
 </body>
 </html>
