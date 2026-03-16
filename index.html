@@ -12,25 +12,45 @@
             background: #000;
         }
 
-        /* Canvas de Three.js como fondo */
+        /* --- FONDO DE ESTRELLAS CON CSS (IMAGEN REAL) --- */
+        .fondo-estrellas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+            background-image: url('https://raw.githubusercontent.com/socram98gg-cpu/poemas/bdfa9e57bce3979057b206779a585590490fd1c0/IMG_5593.JPG');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            transform: scale(1);
+            transition: transform 0.1s ease-out;
+            will-change: transform;
+            /* Oscurecemos ligeramente para que resalten las estrellas 3D */
+            filter: brightness(0.7) contrast(1.2);
+        }
+
+        /* Canvas de Three.js (ahora por encima del fondo) */
         #canvas-container {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            z-index: 0;
+            z-index: 2;
+            pointer-events: none; /* Para que no bloquee los botones */
         }
 
-        /* Contenido por encima */
+        /* Contenido por encima de todo */
         .content {
             position: relative;
-            z-index: 10;
+            z-index: 20;
             pointer-events: none;
             min-height: 400vh;
         }
 
-        /* --- BOTONES SUPERIORES HORIZONTALES (estilo galaxia) --- */
+        /* --- BOTONES SUPERIORES (MÁS GRANDES, CON IMAGEN DE GALAXIA) --- */
         .botonera-superior {
             position: fixed;
             top: 30px;
@@ -38,17 +58,17 @@
             width: 100%;
             display: flex;
             justify-content: center;
-            gap: 40px;
-            z-index: 40;
-            pointer-events: none; /* Para que no bloquee clics, los botones tienen pointer-events auto */
+            gap: 50px;
+            z-index: 50;
+            pointer-events: none;
         }
 
         .boton-galaxia {
             pointer-events: auto;
-            width: 140px;
-            height: 140px;
+            width: 200px;
+            height: 200px;
             border-radius: 50%;
-            background-image: url('https://img2.freepng.es/20180320/xqe/kisspng-spiral-galaxy-milky-way-andromeda-galaxy-painting-5ab0f10f36ee17.3311511115215439513043.jpg');
+            background-image: url('https://raw.githubusercontent.com/socram98gg-cpu/poemas/f6f8d56b2cdc5ddce9d4a9dc423ee969f18d663e/IMG_5460.jpeg');
             background-size: cover;
             background-position: center;
             display: flex;
@@ -59,32 +79,31 @@
             color: white;
             font-family: 'Wide Latin', 'Georgia', serif;
             font-weight: bold;
-            font-size: 1rem;
-            text-shadow: 0 0 15px rgba(255,255,255,0.8), 0 0 30px #aa88ff;
-            box-shadow: 0 0 30px rgba(170, 136, 255, 0.6);
+            font-size: 1.2rem;
+            text-shadow: 0 0 20px black, 0 0 40px #000;
+            box-shadow: 0 0 40px rgba(255, 255, 255, 0.3), 0 0 80px rgba(170, 136, 255, 0.4);
             transition: transform 0.3s, box-shadow 0.3s;
-            border: 2px solid rgba(255,255,200,0.6);
+            border: 3px solid rgba(255, 255, 200, 0.8);
             line-height: 1.3;
-            padding: 0 10px;
+            padding: 0 15px;
             word-break: break-word;
         }
 
         .boton-galaxia:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 50px #cbaaff;
-            border-color: #ffeca0;
+            transform: scale(1.15);
+            box-shadow: 0 0 70px #ffdd88;
+            border-color: #ffeeb0;
         }
 
-        /* Para que el texto del botón se vea mejor */
         .boton-galaxia span {
-            background-color: rgba(0,0,0,0.4);
-            padding: 5px 10px;
-            border-radius: 30px;
-            backdrop-filter: blur(2px);
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 8px 15px;
+            border-radius: 40px;
+            backdrop-filter: blur(3px);
             width: 100%;
         }
 
-        /* --- SECCIONES DE TEXTO (SIN RECUADRO) --- */
+        /* --- SECCIONES DE TEXTO (SIN RECUADRO, MÁS GRANDES) --- */
         .seccion {
             height: 100vh;
             display: flex;
@@ -98,88 +117,77 @@
         .cita {
             font-family: 'Wide Latin', 'Georgia', serif;
             font-weight: bold;
-            font-size: 2.8rem;
+            font-size: 5rem; /* EL DOBLE DE GRANDE */
             color: white;
             text-shadow: 
-                0 0 20px #fff,
-                0 0 40px #b89aff,
-                0 0 60px #7a4caf;
-            max-width: 1200px;
-            line-height: 1.6;
-            letter-spacing: 2px;
-            /* Efecto de textura sutil (rayas muy tenues) */
-            background: radial-gradient(circle at 20% 30%, rgba(255,255,255,0.1) 1px, transparent 1px);
-            background-size: 30px 30px;
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-shadow: 
-                0 0 20px #fff,
-                0 0 40px #b89aff,
-                0 0 60px #7a4caf;
-        }
-
-        /* Como no podemos hacer background-clip:text con color, usamos este truco: el texto es blanco con sombras */
-        .cita span {
-            color: white;
-            text-shadow: 
-                0 0 20px #fff,
-                0 0 40px #b89aff,
-                0 0 60px #7a4caf;
+                2px 2px 0 #000,
+                4px 4px 0 #000,
+                0 0 30px #ffffff,
+                0 0 60px #b89aff;
+            max-width: 1400px;
+            line-height: 1.5;
+            letter-spacing: 3px;
+            background: none; /* Sin ningún recuadro */
+            -webkit-text-stroke: 1px rgba(0, 0, 0, 0.5); /* Contorno sutil */
         }
 
         .cita small {
             display: block;
-            margin-top: 50px;
-            font-size: 1.5rem;
-            color: #ffeca0;
-            text-shadow: 0 0 30px #ffd966;
+            margin-top: 70px;
+            font-size: 2rem;
+            color: #ffdd99;
+            text-shadow: 2px 2px 0 #000, 0 0 40px #ffaa00;
             font-weight: normal;
-            letter-spacing: 4px;
+            letter-spacing: 5px;
         }
 
         /* Responsive */
-        @media (max-width: 1000px) {
-            .cita { font-size: 2rem; }
-            .boton-galaxia { width: 110px; height: 110px; font-size: 0.9rem; }
+        @media (max-width: 1200px) {
+            .cita { font-size: 3.5rem; }
+            .boton-galaxia { width: 160px; height: 160px; font-size: 1rem; }
         }
 
-        @media (max-width: 700px) {
-            .cita { font-size: 1.5rem; }
-            .botonera-superior { gap: 15px; top: 15px; }
-            .boton-galaxia { width: 80px; height: 80px; font-size: 0.7rem; }
+        @media (max-width: 800px) {
+            .cita { font-size: 2.5rem; }
+            .boton-galaxia { width: 130px; height: 130px; font-size: 0.9rem; }
+            .botonera-superior { gap: 20px; }
         }
     </style>
 </head>
 <body>
+    <!-- Fondo CSS con imagen de estrellas reales -->
+    <div class="fondo-estrellas" id="fondo-estrellas"></div>
+
+    <!-- Canvas para la galaxia 3D -->
     <div id="canvas-container"></div>
 
-    <!-- Botones superiores con forma de galaxia -->
+    <!-- Botones superiores con imagen de galaxia -->
     <div class="botonera-superior">
         <a href="#" class="boton-galaxia" id="btn-poemitas"><span>Poemitas para ti</span></a>
         <a href="prosa.html" class="boton-galaxia"><span>Prosa</span></a>
         <a href="otros.html" class="boton-galaxia"><span>Otros</span></a>
     </div>
 
+    <!-- Textos de Job -->
     <div class="content">
         <section class="seccion">
             <div class="cita">
-                <span>¿Podrás tú atar los lazos de las Pléyades,<br>o desatarás las ligaduras de Orión?</span>
+                ¿Podrás tú atar los lazos de las Pléyades,<br>o desatarás las ligaduras de Orión?
             </div>
         </section>
         <section class="seccion">
             <div class="cita">
-                <span>¿Sacarás tú a su tiempo las constelaciones de los cielos,<br>o guiarás a la Osa Mayor con sus hijos?</span>
+                ¿Sacarás tú a su tiempo las constelaciones de los cielos,<br>o guiarás a la Osa Mayor con sus hijos?
             </div>
         </section>
         <section class="seccion">
             <div class="cita">
-                <span>¿Supiste tú las ordenanzas de los cielos?</span>
+                ¿Supiste tú las ordenanzas de los cielos?
             </div>
         </section>
         <section class="seccion">
             <div class="cita">
-                <span>¿Dispondrás tú de su potestad en la tierra?</span>
+                ¿Dispondrás tú de su potestad en la tierra?
                 <small>Job 38:31-33 (RVR1960)</small>
             </div>
         </section>
@@ -200,154 +208,98 @@
         // --- CONFIGURACIÓN INICIAL ---
         const container = document.getElementById('canvas-container');
         const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x030514); // color de respaldo
+        // Fondo transparente para que se vea el CSS de estrellas
+        scene.background = null; 
 
-        const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(0, 1.5, 4); // cerca al inicio
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+        // Vista desde arriba: más altura (Y) para ver el centro desde arriba
+        camera.position.set(0, 8, 12); 
+        camera.lookAt(0, 0, 0);
 
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); // alpha true para ver fondo CSS
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         container.appendChild(renderer.domElement);
 
-        // --- CARGA DE LA IMAGEN DE FONDO (ESTRELLAS) ---
-        const textureLoader = new THREE.TextureLoader();
-        // Usamos la URL raw que confirmaste
-        const bgTexture = textureLoader.load('https://raw.githubusercontent.com/socram98gg-cpu/poemas/bdfa9e57bce3979057b206779a585590490fd1c0/IMG_5593.JPG');
-        bgTexture.wrapS = THREE.RepeatWrapping;
-        bgTexture.wrapT = THREE.RepeatWrapping;
-        bgTexture.repeat.set(2, 1); // para que cubra bien el plano gigante
-
-        // Plano gigante para el fondo (detrás de la galaxia)
-        const bgPlaneGeometry = new THREE.PlaneGeometry(200, 100);
-        const bgPlaneMaterial = new THREE.MeshBasicMaterial({
-            map: bgTexture,
-            side: THREE.BackSide, // para que se vea desde dentro
-            depthWrite: false,
-            transparent: true,
-            opacity: 0.9
-        });
-        const bgPlane = new THREE.Mesh(bgPlaneGeometry, bgPlaneMaterial);
-        bgPlane.position.set(0, 0, -50); // colocado detrás
-        scene.add(bgPlane);
-
-        // --- NEBULOSAS (SPRITES) para dar ambiente ---
-        function createNebulaTexture() {
-            const canvas = document.createElement('canvas');
-            canvas.width = 64;
-            canvas.height = 64;
-            const ctx = canvas.getContext('2d');
-            const gradient = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
-            gradient.addColorStop(0, 'rgba(180, 140, 255, 1)');
-            gradient.addColorStop(0.5, 'rgba(90, 70, 180, 0.6)');
-            gradient.addColorStop(1, 'rgba(20, 10, 40, 0)');
-            ctx.fillStyle = gradient;
-            ctx.fillRect(0, 0, 64, 64);
-            return new THREE.CanvasTexture(canvas);
-        }
-
-        const nebulaTexture = createNebulaTexture();
-        for (let i = 0; i < 30; i++) {
-            const material = new THREE.SpriteMaterial({ 
-                map: nebulaTexture, 
-                color: new THREE.Color(
-                    0.6 + Math.random() * 0.4, 
-                    0.3 + Math.random() * 0.3, 
-                    0.8 + Math.random() * 0.2
-                ),
-                blending: THREE.AdditiveBlending,
-                depthWrite: false
-            });
-            const sprite = new THREE.Sprite(material);
-            const r = 15 + Math.random() * 25;
-            const theta = Math.random() * Math.PI * 2;
-            const phi = (Math.random() - 0.5) * 0.6;
-            sprite.position.x = r * Math.cos(theta) * Math.cos(phi);
-            sprite.position.y = r * Math.sin(phi) * 2;
-            sprite.position.z = r * Math.sin(theta) * Math.cos(phi);
-            sprite.scale.set(8 + Math.random()*10, 8 + Math.random()*10, 1);
-            scene.add(sprite);
-        }
-
-        // --- PARÁMETROS DE LA GALAXIA (6000 estrellas, brazos definidos) ---
-        const starCount = 6000;
-        const arms = 4;
-        const spiralTightness = 3.8; // más apretado para brazos definidos
-        const coreRadius = 2.2;
-        const armLength = 16.0;
+        // --- PARÁMETROS DE LA GALAXIA (8 BRAZOS, 8000 ESTRELLAS) ---
+        const starCount = 8000;
+        const arms = 8; // 8 brazos
+        const spiralTightness = 4.2; // Más apretado para brazos definidos
+        const coreRadius = 2.5;
+        const armLength = 18.0;
 
         const geometry = new THREE.BufferGeometry();
         const positions = new Float32Array(starCount * 3);
         const colors = new Float32Array(starCount * 3);
         const sizes = new Float32Array(starCount);
 
-        // Colores base
-        const coreColor1 = new THREE.Color(0xffaa55);
-        const coreColor2 = new THREE.Color(0xff9933);
-        const armColor1 = new THREE.Color(0xaaccff);
-        const armColor2 = new THREE.Color(0xaa88ff);
-        const armColor3 = new THREE.Color(0xcc88ff);
+        // Colores base (más sutiles, menos brillantes)
+        const coreColor1 = new THREE.Color(0xcc8844); // más oscuro
+        const coreColor2 = new THREE.Color(0xaa6633);
+        const armColor1 = new THREE.Color(0x7799bb); // azul más tenue
+        const armColor2 = new THREE.Color(0x8866aa); // morado más tenue
 
         for (let i = 0; i < starCount; i++) {
-            const isCore = Math.random() < 0.18; // 18% núcleo (más densidad)
+            const isCore = Math.random() < 0.15; // 15% núcleo
             
             let r, angle, yOffset;
             if (isCore) {
-                r = Math.pow(Math.random(), 1.1) * coreRadius;
+                r = Math.pow(Math.random(), 1.2) * coreRadius;
                 angle = Math.random() * Math.PI * 2;
                 yOffset = (Math.random() - 0.5) * 1.0;
             } else {
                 const armIndex = Math.floor(Math.random() * arms);
                 const baseAngle = (armIndex / arms) * Math.PI * 2;
-                r = coreRadius + Math.pow(Math.random(), 1.4) * armLength;
-                // Menos dispersión para brazos definidos (0.2 en lugar de 0.3)
-                angle = baseAngle + r * spiralTightness + (Math.random() - 0.5) * 0.2;
-                yOffset = (Math.random() - 0.5) * 1.8 * (r / 12);
+                r = coreRadius + Math.pow(Math.random(), 1.3) * armLength;
+                // Dispersión controlada para brazos definidos
+                angle = baseAngle + r * spiralTightness + (Math.random() - 0.5) * 0.25;
+                yOffset = (Math.random() - 0.5) * 2.0 * (r / 12);
             }
 
+            // Aplanar la galaxia en Y para que sea más "alta" en el centro?
+            // Mejor: distribuir en Y según distancia para darle volumen
             const x = r * Math.cos(angle);
             const z = r * Math.sin(angle);
-            const y = yOffset * 1.8;
+            const y = yOffset * 1.5;
 
             positions[i*3] = x;
             positions[i*3+1] = y;
             positions[i*3+2] = z;
 
-            // Color
+            // Color menos brillante
             let color;
             if (isCore) {
                 color = coreColor1.clone().lerp(coreColor2, Math.random());
             } else {
                 const t = (r - coreRadius) / armLength;
-                if (t < 0.3) {
-                    color = armColor1.clone().lerp(armColor2, Math.random());
+                if (t < 0.4) {
+                    color = armColor1.clone().lerp(armColor2, Math.random() * 0.5);
                 } else {
-                    color = armColor2.clone().lerp(armColor3, Math.random() * 0.7);
+                    color = armColor2.clone().lerp(new THREE.Color(0x8866aa), Math.random() * 0.3);
                 }
-                color.multiplyScalar(0.7 + 0.5 * Math.random());
+                color.multiplyScalar(0.5 + 0.3 * Math.random()); // más oscuro
             }
 
             colors[i*3] = color.r;
             colors[i*3+1] = color.g;
             colors[i*3+2] = color.b;
 
-            sizes[i] = isCore ? 0.3 + Math.random()*0.5 : 0.15 + Math.random()*0.3;
+            sizes[i] = isCore ? 0.2 + Math.random()*0.3 : 0.1 + Math.random()*0.2;
         }
 
         geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
         geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
         geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
 
-        // Textura de estrella
+        // Textura de estrella más suave
         const createStarTexture = () => {
             const canvas = document.createElement('canvas');
             canvas.width = 32;
             canvas.height = 32;
             const ctx = canvas.getContext('2d');
             const gradient = ctx.createRadialGradient(16, 16, 0, 16, 16, 16);
-            gradient.addColorStop(0, 'rgba(255,255,255,1)');
-            gradient.addColorStop(0.4, 'rgba(255,240,180,0.9)');
-            gradient.addColorStop(0.8, 'rgba(160,140,255,0.3)');
+            gradient.addColorStop(0, 'rgba(255,255,255,0.9)');
+            gradient.addColorStop(0.5, 'rgba(200,180,255,0.5)');
             gradient.addColorStop(1, 'rgba(255,255,255,0)');
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, 32, 32);
@@ -357,66 +309,64 @@
         const starTexture = createStarTexture();
 
         const pointsMaterial = new THREE.PointsMaterial({
-            size: 0.35,
+            size: 0.3,
             map: starTexture,
             vertexColors: true,
-            blending: THREE.AdditiveBlending,
+            blending: THREE.AdditiveBlending, // Mezcla aditiva para que brillen
             depthWrite: false,
             transparent: true,
-            sizeAttenuation: true
+            sizeAttenuation: true,
+            opacity: 0.9
         });
 
         const galaxy = new THREE.Points(geometry, pointsMaterial);
         scene.add(galaxy);
 
-        // Brillo central (ojo del huracán)
-        const glowGeometry = new THREE.SphereGeometry(1.8, 32, 32);
-        const glowMaterial = new THREE.MeshBasicMaterial({
-            color: 0xffaa44,
-            transparent: true,
-            opacity: 0.3,
-            blending: THREE.AdditiveBlending
-        });
-        const glowSphere = new THREE.Mesh(glowGeometry, glowMaterial);
-        scene.add(glowSphere);
+        // --- SIN ESFERAS DE GLOW (ELIMINADAS) ---
+        // El centro queda definido solo por la densidad de estrellas
 
-        const glowGeometry2 = new THREE.SphereGeometry(3.0, 32, 32);
-        const glowMaterial2 = new THREE.MeshBasicMaterial({
-            color: 0x8844aa,
-            transparent: true,
-            opacity: 0.15,
-            blending: THREE.AdditiveBlending
-        });
-        const glowSphere2 = new THREE.Mesh(glowGeometry2, glowMaterial2);
-        scene.add(glowSphere2);
-
-        // Estrellas de fondo lejanas (para más profundidad)
+        // Estrellas de fondo muy lejanas (apenas visibles)
         const bgStarsGeometry = new THREE.BufferGeometry();
         const bgStarsPositions = [];
-        for (let i = 0; i < 1200; i++) {
-            const r = 40 + Math.random() * 70;
+        for (let i = 0; i < 1500; i++) {
+            const r = 40 + Math.random() * 100;
             const theta = Math.random() * Math.PI * 2;
             const phi = (Math.random() - 0.5) * Math.PI;
             const x = r * Math.cos(theta) * Math.cos(phi);
-            const y = r * Math.sin(phi);
+            const y = r * Math.sin(phi) * 0.5;
             const z = r * Math.sin(theta) * Math.cos(phi);
             bgStarsPositions.push(x, y, z);
         }
         bgStarsGeometry.setAttribute('position', new THREE.Float32BufferAttribute(bgStarsPositions, 3));
-        const bgStarsMaterial = new THREE.PointsMaterial({ color: 0x7799aa, size: 0.5, sizeAttenuation: false });
+        const bgStarsMaterial = new THREE.PointsMaterial({ color: 0x445566, size: 0.3, sizeAttenuation: false });
         const bgStars = new THREE.Points(bgStarsGeometry, bgStarsMaterial);
         scene.add(bgStars);
 
-        // --- CONTROL DE SCROLL (alejamiento) ---
-        let targetZ = 4; // cerca
-        const minZ = 4;
-        const maxZ = 38;
+        // --- CONTROL DE SCROLL (ALEJAMIENTO CON VISTA DESDE ARRIBA) ---
+        let targetZ = 12; // posición inicial en Z
+        let targetY = 8;  // altura inicial
+        const minZ = 12;   // cerca
+        const maxZ = 50;   // muy lejos
+        const minY = 8;    // altura cerca
+        const maxY = 20;   // altura lejos (para ver desde arriba)
+
+        // Referencia al fondo CSS para escalarlo
+        const fondoDiv = document.getElementById('fondo-estrellas');
 
         window.addEventListener('scroll', () => {
             const scrollY = window.scrollY;
             const maxScroll = document.body.scrollHeight - window.innerHeight;
             const progress = Math.min(1, scrollY / maxScroll);
+            
+            // Cámara: se aleja y sube para ver la galaxia desde arriba
             targetZ = minZ + (maxZ - minZ) * progress;
+            targetY = minY + (maxY - minY) * progress;
+            
+            // Efecto de "alejamiento" en el fondo CSS (pequeño zoom out)
+            if (fondoDiv) {
+                const scale = 1 + progress * 0.3; // escala hasta 1.3
+                fondoDiv.style.transform = `scale(${scale})`;
+            }
         });
 
         // --- ANIMACIÓN ---
@@ -426,30 +376,18 @@
             time += 0.01;
 
             // Movimiento suave de cámara
-            camera.position.z += (targetZ - camera.position.z) * 0.08;
-            // Pequeño movimiento vertical para dinamismo
-            camera.position.y = 1.5 + Math.sin(time * 2) * 0.3;
-
-            // Rotación de la galaxia: velocidad 0.006
-            galaxy.rotation.y += 0.006;
-            // El núcleo (glow) rota más rápido (efecto huracán)
-            glowSphere.rotation.y += 0.009;
-            glowSphere2.rotation.y += 0.008;
+            camera.position.z += (targetZ - camera.position.z) * 0.05;
+            camera.position.y += (targetY - camera.position.y) * 0.05;
             
-            // Nebulosas rotan lentamente
-            scene.children.forEach(child => {
-                if (child.isSprite) {
-                    child.rotation.z += 0.001;
-                }
-            });
+            // Rotación de la galaxia: velocidad 0.006 (suave)
+            galaxy.rotation.y += 0.006;
+            
+            // Estrellas de fondo rotan muy lentamente
+            bgStars.rotation.y -= 0.0002;
 
-            // Fondo de estrellas lejanas rotan en sentido opuesto muy lentamente
-            bgStars.rotation.y -= 0.0003;
+            // La cámara mira al centro, pero con la altura Y variable
+            camera.lookAt(0, 0, 0);
 
-            // El plano de fondo de imagen no rota, solo se mueve con la cámara (está fijo en el mundo)
-            // pero lo mantenemos centrado
-
-            camera.lookAt(0, 1, 0);
             renderer.render(scene, camera);
         }
 
@@ -463,20 +401,19 @@
             renderer.setSize(window.innerWidth, window.innerHeight);
         }
 
-        // --- CONTRASEÑA PARA BOTÓN "POEMITAS PARA TI" ---
+        // --- CONTRASEÑA PARA BOTÓN "POEMITAS PARA TI" (LAURA) ---
         const btnPoemitas = document.getElementById('btn-poemitas');
         btnPoemitas.addEventListener('click', (e) => {
-            e.preventDefault(); // Evita que siga el enlace inmediatamente
+            e.preventDefault();
             const password = prompt('Introduce la contraseña para acceder a los poemitas:');
-            if (password === '(...)') { // Nota: tres puntos entre paréntesis -> '...' es lo que escribe el usuario si pone (…)
-                // Si la contraseña es correcta, redirige a poemitas.html
+            if (password === 'laura') {
                 window.location.href = 'poemitas.html';
             } else {
                 alert('Contraseña incorrecta.');
             }
         });
 
-        // Los otros botones funcionan normalmente (ya tienen href)
+        // Los otros botones funcionan normalmente
     </script>
 </body>
 </html>
