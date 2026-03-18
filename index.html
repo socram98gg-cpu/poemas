@@ -202,6 +202,22 @@
     <script type="module">
         import * as THREE from 'three';
 
+        // Detectar cuando se vuelve a la página con el botón atrás
+window.addEventListener('pageshow', function(event) {
+    // Si la página se cargó desde el caché (bfcache)
+    if (event.persisted) {
+        // Eliminar cualquier rastro de la transición anterior
+        const oldZoomBtn = document.querySelector('div[style*="z-index: 1000"]');
+        if (oldZoomBtn) oldZoomBtn.remove();
+        document.body.classList.remove('transition');
+        
+        // Asegurar que la página de inicio esté visible
+        if (pages && pages.inicio) {
+            pages.inicio.classList.add('active');
+        }
+    }
+});
+
         // --- CONFIGURACIÓN INICIAL ---
         const container = document.getElementById('canvas-container');
         const scene = new THREE.Scene();
@@ -386,10 +402,10 @@ const nearPos = new THREE.Vector3(0, 0, 0);
 }
 
         // --- TRANSICIÓN CON HIPERESPACIO (MEJORADA) ---
-        async function transitionToPage(pageId, passwordNeeded = false) {
+     async function transitionToPage(pageId, passwordNeeded = false) {
     if (passwordNeeded) {
         const pwd = prompt('Contraseña para Poemitas:');
-        if (pwd !== 'Laura') {  // Cambiado a mayúscula
+        if (pwd !== 'Laura') {
             alert('Contraseña incorrecta');
             return;
         }
@@ -431,7 +447,13 @@ const nearPos = new THREE.Vector3(0, 0, 0);
     // 4. Esperar a que termine la animación
     await new Promise(r => setTimeout(r, 1000));
     
-    // 5. Redirigir a la página correspondiente
+    // 5. Limpiar y redirigir
+    if (zoomBtn && zoomBtn.parentNode) {
+        zoomBtn.remove();
+    }
+    
+    document.body.classList.remove('transition');
+    
     if (pageId === 'poemitas') {
         window.location.href = 'poemitas.html';
     } else if (pageId === 'prosa') {
@@ -439,14 +461,7 @@ const nearPos = new THREE.Vector3(0, 0, 0);
     } else if (pageId === 'otros') {
         window.location.href = 'otros.html';
     }
-    
-    // (Opcional: si usas SPA en lugar de redirección, mantén showPage)
-    // showPage(pageId);
-    // zoomBtn.remove();
-    
-    document.body.classList.remove('transition');
 }
-        
         // --- EVENTOS DE BOTONES ---
         document.getElementById('btn1').addEventListener('click', () => transitionToPage('poemitas', true));
         document.getElementById('btn2').addEventListener('click', () => transitionToPage('prosa', false));
