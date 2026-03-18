@@ -158,14 +158,7 @@
             margin-top: 40px;
         }
         /* Página de poemitas (placeholder) */
-        #page-poemitas .contenido-pagina {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 3rem;
-            text-shadow: 0 0 30px magenta;
-        }
+      
         /* Efecto de transición */
         body.transition * {
             pointer-events: none !important;
@@ -189,7 +182,7 @@
     <button id="modo-meditacion">🌌 Modo Meditación</button>
 
     <!-- Sistema de páginas (SPA) -->
-    <div id="pages">
+<div id="pages">
         <!-- Página de inicio (con textos de Job) -->
         <div class="page active" id="page-inicio">
             <div class="contenido-pagina" id="contenido-inicio">
@@ -198,26 +191,8 @@
                 <section class="seccion"><div class="cita">¿Supiste tú las ordenanzas de los cielos?</div></section>
                 <section class="seccion"><div class="cita">¿Dispondrás tú de su potestad?<br><small>Job 38:31-33</small></div></section>
             </div>
-        </div>
-        <!-- Página de poemitas -->
-        <div class="page" id="page-poemitas">
-            <div class="contenido-pagina" style="display: flex; align-items: center; justify-content: center;">
-                <h1 style="font-size: 4rem; text-shadow: 0 0 40px magenta;">✨ Poemas para ti ✨</h1>
-            </div>
-        </div>
-        <!-- Página de prosa -->
-        <div class="page" id="page-prosa">
-            <div class="contenido-pagina" style="display: flex; align-items: center; justify-content: center;">
-                <h1 style="font-size: 4rem; text-shadow: 0 0 40px cyan;">📜 Prosa</h1>
-            </div>
-        </div>
-        <!-- Página de otros -->
-        <div class="page" id="page-otros">
-            <div class="contenido-pagina" style="display: flex; align-items: center; justify-content: center;">
-                <h1 style="font-size: 4rem; text-shadow: 0 0 40px gold;">✨ Otros escritos</h1>
-            </div>
-        </div>
-    </div>
+        </div> <!-- cierra page-inicio -->
+    </div> <!-- cierra pages -->
 
     <!-- Scripts -->
     <script type="importmap">
@@ -393,27 +368,20 @@ const nearPos = new THREE.Vector3(0, 0, 0);
 
         // --- SISTEMA DE PÁGINAS ---
         const pages = {
-            inicio: document.getElementById('page-inicio'),
-            poemitas: document.getElementById('page-poemitas'),
-            prosa: document.getElementById('page-prosa'),
-            otros: document.getElementById('page-otros')
-        };
+    inicio: document.getElementById('page-inicio')
+};
         
         let currentPage = 'inicio';
         
         function showPage(pageId) {
-    Object.values(pages).forEach(p => p.classList.remove('active'));
-    pages[pageId].classList.add('active');
-    currentPage = pageId;
-    
+    // Solo mostramos/ocultamos la página de inicio (las otras son externas)
     if (pageId === 'inicio') {
+        pages.inicio.classList.add('active');
         contenidoInicio.scrollTop = 0;
         targetCamPos.copy(nearPos);
     } else {
-        targetCamPos.set(0, 2, 20); // Vista por defecto para otras páginas
-        // IMPORTANTE: Si las otras páginas tienen scroll, resetea su posición aquí
-        const otrasPaginas = document.querySelectorAll('#page-poemitas .contenido-pagina, #page-prosa .contenido-pagina, #page-otros .contenido-pagina');
-        otrasPaginas.forEach(p => p.scrollTop = 0);
+        // Si por algún motivo se llama a otra página, no hacemos nada
+        console.warn('Página interna no disponible, se usa redirección externa');
     }
 }
 
@@ -421,7 +389,7 @@ const nearPos = new THREE.Vector3(0, 0, 0);
         async function transitionToPage(pageId, passwordNeeded = false) {
     if (passwordNeeded) {
         const pwd = prompt('Contraseña para Poemitas:');
-        if (pwd !== 'laura') {
+        if (pwd !== 'Laura') {  // Cambiado a mayúscula
             alert('Contraseña incorrecta');
             return;
         }
@@ -429,67 +397,56 @@ const nearPos = new THREE.Vector3(0, 0, 0);
 
     document.body.classList.add('transition');
     
-    // 1. Acercar cámara al botón
+    // 1. Obtener el botón y clonarlo para la animación
     const targetBtn = pageId === 'poemitas' ? btn1 : (pageId === 'prosa' ? btn2 : btn3);
     const btnRect = targetBtn.getBoundingClientRect();
-    const targetPos = new THREE.Vector3(
-        (btnRect.left - window.innerWidth/2) * 0.01,
-        -(btnRect.top - window.innerHeight/2) * 0.01 + 2,
-        2
-    );
     
-    const startPos = camera.position.clone();
-    const duration = 800;
-    const startTime = Date.now();
+    // Crear un elemento clon para la animación de zoom
+    const zoomBtn = document.createElement('div');
+    zoomBtn.style.position = 'fixed';
+    zoomBtn.style.left = btnRect.left + 'px';
+    zoomBtn.style.top = btnRect.top + 'px';
+    zoomBtn.style.width = btnRect.width + 'px';
+    zoomBtn.style.height = btnRect.height + 'px';
+    zoomBtn.style.borderRadius = '50%';
+    zoomBtn.style.backgroundImage = window.getComputedStyle(targetBtn).backgroundImage;
+    zoomBtn.style.backgroundSize = 'cover';
+    zoomBtn.style.backgroundPosition = 'center';
+    zoomBtn.style.boxShadow = '0 0 50px gold';
+    zoomBtn.style.zIndex = '1000';
+    zoomBtn.style.transition = 'all 1s ease';
+    document.body.appendChild(zoomBtn);
     
-    while (Date.now() - startTime < duration) {
-        const t = (Date.now() - startTime) / duration;
-        camera.position.lerpVectors(startPos, targetPos, t);
-        camera.lookAt(0, 0, 0);
-        await new Promise(r => requestAnimationFrame(r));
+    // 2. Forzar un reflow para que la transición funcione
+    zoomBtn.offsetHeight;
+    
+    // 3. Animar el zoom a pantalla completa
+    zoomBtn.style.left = '0';
+    zoomBtn.style.top = '0';
+    zoomBtn.style.width = '100vw';
+    zoomBtn.style.height = '100vh';
+    zoomBtn.style.borderRadius = '0';
+    zoomBtn.style.transform = 'scale(1)';
+    
+    // 4. Esperar a que termine la animación
+    await new Promise(r => setTimeout(r, 1000));
+    
+    // 5. Redirigir a la página correspondiente
+    if (pageId === 'poemitas') {
+        window.location.href = 'poemitas.html';
+    } else if (pageId === 'prosa') {
+        window.location.href = 'prosa.html';
+    } else if (pageId === 'otros') {
+        window.location.href = 'otros.html';
     }
     
-    // 2. MOSTRAR LA NUEVA PÁGINA (FORZAR CAMBIO)
-    showPage(pageId);
+    // (Opcional: si usas SPA en lugar de redirección, mantén showPage)
+    // showPage(pageId);
+    // zoomBtn.remove();
     
-    // 3. EFECTO HIPERESPACIO (opcional, puedes mantenerlo)
-    const positions = galaxy.geometry.attributes.position.array;
-    const originalPos = positions.slice();
-    const stretchDuration = 800;
-    const stretchStart = Date.now();
-    
-    while (Date.now() - stretchStart < stretchDuration) {
-        const t = (Date.now() - stretchStart) / stretchDuration;
-        for (let i = 0; i < positions.length; i+=3) {
-            positions[i+2] = originalPos[i+2] * (1 + t * 10);
-        }
-        galaxy.geometry.attributes.position.needsUpdate = true;
-        await new Promise(r => requestAnimationFrame(r));
-    }
-    
-    // 4. Restaurar posiciones
-    const restoreStart = Date.now();
-    while (Date.now() - restoreStart < 500) {
-        const t = (Date.now() - restoreStart) / 500;
-        for (let i = 0; i < positions.length; i+=3) {
-            positions[i+2] = originalPos[i+2] * (1 + (1-t) * 10);
-        }
-        galaxy.geometry.attributes.position.needsUpdate = true;
-        await new Promise(r => requestAnimationFrame(r));
-    }
-    
-    for (let i = 0; i < positions.length; i+=3) {
-        positions[i] = originalPos[i];
-        positions[i+1] = originalPos[i+1];
-        positions[i+2] = originalPos[i+2];
-    }
-    galaxy.geometry.attributes.position.needsUpdate = true;
-    
-    // 5. ASEGURAR QUE LA PÁGINA ESTÁ ACTIVA Y EL SCROLL RESETEADO
-    // (esto ya lo hace showPage, pero reforzamos)
     document.body.classList.remove('transition');
 }
-
+        
         // --- EVENTOS DE BOTONES ---
         document.getElementById('btn1').addEventListener('click', () => transitionToPage('poemitas', true));
         document.getElementById('btn2').addEventListener('click', () => transitionToPage('prosa', false));
