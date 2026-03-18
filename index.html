@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Fragmentos del Edén · Galaxia Evolucionada</title>
+    <title>Fragmentos del Edén · Galaxia Espiral</title>
     <style>
         body {
             margin: 0;
@@ -12,7 +12,7 @@
             background: #000;
         }
 
-        /* Fondo de estrellas real (CSS) */
+        /* Fondo de estrellas real */
         .fondo-estrellas {
             position: fixed;
             top: 0;
@@ -23,13 +23,11 @@
             background-image: url('https://raw.githubusercontent.com/socram98gg-cpu/poemas/bdfa9e57bce3979057b206779a585590490fd1c0/IMG_5593.JPG');
             background-size: cover;
             background-position: center;
-            background-repeat: no-repeat;
-            filter: brightness(0.6) contrast(1.3);
-            transition: transform 0.1s ease-out;
-            will-change: transform;
+            filter: brightness(0.5) contrast(1.4);
+            transition: transform 0.1s ease;
         }
 
-        /* Canvas 3D (ahora con objetos extra) */
+        /* Canvas 3D */
         #canvas-container {
             position: fixed;
             top: 0;
@@ -40,7 +38,7 @@
             pointer-events: none;
         }
 
-        /* Contenido HTML por encima */
+        /* Contenido */
         .content {
             position: relative;
             z-index: 20;
@@ -48,74 +46,57 @@
             min-height: 400vh;
         }
 
-        /* --- BOTONES SUPERIORES (ESTILO 3D, ASIMÉTRICOS) --- */
-        .botonera-superior {
+        /* Botones mejorados */
+        .botonera {
             position: fixed;
             top: 30px;
             width: 100%;
             z-index: 50;
             pointer-events: none;
-            display: block;
+            display: flex;
+            justify-content: space-around;
+            padding: 0 5%;
+            box-sizing: border-box;
         }
 
-        .boton-3d {
-            position: absolute;
+        .boton {
             pointer-events: auto;
-            width: 180px;
-            height: 180px;
+            width: 160px;
+            height: 160px;
             border-radius: 50%;
             background-size: cover;
             background-position: center;
-            background-repeat: no-repeat;
-            box-shadow: 0 0 40px rgba(255, 215, 0, 0.3), 0 0 80px rgba(200, 160, 255, 0.2);
-            transform: rotateY(5deg) rotateX(3deg);
-            transition: transform 0.4s, box-shadow 0.4s;
+            box-shadow: 0 0 40px rgba(255,215,0,0.4);
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
             text-decoration: none;
             color: white;
-            font-family: 'Wide Latin', 'Georgia', serif;
+            font-size: 1.1rem;
             font-weight: bold;
-            font-size: 1.2rem;
-            text-shadow: 0 0 15px black, 0 0 30px #000;
-            border: 2px solid rgba(255, 255, 200, 0.7);
-            backdrop-filter: blur(1px);
+            text-shadow: 0 0 10px black;
+            border: 2px solid rgba(255,255,200,0.7);
+            transition: all 0.3s;
         }
 
-        .boton-3d:hover {
-            transform: rotateY(2deg) rotateX(2deg) scale(1.1);
-            box-shadow: 0 0 70px gold;
-            border-color: white;
+        .boton:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 60px gold;
         }
 
-        #btn-poemitas {
-            left: 5%;
-            background-image: url('https://raw.githubusercontent.com/socram98gg-cpu/poemas/main/IMG_5467.jpeg');
-        }
+        #btn1 { background-image: url('https://raw.githubusercontent.com/socram98gg-cpu/poemas/main/IMG_5467.jpeg'); }
+        #btn2 { background-image: url('https://raw.githubusercontent.com/socram98gg-cpu/poemas/main/IMG_5468.jpeg'); }
+        #btn3 { background-image: url('https://raw.githubusercontent.com/socram98gg-cpu/poemas/f6f8d56b2cdc5ddce9d4a9dc423ee969f18d663e/IMG_5460.jpeg'); }
 
-        #btn-prosa {
-            left: 40%;
-            transform: translateX(-50%) rotateY(6deg) rotateX(4deg);
-            background-image: url('https://raw.githubusercontent.com/socram98gg-cpu/poemas/main/IMG_5468.jpeg');
-        }
-
-        #btn-otros {
-            right: 5%;
-            background-image: url('https://raw.githubusercontent.com/socram98gg-cpu/poemas/f6f8d56b2cdc5ddce9d4a9dc423ee969f18d663e/IMG_5460.jpeg');
-        }
-
-        /* Para que el texto se vea directamente sobre la imagen */
-        .boton-3d span {
-            background-color: rgba(0, 0, 0, 0.4);
+        .boton span {
+            background: rgba(0,0,0,0.5);
             padding: 8px 15px;
-            border-radius: 40px;
-            width: auto;
+            border-radius: 30px;
             backdrop-filter: blur(2px);
         }
 
-        /* --- TEXTOS DE JOB (GRANDES, LEGIBLES) --- */
+        /* Textos */
         .seccion {
             height: 100vh;
             display: flex;
@@ -123,468 +104,267 @@
             justify-content: center;
             padding: 0 10%;
             text-align: center;
-            pointer-events: none;
         }
 
         .cita {
-            font-family: 'Wide Latin', 'Georgia', serif;
-            font-weight: bold;
-            font-size: 4.5rem;
+            font-size: 4rem;
             color: white;
-            text-shadow: 
-                3px 3px 0 #000,
-                6px 6px 0 #000,
-                0 0 40px #ffcc88,
-                0 0 80px #b266ff;
-            max-width: 1400px;
+            text-shadow: 2px 2px 0 #000, 0 0 30px #ffaa88, 0 0 60px #b266ff;
             line-height: 1.5;
-            letter-spacing: 3px;
-            background: none;
-            -webkit-text-stroke: 1px rgba(0,0,0,0.6);
         }
 
         .cita small {
             display: block;
-            margin-top: 70px;
-            font-size: 2rem;
+            font-size: 1.8rem;
             color: #ffdd99;
-            text-shadow: 2px 2px 0 #000, 0 0 40px #ffaa00;
+            margin-top: 40px;
         }
 
-        @media (max-width: 1000px) {
-            .cita { font-size: 3rem; }
-            .boton-3d { width: 130px; height: 130px; font-size: 1rem; }
-        }
-
-        @media (max-width: 700px) {
-            .cita { font-size: 2rem; }
-            .boton-3d { width: 100px; height: 100px; font-size: 0.8rem; }
-            #btn-poemitas { left: 2%; }
-            #btn-prosa { left: 38%; }
-            #btn-otros { right: 2%; }
+        @media (max-width: 800px) {
+            .cita { font-size: 2.5rem; }
+            .boton { width: 110px; height: 110px; font-size: 0.9rem; }
         }
     </style>
 </head>
 <body>
-    <div class="fondo-estrellas" id="fondo-estrellas"></div>
+    <div class="fondo-estrellas" id="fondo"></div>
     <div id="canvas-container"></div>
 
-    <div class="botonera-superior">
-        <a href="#" class="boton-3d" id="btn-poemitas"><span>Poemitas para ti</span></a>
-        <a href="prosa.html" class="boton-3d" id="btn-prosa"><span>Prosa</span></a>
-        <a href="otros.html" class="boton-3d" id="btn-otros"><span>Otros</span></a>
+    <div class="botonera">
+        <a href="#" class="boton" id="btn1"><span>Poemitas</span></a>
+        <a href="prosa.html" class="boton" id="btn2"><span>Prosa</span></a>
+        <a href="otros.html" class="boton" id="btn3"><span>Otros</span></a>
     </div>
 
     <div class="content">
-        <section class="seccion">
-            <div class="cita">¿Podrás tú atar los lazos de las Pléyades,<br>o desatarás las ligaduras de Orión?</div>
-        </section>
-        <section class="seccion">
-            <div class="cita">¿Sacarás tú a su tiempo las constelaciones de los cielos,<br>o guiarás a la Osa Mayor con sus hijos?</div>
-        </section>
-        <section class="seccion">
-            <div class="cita">¿Supiste tú las ordenanzas de los cielos?</div>
-        </section>
-        <section class="seccion">
-            <div class="cita">¿Dispondrás tú de su potestad en la tierra?<br><small>Job 38:31-33 (RVR1960)</small></div>
-        </section>
+        <section class="seccion"><div class="cita">¿Podrás tú atar los lazos de las Pléyades?</div></section>
+        <section class="seccion"><div class="cita">¿Sacarás tú a su tiempo las constelaciones?</div></section>
+        <section class="seccion"><div class="cita">¿Supiste tú las ordenanzas de los cielos?</div></section>
+        <section class="seccion"><div class="cita">¿Dispondrás tú de su potestad?<br><small>Job 38:31-33</small></div></section>
     </div>
 
-    <!-- Three.js y extras -->
     <script type="importmap">
-        {
-            "imports": {
-                "three": "https://unpkg.com/three@0.128.0/build/three.module.js"
-            }
-        }
+        { "imports": { "three": "https://unpkg.com/three@0.128.0/build/three.module.js" } }
     </script>
 
     <script type="module">
         import * as THREE from 'three';
-        import { OrbitControls } from 'https://unpkg.com/three@0.128.0/examples/jsm/controls/OrbitControls.js';
 
-        // --- INICIALIZACIÓN ---
+        // --- CONFIGURACIÓN BÁSICA ---
         const container = document.getElementById('canvas-container');
         const scene = new THREE.Scene();
-        scene.background = null; // transparente para ver fondo CSS
+        scene.background = null; // transparente
 
-        const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 1000);
-        // Punto de partida: cerca del núcleo, desde un lado
-        camera.position.set(5, 2, 8);
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(5, 3, 15); // Posición inicial que debería mostrar la galaxia
         camera.lookAt(0, 0, 0);
 
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        renderer.shadowMap.enabled = false; // no necesitamos sombras
         container.appendChild(renderer.domElement);
 
-        // --- LUCES (para ambiente realista y cálido) ---
-        // Luz principal (central) que simula el brillo del núcleo
-        const coreLight = new THREE.PointLight(0xffaa55, 1.8, 40);
-        coreLight.position.set(0, 0, 0);
-        scene.add(coreLight);
-
-        // Luz ambiental suave
-        const ambientLight = new THREE.AmbientLight(0x404060); // tono azulado tenue
+        // --- LUCES ---
+        const ambientLight = new THREE.AmbientLight(0x404060);
         scene.add(ambientLight);
+        
+        const centerLight = new THREE.PointLight(0xffaa66, 1.5, 30);
+        centerLight.position.set(0, 0, 0);
+        scene.add(centerLight);
 
-        // Luz direccional desde arriba para dar volumen a objetos
-        const dirLight = new THREE.DirectionalLight(0xffffff, 0.5);
-        dirLight.position.set(1, 2, 1);
-        scene.add(dirLight);
+        // --- GENERADOR DE GALAXIA ESPIRAL (MÉTODO ROBUSTO) ---
+        function createGalaxy() {
+            const parameters = {
+                count: 8000,
+                arms: 8,
+                radius: 15,
+                spin: 2.5,
+                randomness: 0.4,
+                coreRadius: 3,
+                insideColor: 0xffaa66,
+                outsideColor: 0x88aaff
+            };
 
-        // --- CREACIÓN DE TEXTURAS BÁSICAS (para meteoritos, lunas, etc.) ---
-        function createRockTexture() {
-            const canvas = document.createElement('canvas');
-            canvas.width = 64;
-            canvas.height = 64;
-            const ctx = canvas.getContext('2d');
-            ctx.fillStyle = '#886644';
-            ctx.fillRect(0, 0, 64, 64);
-            for (let i = 0; i < 50; i++) {
-                ctx.fillStyle = `#${Math.floor(Math.random()*0xaa+0x55).toString(16)}${Math.floor(Math.random()*0x88+0x44).toString(16)}44`;
-                ctx.beginPath();
-                ctx.arc(Math.random()*64, Math.random()*64, Math.random()*4+1, 0, 2*Math.PI);
-                ctx.fill();
+            const geometry = new THREE.BufferGeometry();
+            const positions = new Float32Array(parameters.count * 3);
+            const colors = new Float32Array(parameters.count * 3);
+
+            const colorInside = new THREE.Color(parameters.insideColor);
+            const colorOutside = new THREE.Color(parameters.outsideColor);
+
+            for (let i = 0; i < parameters.count; i++) {
+                // Generar posición en coordenadas polares
+                const r = Math.pow(Math.random(), 1.5) * parameters.radius;
+                
+                // Ángulo base según el brazo
+                const armAngle = (i % parameters.arms) * (Math.PI * 2 / parameters.arms);
+                
+                // Ángulo espiral: cuanto más lejos, más giro
+                const spinAngle = r * parameters.spin;
+                
+                // Aleatoriedad para dar grosor a los brazos
+                const randomAngle = (Math.random() - 0.5) * parameters.randomness * 2;
+                const randomRadius = (Math.random() - 0.5) * 0.5;
+                
+                // Ángulo final
+                const angle = armAngle + spinAngle + randomAngle;
+                
+                // Coordenadas cartesianas
+                const x = Math.cos(angle) * (r + randomRadius);
+                const z = Math.sin(angle) * (r + randomRadius);
+                const y = (Math.random() - 0.5) * 1.5 * (r / 8); // Grosor vertical
+
+                positions[i * 3] = x;
+                positions[i * 3 + 1] = y;
+                positions[i * 3 + 2] = z;
+
+                // Color: mezcla entre interior y exterior
+                const mixFactor = (r - parameters.coreRadius) / (parameters.radius - parameters.coreRadius);
+                const clampedMix = Math.max(0, Math.min(1, mixFactor));
+                
+                const color = colorInside.clone().lerp(colorOutside, clampedMix);
+                
+                // Variación aleatoria
+                color.multiplyScalar(0.8 + 0.4 * Math.random());
+
+                colors[i * 3] = color.r;
+                colors[i * 3 + 1] = color.g;
+                colors[i * 3 + 2] = color.b;
             }
-            return new THREE.CanvasTexture(canvas);
-        }
 
-        function createMoonTexture() {
-            const canvas = document.createElement('canvas');
-            canvas.width = 64;
-            canvas.height = 64;
-            const ctx = canvas.getContext('2d');
-            ctx.fillStyle = '#aaaaaa';
-            ctx.fillRect(0, 0, 64, 64);
-            ctx.fillStyle = '#888888';
-            for (let i = 0; i < 20; i++) {
-                ctx.beginPath();
-                ctx.arc(Math.random()*64, Math.random()*64, Math.random()*6+2, 0, 2*Math.PI);
-                ctx.fill();
-            }
-            return new THREE.CanvasTexture(canvas);
-        }
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
-        function createRingTexture() {
+            // Crear textura circular para estrellas
             const canvas = document.createElement('canvas');
-            canvas.width = 128;
+            canvas.width = 32;
             canvas.height = 32;
             const ctx = canvas.getContext('2d');
-            ctx.fillStyle = '#b0a0c0';
-            ctx.fillRect(0, 0, 128, 32);
-            ctx.fillStyle = '#d0c0e0';
-            for (let i = 0; i < 30; i++) {
-                ctx.fillRect(Math.random()*128, Math.random()*32, 2, 2);
-            }
-            return new THREE.CanvasTexture(canvas);
+            ctx.beginPath();
+            ctx.arc(16, 16, 14, 0, 2 * Math.PI);
+            const grad = ctx.createRadialGradient(16, 16, 0, 16, 16, 14);
+            grad.addColorStop(0, 'rgba(255,255,255,1)');
+            grad.addColorStop(0.5, 'rgba(255,200,100,0.8)');
+            grad.addColorStop(1, 'rgba(255,255,255,0)');
+            ctx.fillStyle = grad;
+            ctx.fill();
+
+            const texture = new THREE.CanvasTexture(canvas);
+
+            const material = new THREE.PointsMaterial({
+                size: 0.2,
+                map: texture,
+                vertexColors: true,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false,
+                sizeAttenuation: true
+            });
+
+            const galaxy = new THREE.Points(geometry, material);
+            return galaxy;
         }
 
-        // --- PARÁMETROS DE LA GALAXIA BASE (8000 estrellas, 8 brazos) ---
-        const starCount = 8000;
-        const arms = 8;
-        const spiralTightness = 4.5;
-        const coreRadius = 2.8;
-        const armLength = 20.0;
-
-        const starGeo = new THREE.BufferGeometry();
-        const positions = new Float32Array(starCount * 3);
-        const colors = new Float32Array(starCount * 3);
-        const sizes = new Float32Array(starCount);
-
-        const coreColor1 = new THREE.Color(0xffaa55);
-        const coreColor2 = new THREE.Color(0xff8833);
-        const armColor1 = new THREE.Color(0x88aaff);
-        const armColor2 = new THREE.Color(0xaa88ff);
-
-        for (let i = 0; i < starCount; i++) {
-            const isCore = Math.random() < 0.18;
-            let r, angle, yOffset;
-            if (isCore) {
-                r = Math.pow(Math.random(), 1.1) * coreRadius;
-                angle = Math.random() * Math.PI * 2;
-                yOffset = (Math.random() - 0.5) * 1.0;
-            } else {
-                const armIdx = Math.floor(Math.random() * arms);
-                const baseAngle = (armIdx / arms) * Math.PI * 2;
-                r = coreRadius + Math.pow(Math.random(), 1.4) * armLength;
-                angle = baseAngle + r * spiralTightness + (Math.random() - 0.5) * 0.3;
-                yOffset = (Math.random() - 0.5) * 2.0 * (r / 12);
-            }
-
-            const x = r * Math.cos(angle);
-            const z = r * Math.sin(angle);
-            const y = yOffset * 1.8;
-
-            positions[i*3] = x;
-            positions[i*3+1] = y;
-            positions[i*3+2] = z;
-
-            let color;
-            if (isCore) {
-                color = coreColor1.clone().lerp(coreColor2, Math.random());
-            } else {
-                const t = (r - coreRadius) / armLength;
-                if (t < 0.4) color = armColor1.clone().lerp(armColor2, Math.random()*0.6);
-                else color = armColor2.clone().lerp(new THREE.Color(0xcc99ff), Math.random()*0.4);
-            }
-            // Aumentar brillo (saturación)
-            color.multiplyScalar(0.9 + 0.4 * Math.random());
-            colors[i*3] = color.r;
-            colors[i*3+1] = color.g;
-            colors[i*3+2] = color.b;
-
-            sizes[i] = isCore ? 0.25 + Math.random()*0.4 : 0.15 + Math.random()*0.25;
-        }
-
-        starGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-        starGeo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-        starGeo.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
-
-        // Textura de estrella brillante
-        const starCanvas = document.createElement('canvas');
-        starCanvas.width = 32;
-        starCanvas.height = 32;
-        const sCtx = starCanvas.getContext('2d');
-        const grad = sCtx.createRadialGradient(16, 16, 0, 16, 16, 16);
-        grad.addColorStop(0, 'rgba(255,255,255,1)');
-        grad.addColorStop(0.5, 'rgba(255,200,100,0.9)');
-        grad.addColorStop(1, 'rgba(255,200,255,0)');
-        sCtx.fillStyle = grad;
-        sCtx.fillRect(0, 0, 32, 32);
-        const starTexture = new THREE.CanvasTexture(starCanvas);
-
-        const starMaterial = new THREE.PointsMaterial({
-            size: 0.35,
-            map: starTexture,
-            vertexColors: true,
-            blending: THREE.AdditiveBlending,
-            depthWrite: false,
-            transparent: true,
-            sizeAttenuation: true,
-            opacity: 0.95
-        });
-
-        const galaxy = new THREE.Points(starGeo, starMaterial);
+        const galaxy = createGalaxy();
         scene.add(galaxy);
 
-        // --- ELEMENTOS EXTRA: NUBES DE GAS (NEBULOSAS) ---
-        function createGasTexture(baseColor) {
+        // --- Añadir algunas nebulosas (sprites) para ambiente ---
+        function createNebulaTexture(color) {
             const canvas = document.createElement('canvas');
             canvas.width = 128;
             canvas.height = 128;
             const ctx = canvas.getContext('2d');
             const grad = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
-            grad.addColorStop(0, `rgba(${baseColor.r*255},${baseColor.g*255},${baseColor.b*255},0.7)`);
-            grad.addColorStop(0.6, `rgba(${baseColor.r*255},${baseColor.g*255},${baseColor.b*255},0.2)`);
+            grad.addColorStop(0, `rgba(${color.r*255},${color.g*255},${color.b*255},0.6)`);
+            grad.addColorStop(0.7, `rgba(${color.r*255},${color.g*255},${color.b*255},0.1)`);
             grad.addColorStop(1, 'rgba(0,0,0,0)');
             ctx.fillStyle = grad;
             ctx.fillRect(0, 0, 128, 128);
             return new THREE.CanvasTexture(canvas);
         }
 
-        const gasColors = [
-            new THREE.Color(0xaa88ff), // morado
-            new THREE.Color(0x88aaff), // azul
-            new THREE.Color(0xffaacc)  // rosado
-        ];
-
-        for (let g = 0; g < 25; g++) {
-            const color = gasColors[Math.floor(Math.random() * gasColors.length)];
-            const texture = createGasTexture(color);
-            const material = new THREE.SpriteMaterial({ 
-                map: texture, 
-                blending: THREE.AdditiveBlending, 
-                depthWrite: false,
+        for (let i = 0; i < 15; i++) {
+            const hue = 0.7 + Math.random() * 0.3; // azul a morado
+            const color = new THREE.Color().setHSL(hue, 0.8, 0.5);
+            const material = new THREE.SpriteMaterial({
+                map: createNebulaTexture(color),
+                blending: THREE.AdditiveBlending,
                 transparent: true,
-                opacity: 0.25 + Math.random()*0.2
+                opacity: 0.3,
+                depthWrite: false
             });
             const sprite = new THREE.Sprite(material);
             
-            // Posicionar en los brazos
-            const armIdx = Math.floor(Math.random() * arms);
-            const baseAngle = (armIdx / arms) * Math.PI * 2;
-            const r = coreRadius + 3 + Math.random() * (armLength - 2);
-            const angle = baseAngle + r * spiralTightness * 0.8 + (Math.random()-0.5)*1.5;
-            const x = r * Math.cos(angle);
-            const z = r * Math.sin(angle);
-            const y = (Math.random() - 0.5) * 3.0;
+            // Posicionar alrededor de la galaxia
+            const r = 8 + Math.random() * 10;
+            const angle = Math.random() * Math.PI * 2;
+            const height = (Math.random() - 0.5) * 5;
             
-            sprite.position.set(x, y, z);
-            sprite.scale.set(3 + Math.random()*4, 3 + Math.random()*4, 1);
+            sprite.position.set(
+                Math.cos(angle) * r,
+                height,
+                Math.sin(angle) * r
+            );
+            
+            sprite.scale.set(4 + Math.random()*4, 4 + Math.random()*4, 1);
             scene.add(sprite);
         }
 
-        // --- METEORITOS (8 objetos) ---
-        const rockTex = createRockTexture();
-        const rockMat = new THREE.MeshStandardMaterial({ map: rockTex, roughness: 0.8, metalness: 0.1, emissive: new THREE.Color(0x221100) });
-        for (let m = 0; m < 8; m++) {
-            const size = 0.3 + Math.random()*0.4;
-            const geom = new THREE.DodecahedronGeometry(size, 0);
-            const meteor = new THREE.Mesh(geom, rockMat);
-            
-            const armIdx = Math.floor(Math.random() * arms);
-            const baseAngle = (armIdx / arms) * Math.PI * 2;
-            const r = coreRadius + 2 + Math.random() * (armLength - 4);
-            const angle = baseAngle + r * spiralTightness + (Math.random()-0.5)*0.8;
-            const x = r * Math.cos(angle);
-            const z = r * Math.sin(angle);
-            const y = (Math.random() - 0.5) * 2.5;
-            
-            meteor.position.set(x, y, z);
-            meteor.rotation.set(Math.random()*Math.PI, Math.random()*Math.PI, Math.random()*Math.PI);
-            scene.add(meteor);
-        }
+        // --- CONTROL DE SCROLL (cámara se aleja y eleva) ---
+        const startPos = new THREE.Vector3(5, 3, 15);
+        const endPos = new THREE.Vector3(0, 12, 35);
+        const targetPos = startPos.clone();
 
-        // --- LUNAS (4 objetos) ---
-        const moonTex = createMoonTexture();
-        const moonMat = new THREE.MeshStandardMaterial({ map: moonTex, roughness: 0.6, emissive: new THREE.Color(0x111122) });
-        for (let l = 0; l < 4; l++) {
-            const size = 0.4 + Math.random()*0.3;
-            const geom = new THREE.SphereGeometry(size, 16, 16);
-            const moon = new THREE.Mesh(geom, moonMat);
-            
-            const angle = Math.random() * Math.PI * 2;
-            const r = coreRadius + 5 + Math.random()*8;
-            const x = r * Math.cos(angle);
-            const z = r * Math.sin(angle);
-            const y = (Math.random() - 0.5) * 2.0;
-            
-            moon.position.set(x, y, z);
-            scene.add(moon);
-        }
-
-        // --- ANILLOS (2 objetos tipo Saturno) ---
-        const ringTex = createRingTexture();
-        const ringMat = new THREE.MeshStandardMaterial({ map: ringTex, side: THREE.DoubleSide, transparent: true, opacity: 0.5, emissive: new THREE.Color(0x332244) });
-        for (let rn = 0; rn < 2; rn++) {
-            const geom = new THREE.TorusGeometry(1.2 + rn*0.3, 0.15, 16, 64);
-            const ring = new THREE.Mesh(geom, ringMat);
-            
-            const angle = Math.random() * Math.PI * 2;
-            const dist = coreRadius + 8 + rn*3;
-            const x = dist * Math.cos(angle);
-            const z = dist * Math.sin(angle);
-            const y = (Math.random() - 0.5) * 1.5;
-            
-            ring.position.set(x, y, z);
-            ring.rotation.x = Math.PI/2 + (Math.random()-0.5)*0.5;
-            ring.rotation.z = angle;
-            scene.add(ring);
-        }
-
-        // --- PEQUEÑOS PLANETAS CON ANILLO (2 unidades) ---
-        for (let p = 0; p < 2; p++) {
-            const coreGeom = new THREE.SphereGeometry(0.5, 16, 16);
-            const coreMat = new THREE.MeshStandardMaterial({ color: 0xccaa88, emissive: new THREE.Color(0x221100) });
-            const planet = new THREE.Mesh(coreGeom, coreMat);
-            
-            const angle = Math.random() * Math.PI * 2;
-            const dist = coreRadius + 10 + p*2;
-            const x = dist * Math.cos(angle);
-            const z = dist * Math.sin(angle);
-            const y = (Math.random() - 0.5) * 1.0;
-            planet.position.set(x, y, z);
-            scene.add(planet);
-            
-            const ringGeom = new THREE.TorusGeometry(0.9, 0.1, 8, 32);
-            const ringMat2 = new THREE.MeshStandardMaterial({ color: 0xc0b0a0, side: THREE.DoubleSide, transparent: true, opacity: 0.4 });
-            const ring2 = new THREE.Mesh(ringGeom, ringMat2);
-            ring2.rotation.x = Math.PI/2;
-            ring2.rotation.z = 0.3;
-            planet.add(ring2);
-        }
-
-        // --- ESTRELLAS DE FONDO (lejanas) ---
-        const bgGeo = new THREE.BufferGeometry();
-        const bgPos = [];
-        for (let i = 0; i < 2000; i++) {
-            const r = 50 + Math.random()*100;
-            const theta = Math.random()*Math.PI*2;
-            const phi = (Math.random()-0.5)*Math.PI;
-            const x = r * Math.cos(theta) * Math.cos(phi);
-            const y = r * Math.sin(phi) * 0.6;
-            const z = r * Math.sin(theta) * Math.cos(phi);
-            bgPos.push(x, y, z);
-        }
-        bgGeo.setAttribute('position', new THREE.Float32BufferAttribute(bgPos, 3));
-        const bgMat = new THREE.PointsMaterial({ color: 0x557788, size: 0.4, sizeAttenuation: false });
-        const bgStars = new THREE.Points(bgGeo, bgMat);
-        scene.add(bgStars);
-
-        // --- CONTROL DE CÁMARA CON SCROLL (trayectoria mixta) ---
-        let targetPos = new THREE.Vector3(5, 2, 8); // inicio
-        const farPos = new THREE.Vector3(0, 15, 45); // lejos (vista 20°)
-        const nearPos = new THREE.Vector3(5, 2, 8); // cerca
-
-        const fondoDiv = document.getElementById('fondo-estrellas');
+        const fondo = document.getElementById('fondo');
 
         window.addEventListener('scroll', () => {
-            const scrollY = window.scrollY;
-            const maxScroll = document.body.scrollHeight - window.innerHeight;
-            const progress = Math.min(1, scrollY / maxScroll);
+            const progress = Math.min(1, window.scrollY / (document.body.scrollHeight - window.innerHeight));
             
-            // Interpolación lineal de la posición
-            targetPos.x = nearPos.x + (farPos.x - nearPos.x) * progress;
-            targetPos.y = nearPos.y + (farPos.y - nearPos.y) * progress;
-            targetPos.z = nearPos.z + (farPos.z - nearPos.z) * progress;
+            // Interpolar posición de cámara
+            targetPos.x = startPos.x + (endPos.x - startPos.x) * progress;
+            targetPos.y = startPos.y + (endPos.y - startPos.y) * progress;
+            targetPos.z = startPos.z + (endPos.z - startPos.z) * progress;
             
-            // Efecto en el fondo CSS
-            if (fondoDiv) {
-                const scale = 1 + progress * 0.4;
-                fondoDiv.style.transform = `scale(${scale})`;
+            // Efecto en fondo
+            if (fondo) {
+                fondo.style.transform = `scale(${1 + progress * 0.3})`;
             }
         });
 
         // --- ANIMACIÓN ---
+        let time = 0;
         function animate() {
             requestAnimationFrame(animate);
+            time += 0.005;
 
             // Movimiento suave de cámara
             camera.position.lerp(targetPos, 0.05);
-            
-            // Rotación de la galaxia y elementos
-            galaxy.rotation.y += 0.006;
-            
-            // Mover objetos individuales (meteoritos, etc.) de forma diferencial
-            scene.children.forEach(obj => {
-                if (obj.isMesh) {
-                    // Rotación aleatoria muy lenta para dar sensación de movimiento
-                    obj.rotation.y += 0.001;
-                    obj.rotation.x += 0.0005;
-                }
-                if (obj.isSprite && obj.material.emissive === undefined) { // nebulosas
-                    obj.rotation.z += 0.0005;
-                }
-            });
-
-            bgStars.rotation.y -= 0.0002;
-
             camera.lookAt(0, 1, 0);
+
+            // Rotación de la galaxia
+            galaxy.rotation.y += 0.002;
+            galaxy.rotation.x = 0.1; // ligera inclinación
+
             renderer.render(scene, camera);
         }
 
         animate();
 
+        // --- RESIZE ---
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
         });
 
-        // --- CONTRASEÑA (laura) ---
-        document.getElementById('btn-poemitas').addEventListener('click', (e) => {
+        // --- CONTRASEÑA ---
+        document.getElementById('btn1').addEventListener('click', (e) => {
             e.preventDefault();
-            const pwd = prompt('Contraseña para poemitas:');
-            if (pwd === 'laura') {
+            if (prompt('Contraseña:') === 'laura') {
                 window.location.href = 'poemitas.html';
             } else {
-                alert('Contraseña incorrecta');
+                alert('Incorrecta');
             }
         });
-
-        // Los otros botones tienen href normal (prosa.html, otros.html)
     </script>
 </body>
 </html>
