@@ -364,9 +364,9 @@
         scene.add(meteors);
 
         // --- CONTROL DE SCROLL (página de inicio) ---
-        let targetCamPos = new THREE.Vector3(3, 1, 2);
-        const farPos = new THREE.Vector3(0, 1, 35); // AHORA HORIZONTAL (y=2)
-        const nearPos = new THREE.Vector3(3, 0, 2);
+        let targetCamPos = new THREE.Vector3(0, 0, 0);
+const farPos = new THREE.Vector3(0, 0, 40);
+const nearPos = new THREE.Vector3(0, 0, 0);
         
         const fondoDiv = document.getElementById('fondo-estrellas');
         const contenidoInicio = document.getElementById('contenido-inicio');
@@ -402,88 +402,93 @@
         let currentPage = 'inicio';
         
         function showPage(pageId) {
-            Object.values(pages).forEach(p => p.classList.remove('active'));
-            pages[pageId].classList.add('active');
-            currentPage = pageId;
-            
-            if (pageId === 'inicio') {
-                contenidoInicio.scrollTop = 0;
-                targetCamPos.copy(nearPos);
-            } else {
-                targetCamPos.set(0, 2, 20); // Vista por defecto para otras páginas
-            }
-        }
+    Object.values(pages).forEach(p => p.classList.remove('active'));
+    pages[pageId].classList.add('active');
+    currentPage = pageId;
+    
+    if (pageId === 'inicio') {
+        contenidoInicio.scrollTop = 0;
+        targetCamPos.copy(nearPos);
+    } else {
+        targetCamPos.set(0, 2, 20); // Vista por defecto para otras páginas
+        // IMPORTANTE: Si las otras páginas tienen scroll, resetea su posición aquí
+        const otrasPaginas = document.querySelectorAll('#page-poemitas .contenido-pagina, #page-prosa .contenido-pagina, #page-otros .contenido-pagina');
+        otrasPaginas.forEach(p => p.scrollTop = 0);
+    }
+}
 
         // --- TRANSICIÓN CON HIPERESPACIO (MEJORADA) ---
         async function transitionToPage(pageId, passwordNeeded = false) {
-            if (passwordNeeded) {
-                const pwd = prompt('Contraseña para Poemitas:');
-                if (pwd !== 'laura') {
-                    alert('Contraseña incorrecta');
-                    return;
-                }
-            }
-
-            document.body.classList.add('transition');
-            
-            // 1. Acercar cámara al botón
-            const targetBtn = pageId === 'poemitas' ? btn1 : (pageId === 'prosa' ? btn2 : btn3);
-            const btnRect = targetBtn.getBoundingClientRect();
-            const targetPos = new THREE.Vector3(
-                (btnRect.left - window.innerWidth/2) * 0.01,
-                -(btnRect.top - window.innerHeight/2) * 0.01 + 2,
-                2
-            );
-            
-            const startPos = camera.position.clone();
-            const duration = 800;
-            const startTime = Date.now();
-            
-            while (Date.now() - startTime < duration) {
-                const t = (Date.now() - startTime) / duration;
-                camera.position.lerpVectors(startPos, targetPos, t);
-                camera.lookAt(0, 0, 0);
-                await new Promise(r => requestAnimationFrame(r));
-            }
-            
-            // 2. MOSTRAR LA NUEVA PÁGINA (AHORA SÍ, DURANTE EL EFECTO)
-            showPage(pageId);
-            
-            // 3. Efecto hiperespacio
-            const positions = galaxy.geometry.attributes.position.array;
-            const originalPos = positions.slice();
-            const stretchDuration = 800;
-            const stretchStart = Date.now();
-            
-            while (Date.now() - stretchStart < stretchDuration) {
-                const t = (Date.now() - stretchStart) / stretchDuration;
-                for (let i = 0; i < positions.length; i+=3) {
-                    positions[i+2] = originalPos[i+2] * (1 + t * 10);
-                }
-                galaxy.geometry.attributes.position.needsUpdate = true;
-                await new Promise(r => requestAnimationFrame(r));
-            }
-            
-            // 4. Restaurar posiciones
-            const restoreStart = Date.now();
-            while (Date.now() - restoreStart < 500) {
-                const t = (Date.now() - restoreStart) / 500;
-                for (let i = 0; i < positions.length; i+=3) {
-                    positions[i+2] = originalPos[i+2] * (1 + (1-t) * 10);
-                }
-                galaxy.geometry.attributes.position.needsUpdate = true;
-                await new Promise(r => requestAnimationFrame(r));
-            }
-            
-            for (let i = 0; i < positions.length; i+=3) {
-                positions[i] = originalPos[i];
-                positions[i+1] = originalPos[i+1];
-                positions[i+2] = originalPos[i+2];
-            }
-            galaxy.geometry.attributes.position.needsUpdate = true;
-            
-            document.body.classList.remove('transition');
+    if (passwordNeeded) {
+        const pwd = prompt('Contraseña para Poemitas:');
+        if (pwd !== 'laura') {
+            alert('Contraseña incorrecta');
+            return;
         }
+    }
+
+    document.body.classList.add('transition');
+    
+    // 1. Acercar cámara al botón
+    const targetBtn = pageId === 'poemitas' ? btn1 : (pageId === 'prosa' ? btn2 : btn3);
+    const btnRect = targetBtn.getBoundingClientRect();
+    const targetPos = new THREE.Vector3(
+        (btnRect.left - window.innerWidth/2) * 0.01,
+        -(btnRect.top - window.innerHeight/2) * 0.01 + 2,
+        2
+    );
+    
+    const startPos = camera.position.clone();
+    const duration = 800;
+    const startTime = Date.now();
+    
+    while (Date.now() - startTime < duration) {
+        const t = (Date.now() - startTime) / duration;
+        camera.position.lerpVectors(startPos, targetPos, t);
+        camera.lookAt(0, 0, 0);
+        await new Promise(r => requestAnimationFrame(r));
+    }
+    
+    // 2. MOSTRAR LA NUEVA PÁGINA (FORZAR CAMBIO)
+    showPage(pageId);
+    
+    // 3. EFECTO HIPERESPACIO (opcional, puedes mantenerlo)
+    const positions = galaxy.geometry.attributes.position.array;
+    const originalPos = positions.slice();
+    const stretchDuration = 800;
+    const stretchStart = Date.now();
+    
+    while (Date.now() - stretchStart < stretchDuration) {
+        const t = (Date.now() - stretchStart) / stretchDuration;
+        for (let i = 0; i < positions.length; i+=3) {
+            positions[i+2] = originalPos[i+2] * (1 + t * 10);
+        }
+        galaxy.geometry.attributes.position.needsUpdate = true;
+        await new Promise(r => requestAnimationFrame(r));
+    }
+    
+    // 4. Restaurar posiciones
+    const restoreStart = Date.now();
+    while (Date.now() - restoreStart < 500) {
+        const t = (Date.now() - restoreStart) / 500;
+        for (let i = 0; i < positions.length; i+=3) {
+            positions[i+2] = originalPos[i+2] * (1 + (1-t) * 10);
+        }
+        galaxy.geometry.attributes.position.needsUpdate = true;
+        await new Promise(r => requestAnimationFrame(r));
+    }
+    
+    for (let i = 0; i < positions.length; i+=3) {
+        positions[i] = originalPos[i];
+        positions[i+1] = originalPos[i+1];
+        positions[i+2] = originalPos[i+2];
+    }
+    galaxy.geometry.attributes.position.needsUpdate = true;
+    
+    // 5. ASEGURAR QUE LA PÁGINA ESTÁ ACTIVA Y EL SCROLL RESETEADO
+    // (esto ya lo hace showPage, pero reforzamos)
+    document.body.classList.remove('transition');
+}
 
         // --- EVENTOS DE BOTONES ---
         document.getElementById('btn1').addEventListener('click', () => transitionToPage('poemitas', true));
