@@ -335,59 +335,132 @@ scene.add(coreLight);
 
 // --- GENERACIÓN DE GALAXIA ---
 function createGalaxy() {
-    const count = 16000;
-    const arms = 8;
-    const radius = 18;
-    const spin = 2.2;
-    const randomness = 0.65;
-    const coreRadius = 3.5;
+    const count = 25000;        // Más estrellas para mayor densidad
+    const arms = 8;             // 8 brazos espirales
+    const radius = 28;          // Mayor diámetro
+    const spin = 2.8;           // Brazos más definidos
+    const randomness = 0.45;    // Menos dispersión
+    const coreRadius = 5.5;     // Núcleo más grande para efecto de fuego
 
     const geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(count * 3);
     const colors = new Float32Array(count * 3);
+    const sizes = new Float32Array(count); // Para variar tamaños
 
-    const colorInside = new THREE.Color(0xff6633);
-    const colorOutside = new THREE.Color(0x44aaff);
+    // Colores más cálidos para las estrellas
+    const colorCore = new THREE.Color(0xff3300);      // Rojo intenso/naranja para el centro
+    const colorMid = new THREE.Color(0xff8844);       // Naranja dorado para zona media
+    const colorOuter = new THREE.Color(0xffaa66);     // Amarillo cálido para los brazos
+    
+    // Colores para las estrellas exteriores (más tenues pero cálidas)
+    const colorFar = new THREE.Color(0xffcc88);       // Amarillo pálido
 
     for (let i = 0; i < count; i++) {
-        const r = Math.pow(Math.random(), 1.2) * radius;
+        // Distribución radial con mayor densidad en el centro
+        const r = Math.pow(Math.random(), 1.5) * radius;
         const armAngle = (i % arms) * (Math.PI * 2 / arms);
         const spinAngle = r * spin;
-        const randomAngle = (Math.random() - 0.5) * randomness * 1.5;
-        const randomRadial = (Math.random() - 0.5) * 0.8;
+        const randomAngle = (Math.random() - 0.5) * randomness * 1.2;
+        const randomRadial = (Math.random() - 0.5) * 0.6;
         
         const angle = armAngle + spinAngle + randomAngle;
         
         const x = Math.cos(angle) * (r + randomRadial);
         const z = Math.sin(angle) * (r + randomRadial);
-        const y = (Math.random() - 0.5) * 2.5 * (r / 10);
-
+        // Altura variable: más densa en el centro, se aplana hacia los bordes
+        const y = (Math.random() - 0.5) * 3.5 * Math.pow(1 - (r / radius), 0.8);
+        
         positions[i*3] = x;
         positions[i*3+1] = y;
         positions[i*3+2] = z;
-
-        const mixFactor = Math.max(0, Math.min(1, (r - coreRadius) / (radius - coreRadius)));
-        const color = colorInside.clone().lerp(colorOutside, mixFactor);
-        color.multiplyScalar(0.7 + 0.5 * Math.random());
         
-        colors[i*3] = color.r;
-        colors[i*3+1] = color.g;
-        colors[i*3+2] = color.b;
+        // --- COLOR SEGÚN DISTANCIA AL CENTRO ---
+        let color;
+        let intensity = 1.0;
+        
+        if (r < coreRadius) {
+            // NÚCLEO: rojizo/marrón muy intenso
+            const t = r / coreRadius; // 0 en centro, 1 en borde del núcleo
+            color = colorCore.clone();
+            // Variación aleatoria para efecto de plasma
+            const variation = 0.7 + Math.random() * 0.6;
+            color.multiplyScalar(variation);
+            intensity = 1.2 + Math.random() * 0.8; // Más brillante
+        } 
+        else if (r < coreRadius * 2) {
+            // ZONA DE TRANSICIÓN: naranja intenso a dorado
+            const t = (r - coreRadius) / coreRadius;
+            color = colorCore.clone().lerp(colorMid, t);
+            const variation = 0.8 + Math.random() * 0.5;
+            color.multiplyScalar(variation);
+            intensity = 1.0 + Math.random() * 0.6;
+        }
+        else if (r < radius * 0.6) {
+            // ZONA MEDIA: naranja dorado
+            const t = (r - coreRadius * 2) / (radius * 0.6 - coreRadius * 2);
+            color = colorMid.clone().lerp(colorOuter, t);
+            const variation = 0.9 + Math.random() * 0.4;
+            color.multiplyScalar(variation);
+            intensity = 0.9 + Math.random() * 0.5;
+        }
+        else {
+            // BRAZOS EXTERIORES: amarillo cálido, ligeramente más tenue
+            const t = (r - radius * 0.6) / (radius - radius * 0.6);
+            color = colorOuter.clone().lerp(colorFar, t);
+            const variation = 0.8 + Math.random() * 0.5;
+            color.multiplyScalar(variation);
+            intensity = 0.7 + Math.random() * 0.5;
+        }
+        
+        // Añadir un toque anaranjado adicional aleatorio para variación
+        color.r += Math.random() * 0.15;
+        color.g += Math.random() * 0.1;
+        
+        colors[i*3] = Math.min(1.0, color.r);
+        colors[i*3+1] = Math.min(1.0, color.g * 0.9); // Reduce un poco el verde para tono más cálido
+        colors[i*3+2] = Math.min(1.0, color.b * 0.6); // Reduce azul para mantener calidez
+        
+        // Tamaño variable según intensidad y distancia
+        let size = 0.12;
+        if (r < coreRadius) {
+            size = 0.28 + Math.random() * 0.12; // Estrellas centrales más grandes
+        } else if (r < radius * 0.4) {
+            size = 0.2 + Math.random() * 0.1;
+        } else {
+            size = 0.12 + Math.random() * 0.08;
+        }
+        sizes[i] = size * intensity;
     }
 
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
     geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
 
+    // Textura para las estrellas con glow (resplandor)
     const canvas = document.createElement('canvas');
-    canvas.width = 32;
-    canvas.height = 32;
+    canvas.width = 64;
+    canvas.height = 64;
     const ctx = canvas.getContext('2d');
-    const grad = ctx.createRadialGradient(16, 16, 0, 16, 16, 16);
-    grad.addColorStop(0, 'rgba(255,255,255,1)');
-    grad.addColorStop(0.5, 'rgba(180,180,255,0.8)');
-    grad.addColorStop(1, 'rgba(255,255,255,0)');
+    
+    // Crear un gradiente radial para efecto de estrella con halo
+    const centerX = 32;
+    const centerY = 32;
+    const grad = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 32);
+    grad.addColorStop(0, 'rgba(255, 200, 100, 1)');   // Núcleo amarillo intenso
+    grad.addColorStop(0.2, 'rgba(255, 150, 50, 0.9)'); // Naranja
+    grad.addColorStop(0.4, 'rgba(255, 100, 0, 0.6)');  // Rojo anaranjado
+    grad.addColorStop(0.7, 'rgba(255, 80, 0, 0.2)');   // Halo tenue
+    grad.addColorStop(1, 'rgba(255, 50, 0, 0)');       // Transparente
+    
     ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, 32, 32);
+    ctx.fillRect(0, 0, 64, 64);
+    
+    // Añadir un pequeño núcleo brillante
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, 6, 0, 2 * Math.PI);
+    ctx.fillStyle = 'rgba(255, 220, 150, 1)';
+    ctx.fill();
+    
     const texture = new THREE.CanvasTexture(canvas);
 
     const material = new THREE.PointsMaterial({
@@ -400,11 +473,144 @@ function createGalaxy() {
         sizeAttenuation: true
     });
 
-    return new THREE.Points(geometry, material);
+    const galaxyPoints = new THREE.Points(geometry, material);
+    
+    return galaxyPoints;
 }
 
+// --- NUBES DE GAS (efecto de nebulosa) ---
+function createNebulae() {
+    const nebulaGroup = new THREE.Group();
+    
+    // Configuración de varias nubes de gas alrededor del centro
+    const nebulaCount = 12;
+    const colorsNebula = [
+        new THREE.Color(0xff4400), // naranja intenso
+        new THREE.Color(0xff6622), // naranja-rojizo
+        new THREE.Color(0xff5533), // rojo anaranjado
+        new THREE.Color(0xff7733), // ámbar
+        new THREE.Color(0xff8844)  // naranja dorado
+    ];
+    
+    for (let n = 0; n < nebulaCount; n++) {
+        // Crear una nube de partículas para cada nebulosa
+        const particleCount = 200 + Math.floor(Math.random() * 300);
+        const nebulaGeometry = new THREE.BufferGeometry();
+        const positionsNebula = new Float32Array(particleCount * 3);
+        const colorsNebulaArray = new Float32Array(particleCount * 3);
+        
+        // Posición orbital de la nebulosa (en espiral)
+        const angleOffset = (n / nebulaCount) * Math.PI * 2;
+        const radiusNebula = 6 + Math.random() * 12; // entre 6 y 18 unidades del centro
+        const yOffset = (Math.random() - 0.5) * 3.5;
+        
+        const centerX = Math.cos(angleOffset) * radiusNebula;
+        const centerZ = Math.sin(angleOffset) * radiusNebula;
+        
+        // Color base para esta nebulosa
+        const baseColor = colorsNebula[Math.floor(Math.random() * colorsNebula.length)];
+        
+        for (let i = 0; i < particleCount; i++) {
+            // Distribución en forma de nube irregular
+            const spreadX = (Math.random() - 0.5) * 3.5;
+            const spreadY = (Math.random() - 0.5) * 2.0;
+            const spreadZ = (Math.random() - 0.5) * 3.5;
+            
+            positionsNebula[i*3] = centerX + spreadX;
+            positionsNebula[i*3+1] = yOffset + spreadY;
+            positionsNebula[i*3+2] = centerZ + spreadZ;
+            
+            // Color con variación de intensidad
+            const intensity = 0.3 + Math.random() * 0.7;
+            const color = baseColor.clone().multiplyScalar(intensity);
+            
+            colorsNebulaArray[i*3] = color.r;
+            colorsNebulaArray[i*3+1] = color.g * 0.7; // menos verde para tono más rojizo
+            colorsNebulaArray[i*3+2] = color.b * 0.4; // muy poco azul
+        }
+        
+        nebulaGeometry.setAttribute('position', new THREE.BufferAttribute(positionsNebula, 3));
+        nebulaGeometry.setAttribute('color', new THREE.BufferAttribute(colorsNebulaArray, 3));
+        
+        // Textura suave para las nubes
+        const cloudCanvas = document.createElement('canvas');
+        cloudCanvas.width = 32;
+        cloudCanvas.height = 32;
+        const cloudCtx = cloudCanvas.getContext('2d');
+        const cloudGrad = cloudCtx.createRadialGradient(16, 16, 0, 16, 16, 16);
+        cloudGrad.addColorStop(0, 'rgba(255, 100, 0, 0.9)');
+        cloudGrad.addColorStop(0.5, 'rgba(255, 60, 0, 0.5)');
+        cloudGrad.addColorStop(1, 'rgba(255, 30, 0, 0)');
+        cloudCtx.fillStyle = cloudGrad;
+        cloudCtx.fillRect(0, 0, 32, 32);
+        const cloudTexture = new THREE.CanvasTexture(cloudCanvas);
+        
+        const nebulaMaterial = new THREE.PointsMaterial({
+            size: 0.35,
+            map: cloudTexture,
+            vertexColors: true,
+            blending: THREE.AdditiveBlending,
+            transparent: true,
+            opacity: 0.6,
+            depthWrite: false
+        });
+        
+        const nebulaPoints = new THREE.Points(nebulaGeometry, nebulaMaterial);
+        nebulaGroup.add(nebulaPoints);
+    }
+    
+    // Añadir una gran nube central (nebulosa del núcleo)
+    const coreNebulaCount = 800;
+    const coreNebulaGeometry = new THREE.BufferGeometry();
+    const corePositions = new Float32Array(coreNebulaCount * 3);
+    const coreColors = new Float32Array(coreNebulaCount * 3);
+    
+    for (let i = 0; i < coreNebulaCount; i++) {
+        // Distribución esférica alrededor del centro
+        const radiusCore = Math.pow(Math.random(), 1.5) * 6;
+        const theta = Math.random() * Math.PI * 2;
+        const phi = Math.acos(2 * Math.random() - 1);
+        
+        const x = radiusCore * Math.sin(phi) * Math.cos(theta);
+        const y = radiusCore * Math.sin(phi) * Math.sin(theta) * 0.6; // achatado
+        const z = radiusCore * Math.cos(phi);
+        
+        corePositions[i*3] = x;
+        corePositions[i*3+1] = y;
+        corePositions[i*3+2] = z;
+        
+        // Color rojizo intenso para el núcleo
+        const intensity = 0.5 + Math.random() * 0.8;
+        coreColors[i*3] = 0.9 * intensity;
+        coreColors[i*3+1] = 0.4 * intensity;
+        coreColors[i*3+2] = 0.1 * intensity;
+    }
+    
+    coreNebulaGeometry.setAttribute('position', new THREE.BufferAttribute(corePositions, 3));
+    coreNebulaGeometry.setAttribute('color', new THREE.BufferAttribute(coreColors, 3));
+    
+    const coreNebulaMaterial = new THREE.PointsMaterial({
+        size: 0.45,
+        vertexColors: true,
+        blending: THREE.AdditiveBlending,
+        transparent: true,
+        opacity: 0.7,
+        depthWrite: false
+    });
+    
+    const coreNebula = new THREE.Points(coreNebulaGeometry, coreNebulaMaterial);
+    nebulaGroup.add(coreNebula);
+    
+    return nebulaGroup;
+}
+
+// Reemplaza tu createGalaxy actual con la nueva función
 const galaxy = createGalaxy();
 scene.add(galaxy);
+
+// Añade las nubes de gas
+const nebulae = createNebulae();
+scene.add(nebulae);
 
 // --- METEOROS ---
 const meteorGeo = new THREE.BufferGeometry();
