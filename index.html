@@ -157,8 +157,6 @@
             color: #ffdd99;
             margin-top: 40px;
         }
-        /* Página de poemitas (placeholder) */
-      
         /* Efecto de transición */
         body.transition * {
             pointer-events: none !important;
@@ -167,7 +165,7 @@
             .cita { font-size: 2.5rem; }
             .boton { width: 110px; height: 110px; font-size: 0.9rem; }
         }
-        /* ===== NUEVOS ESTILOS PARA LA HISTORIA ===== */
+        /* ===== ESTILOS MEJORADOS PARA LA HISTORIA ===== */
         #ver-historia {
             position: fixed;
             bottom: 30px;
@@ -207,20 +205,26 @@
         }
         #story-text {
             pointer-events: auto;
-            background: rgba(0,0,0,0.7);
             color: white;
-            padding: 30px;
-            border-radius: 20px;
-            max-width: 700px;
-            font-family: 'Georgia', serif;
-            font-size: 1.5rem;
-            line-height: 1.6;
-            text-shadow: 0 0 20px cyan;
-            border: 1px solid rgba(255,255,255,0.3);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 0 50px rgba(0,255,255,0.3);
+            padding: 0;
+            max-width: 90%;
+            font-family: 'Wide Latin', 'Georgia', serif;
+            font-size: 4rem;
+            line-height: 1.5;
+            text-shadow: 2px 2px 0 #000, 0 0 40px #ffaa88, 0 0 80px #b266ff;
             white-space: pre-line;
             text-align: center;
+            background: none;
+            border: none;
+            backdrop-filter: none;
+            box-shadow: none;
+            position: relative;
+            z-index: 310;
+            animation: aparecer 1s ease-out;
+        }
+        @keyframes aparecer {
+            0% { opacity: 0; filter: blur(10px); }
+            100% { opacity: 1; filter: blur(0); }
         }
         #story-controls {
             pointer-events: auto;
@@ -269,7 +273,7 @@
     <button id="modo-meditacion">🌌 Modo Meditación</button>
 
     <!-- Sistema de páginas (SPA) -->
-<div id="pages">
+    <div id="pages">
         <!-- Página de inicio (con textos de Job) -->
         <div class="page active" id="page-inicio">
             <div class="contenido-pagina" id="contenido-inicio">
@@ -278,37 +282,34 @@
                 <section class="seccion"><div class="cita">¿Supiste tú las ordenanzas de los cielos?</div></section>
                 <section class="seccion"><div class="cita">¿Dispondrás tú de su potestad?<br><small>Job 38:31-33</small></div></section>
             </div>
-        </div> <!-- cierra page-inicio -->
-    </div> <!-- cierra pages -->
+        </div>
+    </div>
 
     <!-- Scripts -->
- <script type="importmap">
-    { 
-        "imports": { 
-            "three": "https://unpkg.com/three@0.128.0/build/three.module.js",
-            "gsap": "https://unpkg.com/gsap@3.12.5/index.js"
-        } 
-    }
-</script>
+    <script type="importmap">
+        { 
+            "imports": { 
+                "three": "https://unpkg.com/three@0.128.0/build/three.module.js",
+                "gsap": "https://unpkg.com/gsap@3.12.5/index.js"
+            } 
+        }
+    </script>
 
     <script type="module">
         import * as THREE from 'three';
+        import gsap from 'gsap';
 
         // Detectar cuando se vuelve a la página con el botón atrás
-window.addEventListener('pageshow', function(event) {
-    // Si la página se cargó desde el caché (bfcache)
-    if (event.persisted) {
-        // Eliminar cualquier rastro de la transición anterior
-        const oldZoomBtn = document.querySelector('div[style*="z-index: 1000"]');
-        if (oldZoomBtn) oldZoomBtn.remove();
-        document.body.classList.remove('transition');
-        
-        // Asegurar que la página de inicio esté visible
-        if (pages && pages.inicio) {
-            pages.inicio.classList.add('active');
-        }
-    }
-});
+        window.addEventListener('pageshow', function(event) {
+            if (event.persisted) {
+                const oldZoomBtn = document.querySelector('div[style*="z-index: 1000"]');
+                if (oldZoomBtn) oldZoomBtn.remove();
+                document.body.classList.remove('transition');
+                if (pages && pages.inicio) {
+                    pages.inicio.classList.add('active');
+                }
+            }
+        });
 
         // --- CONFIGURACIÓN INICIAL ---
         const container = document.getElementById('canvas-container');
@@ -316,7 +317,7 @@ window.addEventListener('pageshow', function(event) {
         scene.background = null;
 
         const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(3, 1, 2); // Ajustado: más cerca y ligeramente lateral
+        camera.position.set(3, 1, 2);
         camera.lookAt(0, 0, 0);
 
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -332,7 +333,7 @@ window.addEventListener('pageshow', function(event) {
         coreLight.position.set(0, 0, 0);
         scene.add(coreLight);
 
-        // --- GENERACIÓN DE GALAXIA (16,000 ESTRELLAS) ---
+        // --- GENERACIÓN DE GALAXIA ---
         function createGalaxy() {
             const count = 16000;
             const arms = 8;
@@ -448,8 +449,8 @@ window.addEventListener('pageshow', function(event) {
 
         // --- CONTROL DE SCROLL (página de inicio) ---
         let targetCamPos = new THREE.Vector3(0, 0, 0);
-const farPos = new THREE.Vector3(0, 0, 40);
-const nearPos = new THREE.Vector3(0, 0, 0);
+        const farPos = new THREE.Vector3(0, 0, 40);
+        const nearPos = new THREE.Vector3(0, 0, 0);
         
         const fondoDiv = document.getElementById('fondo-estrellas');
         const contenidoInicio = document.getElementById('contenido-inicio');
@@ -476,110 +477,99 @@ const nearPos = new THREE.Vector3(0, 0, 0);
 
         // --- SISTEMA DE PÁGINAS ---
         const pages = {
-    inicio: document.getElementById('page-inicio')
-};
+            inicio: document.getElementById('page-inicio')
+        };
         
         let currentPage = 'inicio';
         
         function showPage(pageId) {
-    // Solo mostramos/ocultamos la página de inicio (las otras son externas)
-    if (pageId === 'inicio') {
-        pages.inicio.classList.add('active');
-        contenidoInicio.scrollTop = 0;
-        targetCamPos.copy(nearPos);
-    } else {
-        // Si por algún motivo se llama a otra página, no hacemos nada
-        console.warn('Página interna no disponible, se usa redirección externa');
-    }
-}
-
-        // --- TRANSICIÓN CON HIPERESPACIO (MEJORADA) ---
-     async function transitionToPage(pageId, passwordNeeded = false) {
-    if (passwordNeeded) {
-        const pwd = prompt('Contraseña para Poemitas:');
-        if (pwd !== 'Laura') {
-            alert('Contraseña incorrecta');
-            return;
+            if (pageId === 'inicio') {
+                pages.inicio.classList.add('active');
+                contenidoInicio.scrollTop = 0;
+                targetCamPos.copy(nearPos);
+            } else {
+                console.warn('Página interna no disponible, se usa redirección externa');
+            }
         }
-    }
 
-    document.body.classList.add('transition');
-    
-    // 1. Obtener el botón y clonarlo para la animación
-    const targetBtn = pageId === 'poemitas' ? btn1 : (pageId === 'prosa' ? btn2 : btn3);
-    const btnRect = targetBtn.getBoundingClientRect();
-    
-    // Crear un elemento clon para la animación de zoom
-    const zoomBtn = document.createElement('div');
-    zoomBtn.style.position = 'fixed';
-    zoomBtn.style.left = btnRect.left + 'px';
-    zoomBtn.style.top = btnRect.top + 'px';
-    zoomBtn.style.width = btnRect.width + 'px';
-    zoomBtn.style.height = btnRect.height + 'px';
-    zoomBtn.style.borderRadius = '50%';
-    zoomBtn.style.backgroundImage = window.getComputedStyle(targetBtn).backgroundImage;
-    zoomBtn.style.backgroundSize = 'cover';
-    zoomBtn.style.backgroundPosition = 'center';
-    zoomBtn.style.boxShadow = '0 0 50px gold';
-    zoomBtn.style.zIndex = '1000';
-    zoomBtn.style.transition = 'all 1s ease';
-    document.body.appendChild(zoomBtn);
-    
-    // 2. Forzar un reflow para que la transición funcione
-    zoomBtn.offsetHeight;
-    
-    // 3. Animar el zoom a pantalla completa
-    zoomBtn.style.left = '0';
-    zoomBtn.style.top = '0';
-    zoomBtn.style.width = '100vw';
-    zoomBtn.style.height = '100vh';
-    zoomBtn.style.borderRadius = '0';
-    zoomBtn.style.transform = 'scale(1)';
-    
-    // 4. Esperar a que termine la animación
-    await new Promise(r => setTimeout(r, 1000));
-    
-    // 5. Limpiar y redirigir
-    if (zoomBtn && zoomBtn.parentNode) {
-        zoomBtn.remove();
-    }
-    
-    document.body.classList.remove('transition');
-    
-    if (pageId === 'poemitas') {
-        window.location.href = 'poemitas.html';
-    } else if (pageId === 'prosa') {
-        window.location.href = 'prosa.html';
-    } else if (pageId === 'otros') {
-        window.location.href = 'otros.html';
-    }
-}
+        // --- TRANSICIÓN CON HIPERESPACIO ---
+        async function transitionToPage(pageId, passwordNeeded = false) {
+            if (passwordNeeded) {
+                const pwd = prompt('Contraseña para Poemitas:');
+                if (pwd !== 'Laura') {
+                    alert('Contraseña incorrecta');
+                    return;
+                }
+            }
+
+            document.body.classList.add('transition');
+            
+            const targetBtn = pageId === 'poemitas' ? btn1 : (pageId === 'prosa' ? btn2 : btn3);
+            const btnRect = targetBtn.getBoundingClientRect();
+            
+            const zoomBtn = document.createElement('div');
+            zoomBtn.style.position = 'fixed';
+            zoomBtn.style.left = btnRect.left + 'px';
+            zoomBtn.style.top = btnRect.top + 'px';
+            zoomBtn.style.width = btnRect.width + 'px';
+            zoomBtn.style.height = btnRect.height + 'px';
+            zoomBtn.style.borderRadius = '50%';
+            zoomBtn.style.backgroundImage = window.getComputedStyle(targetBtn).backgroundImage;
+            zoomBtn.style.backgroundSize = 'cover';
+            zoomBtn.style.backgroundPosition = 'center';
+            zoomBtn.style.boxShadow = '0 0 50px gold';
+            zoomBtn.style.zIndex = '1000';
+            zoomBtn.style.transition = 'all 1s ease';
+            document.body.appendChild(zoomBtn);
+            
+            zoomBtn.offsetHeight;
+            
+            zoomBtn.style.left = '0';
+            zoomBtn.style.top = '0';
+            zoomBtn.style.width = '100vw';
+            zoomBtn.style.height = '100vh';
+            zoomBtn.style.borderRadius = '0';
+            zoomBtn.style.transform = 'scale(1)';
+            
+            await new Promise(r => setTimeout(r, 1000));
+            
+            if (zoomBtn && zoomBtn.parentNode) {
+                zoomBtn.remove();
+            }
+            
+            document.body.classList.remove('transition');
+            
+            if (pageId === 'poemitas') {
+                window.location.href = 'poemitas.html';
+            } else if (pageId === 'prosa') {
+                window.location.href = 'prosa.html';
+            } else if (pageId === 'otros') {
+                window.location.href = 'otros.html';
+            }
+        }
+
         // --- EVENTOS DE BOTONES ---
         document.getElementById('btn1').addEventListener('click', () => transitionToPage('poemitas', true));
         document.getElementById('btn2').addEventListener('click', () => transitionToPage('prosa', false));
         document.getElementById('btn3').addEventListener('click', () => transitionToPage('otros', false));
 
-        // --- MODO MEDITACIÓN (CORREGIDO: OCULTA FONDO) ---
+        // --- MODO MEDITACIÓN ---
         let modoMeditacionActivo = false;
         let audio = null;
         
         document.getElementById('modo-meditacion').addEventListener('click', () => {
             modoMeditacionActivo = !modoMeditacionActivo;
             
-            // Ocultar/mostrar textos
             document.querySelectorAll('.cita').forEach(el => {
                 el.style.opacity = modoMeditacionActivo ? '0' : '1';
             });
             
-            // Ocultar/mostrar fondo de estrellas
             const fondoEstrellas = document.getElementById('fondo-estrellas');
             fondoEstrellas.style.opacity = modoMeditacionActivo ? '0' : '1';
             
-            // Atenuar luces
             ambientLight.intensity = modoMeditacionActivo ? 0.1 : 0.5;
             coreLight.intensity = modoMeditacionActivo ? 0.5 : 2.0;
             
-            // Activar/desactivar música
             if (modoMeditacionActivo) {
                 if (!audio) {
                     audio = new Audio();
@@ -607,7 +597,6 @@ const nearPos = new THREE.Vector3(0, 0, 0);
             galaxy.rotation.y += 0.003;
             galaxy.rotation.x = 0.15;
             
-            // Mover meteoros
             const positions = meteors.geometry.attributes.position.array;
             for (let i = 0; i < meteorCount; i++) {
                 positions[i*3+2] += meteorSpeeds[i].z * delta * 20;
@@ -632,10 +621,7 @@ const nearPos = new THREE.Vector3(0, 0, 0);
 
         showPage('inicio');
 
-        // ===== NUEVO CÓDIGO PARA LA HISTORIA INTERACTIVA =====
-        // Importar GSAP (ya está en import map)
-        import gsap from 'gsap';
-
+        // ===== HISTORIA INTERACTIVA (VERSIÓN MEJORADA) =====
         // Elementos del DOM para la historia
         const verHistoriaBtn = document.getElementById('ver-historia');
         const storyOverlay = document.getElementById('story-overlay');
@@ -648,54 +634,54 @@ const nearPos = new THREE.Vector3(0, 0, 0);
         let storyMode = false;
         let currentSceneIndex = 0;
         let temblorAnim = null;
+        let typingInterval = null; // Para el efecto de escritura
 
-        // Definición de las 6 escenas
+        // Definición de las 6 escenas (posiciones progresivas)
         const scenes = [
             {
-                camPos: new THREE.Vector3(0, 0, 0),
-                target: new THREE.Vector3(0, 0, 0),
+                camPos: new THREE.Vector3(0, 0, 2),
+                target: new THREE.Vector3(0, 1, 0),
                 text: "EN EL PRINCIPIO ERA MI ALIENTO,\ny con él extendí los cielos como quien despliega un lienzo.\nNo hubo testigos, solo una danza\n— de luz, tiempo y gravedad — que aún no cesa.",
                 oscuro: true
             },
             {
-                camPos: new THREE.Vector3(0, 0, 5),
-                target: new THREE.Vector3(0, 0, 0),
+                camPos: new THREE.Vector3(0, 0, 2),
+                target: new THREE.Vector3(0, 1, 0),
                 text: "LO QUE CONTEMPLAS\nno es fuego inerte: es la memoria de mi Voz.\nEl corazón de una galaxia late y testifica.\nCada fotón que llega a tus ojos viajó milenios\npara contarte que hubo un 'Dijo Dios'.",
                 oscuro: true
             },
             {
-                camPos: new THREE.Vector3(0, 0, 20),
-                target: new THREE.Vector3(0, 0, 0),
+                camPos: new THREE.Vector3(0, 0, 18),
+                target: new THREE.Vector3(0, 1, 0),
                 text: "CADA ESTRELLA\nsigue la ordenanza que le di.\nLas Pléyades se atan sin nudos, Orión camina sin brújula,\nla Osa Mayor guía a sus hijos por caminos que no entienden.\nYo las entiendo. A cada una puse nombre.\nTambién al polvo que ahora mira al cielo.",
                 oscuro: true
             },
             {
-                camPos: new THREE.Vector3(0, 0, 60),
-                target: new THREE.Vector3(0, 5, 0),
+                camPos: new THREE.Vector3(0, 0, 35),
+                target: new THREE.Vector3(0, 1, 0),
                 text: "MIRA MÁS ALLÁ\nhasta que todo sea diminuto.\nTan diminuto como tú, hecho del mismo polvo que brilla,\npero animado por un aliento que el polvo no tiene.",
                 oscuro: false
             },
             {
-                camPos: new THREE.Vector3(0, 0, 60),
-                target: new THREE.Vector3(0, 5, 0),
+                camPos: new THREE.Vector3(0, 0, 35),
+                target: new THREE.Vector3(0, 1, 0),
                 text: "NO TEMAS:\nlas mismas manos que sostienen la expansión\nfueron horadadas para sostenerte a ti también.",
-                oscuro: false,
+                oscuro: true,
                 temblor: true
             },
             {
-                camPos: new THREE.Vector3(0, 0, 0),
-                target: new THREE.Vector3(0, 0, 0),
+                camPos: new THREE.Vector3(0, 0, 2),
+                target: new THREE.Vector3(0, 1, 0),
                 text: "CONFÍA:\nsi las Pléyades se dejan atar sin resistirse,\nsi la luz viaja milenios solo para hablarte de mí,\nsi la creación entera obedece en silencio,\n¿qué esperas tú?\n\nEscucha su aliento,\nes el mismo que ahora te llama\na inclinarte como se inclina, dócil y eterna:",
                 oscuro: true,
                 final: true
             }
         ];
 
-        // Función para activar/desactivar modo oscuro
+        // Función para activar/desactivar modo oscuro (solo fondo y luces)
         function setModoOscuro(activo) {
             const fondo = document.getElementById('fondo-estrellas');
             fondo.style.opacity = activo ? 0 : 1;
-            document.querySelectorAll('.cita').forEach(el => el.style.opacity = activo ? 0 : 1);
             ambientLight.intensity = activo ? 0.1 : 0.5;
             coreLight.intensity = activo ? 0.5 : 2.0;
         }
@@ -717,39 +703,56 @@ const nearPos = new THREE.Vector3(0, 0, 0);
             });
         }
 
-        // Función para ir a una escena específica
+        // Función para ir a una escena específica (con efecto de escritura)
         async function goToScene(index) {
             if (index < 0 || index >= scenes.length) return;
-            
+
+            // Detener escritura anterior
+            if (typingInterval) {
+                clearInterval(typingInterval);
+                typingInterval = null;
+            }
+
             currentSceneIndex = index;
             const scene = scenes[index];
-            
-            // Actualizar texto
-            storyText.textContent = scene.text;
-            
+
+            // Limpiar texto y preparar efecto de escritura
+            storyText.textContent = '';
+
             // Aplicar modo oscuro
             setModoOscuro(scene.oscuro);
-            
+
             // Detener temblor si existía
             if (temblorAnim) temblorAnim.kill();
-            
+
             // Animar cámara a la posición de la escena
             await animateCameraTo(scene.camPos, scene.target, 2);
-            
+
+            // Efecto de máquina de escribir (letra por letra)
+            let i = 0;
+            const text = scene.text;
+            typingInterval = setInterval(() => {
+                if (i < text.length) {
+                    storyText.textContent += text.charAt(i);
+                    i++;
+                } else {
+                    clearInterval(typingInterval);
+                    typingInterval = null;
+                }
+            }, 30); // velocidad: 30ms por carácter
+
             // Efectos especiales
             if (scene.temblor) {
-                // Temblor de cámara durante 3 segundos
                 const posOriginal = scene.camPos.clone();
                 temblorAnim = gsap.to({}, {
                     duration: 3,
                     onUpdate: function() {
                         const progress = this.progress();
-                        if (progress < 0.9) { // temblor durante el 90% del tiempo
+                        if (progress < 0.9) {
                             camera.position.x = posOriginal.x + (Math.random() - 0.5) * 1;
                             camera.position.y = posOriginal.y + (Math.random() - 0.5) * 0.5;
                             camera.position.z = posOriginal.z + (Math.random() - 0.5) * 1;
                         } else {
-                            // Volver suavemente a la posición original
                             gsap.to(camera.position, {
                                 x: posOriginal.x,
                                 y: posOriginal.y,
@@ -763,7 +766,7 @@ const nearPos = new THREE.Vector3(0, 0, 0);
                     }
                 });
             }
-            
+
             // Actualizar botones
             storyPrev.disabled = (index === 0);
             storyNext.textContent = (index === scenes.length - 1) ? 'Finalizar' : 'Siguiente';
@@ -772,21 +775,24 @@ const nearPos = new THREE.Vector3(0, 0, 0);
         // Función para iniciar la historia
         function startStory() {
             storyMode = true;
-            
+
             // Ocultar elementos de la interfaz normal
             verHistoriaBtn.style.display = 'none';
             document.getElementById('botonera').style.opacity = '0';
             document.getElementById('botonera').style.pointerEvents = 'none';
             document.getElementById('modo-meditacion').style.opacity = '0';
             document.getElementById('modo-meditacion').style.pointerEvents = 'none';
-            
+
+            // Ocultar citas de la página de inicio
+            document.querySelectorAll('.cita').forEach(el => el.style.opacity = '0');
+
             // Mostrar overlay de historia
             storyOverlay.style.display = 'flex';
-            
+
             // Desactivar scroll
             contenidoInicio.removeEventListener('scroll', updateScroll);
             window.addEventListener('wheel', preventScroll, { passive: false });
-            
+
             // Ir a la primera escena
             goToScene(0);
         }
@@ -794,26 +800,38 @@ const nearPos = new THREE.Vector3(0, 0, 0);
         // Función para salir de la historia
         function exitStory() {
             storyMode = false;
-            
+
+            // Detener escritura si está en curso
+            if (typingInterval) {
+                clearInterval(typingInterval);
+                typingInterval = null;
+            }
+
             // Restaurar interfaz normal
             verHistoriaBtn.style.display = 'block';
             document.getElementById('botonera').style.opacity = '1';
             document.getElementById('botonera').style.pointerEvents = 'auto';
             document.getElementById('modo-meditacion').style.opacity = '1';
             document.getElementById('modo-meditacion').style.pointerEvents = 'auto';
+
+            // Restaurar citas según modo meditación
+            document.querySelectorAll('.cita').forEach(el => {
+                el.style.opacity = modoMeditacionActivo ? '0' : '1';
+            });
+
             storyOverlay.style.display = 'none';
-            
+
             // Reactivar scroll
             contenidoInicio.addEventListener('scroll', updateScroll);
             window.removeEventListener('wheel', preventScroll);
-            
-            // Restaurar modo visual normal
+
+            // Restaurar modo visual normal (fondo y luces)
             setModoOscuro(false);
             updateScroll(); // actualizar cámara según scroll actual
-            
+
             // Detener temblor
             if (temblorAnim) temblorAnim.kill();
-            
+
             // Mostrar título final
             mostrarTituloFinal();
         }
@@ -839,8 +857,7 @@ const nearPos = new THREE.Vector3(0, 0, 0);
             titulo.style.opacity = '0';
             titulo.style.transition = 'opacity 2s';
             document.body.appendChild(titulo);
-            
-            // Animar aparición y desaparición
+
             setTimeout(() => { titulo.style.opacity = '1'; }, 100);
             setTimeout(() => { titulo.style.opacity = '0'; }, 3000);
             setTimeout(() => { titulo.remove(); }, 5000);
@@ -858,7 +875,6 @@ const nearPos = new THREE.Vector3(0, 0, 0);
             if (currentSceneIndex < scenes.length - 1) {
                 goToScene(currentSceneIndex + 1);
             } else {
-                // Última escena: finalizar
                 exitStory();
             }
         });
@@ -874,12 +890,12 @@ const nearPos = new THREE.Vector3(0, 0, 0);
 
     <!-- Overlay de la historia (oculto por defecto) -->
     <div id="story-overlay" style="display: none;">
-      <div id="story-text"></div>
-      <div id="story-controls">
-        <button id="story-prev" disabled>Anterior</button>
-        <button id="story-next">Siguiente</button>
-        <button id="story-skip">Saltar historia</button>
-      </div>
+        <div id="story-text"></div>
+        <div id="story-controls">
+            <button id="story-prev" disabled>Anterior</button>
+            <button id="story-next">Siguiente</button>
+            <button id="story-skip">Saltar historia</button>
+        </div>
     </div>
 </body>
 </html>
