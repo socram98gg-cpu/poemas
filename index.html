@@ -587,16 +587,22 @@
         let clock = new THREE.Clock();
         
         function animate() {
-            requestAnimationFrame(animate);
-            
-            const delta = clock.getDelta();
-            
-            camera.position.lerp(targetCamPos, 0.05);
-            camera.lookAt(0, 1, 0);
-            
-            galaxy.rotation.y += 0.003;
-            galaxy.rotation.x = 0.15;
-            
+    requestAnimationFrame(animate);
+    
+    const delta = clock.getDelta();
+    
+    // Solo mover la cámara por scroll si NO estamos en modo historia
+    if (!storyMode) {
+        camera.position.lerp(targetCamPos, 0.05);
+        camera.lookAt(0, 1, 0);
+    }
+    // En modo historia, la cámara ya es controlada por GSAP en goToScene()
+    
+    galaxy.rotation.y += 0.003;
+    galaxy.rotation.x = 0.15;
+    
+    // ... resto del código (meteoros, render, etc.)
+}  
             const positions = meteors.geometry.attributes.position.array;
             for (let i = 0; i < meteorCount; i++) {
                 positions[i*3+2] += meteorSpeeds[i].z * delta * 20;
@@ -774,7 +780,11 @@
 
         // Función para iniciar la historia
         function startStory() {
-            storyMode = true;
+    storyMode = true;
+    
+    // Congelar targetCamPos para que no interfiera
+    targetCamPos.copy(camera.position);
+    
 
             // Ocultar elementos de la interfaz normal
             verHistoriaBtn.style.display = 'none';
