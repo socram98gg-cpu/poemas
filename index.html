@@ -449,7 +449,7 @@ scene.add(meteors);
 
 // --- CONTROL DE SCROLL (página de inicio) ---
 let targetCamPos = new THREE.Vector3(0, 0, 0);
-const farPos = new THREE.Vector3(0, 0, 40);
+const farPos = new THREE.Vector3(0, 0, 100);
 const nearPos = new THREE.Vector3(0, 0, 0);
 
 const fondoDiv = document.getElementById('fondo-estrellas');
@@ -607,20 +607,20 @@ const scenes = [
         oscuro: true
     },
     {
-        camPos: new THREE.Vector3(0, -2, 2),
+        camPos: new THREE.Vector3(0, -1, 1.5),
         target: new THREE.Vector3(0, 0, 0),
         text: "LO QUE CONTEMPLAS\nno es fuego inerte: es la memoria de mi Voz.\nEl corazón de una galaxia late y testifica.\nCada fotón que llega a tus ojos viajó milenios\npara contarte que hubo un 'Dijo Dios'.",
         oscuro: true
     },
     {
-        camPos: new THREE.Vector3(0, -2, 25),
-        target: new THREE.Vector3(0, 0, 0),
+        camPos: new THREE.Vector3(0, -2, 18),
+        target: new THREE.Vector3(0, -1, 0),
         text: "CADA ESTRELLA\nsigue la ordenanza que le di.\nLas Pléyades se atan sin nudos, Orión camina sin brújula,\nla Osa Mayor guía a sus hijos por caminos que no entienden.\nYo las entiendo. A cada una puse nombre.\nTambién al polvo que ahora mira al cielo.",
         oscuro: true
     },
     {
         camPos: new THREE.Vector3(0, 10, 100),
-        target: new THREE.Vector3(0, 5, 0),
+        target: new THREE.Vector3(0, 0, 0),
         text: "MIRA MÁS ALLÁ\nhasta que todo sea diminuto.\nTan diminuto como tú, hecho del mismo polvo que brilla,\npero animado por un aliento que el polvo no tiene.",
         oscuro: false
     },
