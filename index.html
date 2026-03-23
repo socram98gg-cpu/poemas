@@ -614,14 +614,11 @@ const scenes = [
         target: new THREE.Vector3(0, 20, 0),
         text: "EN EL PRINCIPIO ERA MI ALIENTO,\ny con él extendí los cielos como quien despliega un lienzo.\nNo hubo testigos, solo una danza\n— de luz, tiempo y gravedad — que aún no cesa.",
         oscuro: true
-    },
-    {
+    },{
     camPos: new THREE.Vector3(0, -2, 2),
     target: new THREE.Vector3(0, 0, 0),
     text: "LO QUE CONTEMPLAS\nno es fuego inerte: es la memoria de mi Voz.\nEl corazón de una galaxia late y testifica.\nCada fotón que llega a tus ojos viajó milenios\npara contarte que hubo un 'Dijo Dios'.",
-    oscuro: true,
-    textColor: "#333333",
-    textShadow: "1px 1px 0 #ffaa88, 0 0 10px rgba(255,255,200,0.5)"
+    oscuro: true
 },
     {
         camPos: new THREE.Vector3(0, -2, 25),
@@ -689,14 +686,7 @@ async function goToScene(index) {
     const scene = scenes[index];
 
     storyText.textContent = '';
-    // Aplicar color personalizado si la escena lo tiene
-if (scene.textColor) {
-    storyText.style.color = scene.textColor;
-    storyText.style.textShadow = scene.textShadow || 'none';
-} else {
-    storyText.style.color = 'white';
-    storyText.style.textShadow = '2px 2px 0 #000, 0 0 40px #ffaa88, 0 0 80px #b266ff';
-}
+   
     setModoOscuro(scene.oscuro);
 
     if (temblorAnim) temblorAnim.kill();
