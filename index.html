@@ -124,7 +124,33 @@
             background: rgba(0,0,0,0.9);
             box-shadow: 0 0 30px cyan;
         }
-        /* Contenido de cada página (textos) */
+        /* Título fijo principal */
+        .titulo-principal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 150;
+            text-align: center;
+            pointer-events: none;
+            transition: opacity 0.5s;
+        }
+        .titulo-principal .raqia {
+            font-size: 6rem;
+            font-family: 'Wide Latin', 'Georgia', serif;
+            color: white;
+            text-shadow: 0 0 40px gold, 0 0 80px cyan;
+            line-height: 1.2;
+        }
+        .titulo-principal .subtitulo {
+            font-size: 1.5rem;
+            font-family: 'Georgia', serif;
+            font-style: italic;
+            color: #ffdd99;
+            text-shadow: 0 0 10px rgba(0,0,0,0.5);
+            margin-top: 10px;
+        }
+        /* Contenido de la página (ya no tiene citas) */
         .contenido-pagina {
             position: relative;
             width: 100%;
@@ -136,33 +162,13 @@
         .contenido-pagina::-webkit-scrollbar {
             display: none;
         }
-        .seccion {
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0 10%;
-            text-align: center;
-        }
-        .cita {
-            font-size: 4rem;
-            color: white;
-            text-shadow: 2px 2px 0 #000, 0 0 40px #ffaa88, 0 0 80px #b266ff;
-            line-height: 1.5;
-            transition: opacity 0.5s;
-        }
-        .cita small {
-            display: block;
-            font-size: 1.8rem;
-            color: #ffdd99;
-            margin-top: 40px;
-        }
         /* Efecto de transición */
         body.transition * {
             pointer-events: none !important;
         }
         @media (max-width: 800px) {
-            .cita { font-size: 2.5rem; }
+            .titulo-principal .raqia { font-size: 3rem; }
+            .titulo-principal .subtitulo { font-size: 1rem; }
             .boton { width: 110px; height: 110px; font-size: 0.9rem; }
         }
         /* ===== ESTILOS MEJORADOS PARA LA HISTORIA ===== */
@@ -203,31 +209,31 @@
             box-sizing: border-box;
             pointer-events: none;
         }
-      #story-text {
-    pointer-events: auto;
-    color: white;
-    padding: 0;
-    max-width: 90%;
-    font-family: 'Georgia', serif;
-    font-size: 2rem;
-    line-height: 1.4;
-    text-shadow: 1px 1px 0 #000, 0 0 20px #ffaa88, 0 0 40px #b266ff;
-    white-space: pre-line;
-    text-align: center;
-    background: none;
-    border: none;
-    backdrop-filter: none;
-    box-shadow: none;
-    position: relative;
-    z-index: 310;
-    animation: aparecer 1s ease-out;
-}
+        #story-text {
+            pointer-events: auto;
+            color: white;
+            padding: 0;
+            max-width: 90%;
+            font-family: 'Georgia', serif;
+            font-size: 2rem;
+            line-height: 1.4;
+            text-shadow: 1px 1px 0 #000, 0 0 20px #ffaa88, 0 0 40px #b266ff;
+            white-space: pre-line;
+            text-align: center;
+            background: none;
+            border: none;
+            backdrop-filter: none;
+            box-shadow: none;
+            position: relative;
+            z-index: 310;
+            animation: aparecer 1s ease-out;
+        }
         #story-text::first-line {
-    font-size: 3rem;
-    font-family: 'Wide Latin', 'Georgia', serif;
-    letter-spacing: 2px;
-    display: block;
-}
+            font-size: 3rem;
+            font-family: 'Wide Latin', 'Georgia', serif;
+            letter-spacing: 2px;
+            display: block;
+        }
         @keyframes aparecer {
             0% { opacity: 0; filter: blur(10px); }
             100% { opacity: 1; filter: blur(0); }
@@ -278,15 +284,18 @@
 
     <button id="modo-meditacion">🌌 Modo Meditación</button>
 
+    <!-- Título fijo principal (reemplaza los versículos) -->
+    <div id="titulo-principal" class="titulo-principal">
+        <div class="raqia">RAQIA STELLA</div>
+        <div class="subtitulo">(Expansión de Estrellas)</div>
+    </div>
+
     <!-- Sistema de páginas (SPA) -->
     <div id="pages">
-        <!-- Página de inicio (con textos de Job) -->
+        <!-- Página de inicio (sin versículos) -->
         <div class="page active" id="page-inicio">
             <div class="contenido-pagina" id="contenido-inicio">
-                <section class="seccion"><div class="cita">¿Podrás tú atar los lazos de las Pléyades?</div></section>
-                <section class="seccion"><div class="cita">¿Sacarás tú a su tiempo las constelaciones?</div></section>
-                <section class="seccion"><div class="cita">¿Supiste tú las ordenanzas de los cielos?</div></section>
-                <section class="seccion"><div class="cita">¿Dispondrás tú de su potestad?<br><small>Job 38:31-33</small></div></section>
+                <!-- El contenido está vacío; solo se usa para el scroll -->
             </div>
         </div>
     </div>
@@ -303,577 +312,618 @@
 
     <script type="module">
         import * as THREE from 'three';
-import gsap from 'gsap';
+        import gsap from 'gsap';
 
-// Detectar cuando se vuelve a la página con el botón atrás
-window.addEventListener('pageshow', function(event) {
-    if (event.persisted) {
-        const oldZoomBtn = document.querySelector('div[style*="z-index: 1000"]');
-        if (oldZoomBtn) oldZoomBtn.remove();
-        document.body.classList.remove('transition');
-        if (pages && pages.inicio) {
-            pages.inicio.classList.add('active');
-        }
-    }
-});
-
-// --- CONFIGURACIÓN INICIAL ---
-const container = document.getElementById('canvas-container');
-const scene = new THREE.Scene();
-scene.background = null;
-
-const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.set(3, 1, 2);
-camera.lookAt(0, 0, 0);
-
-const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-container.appendChild(renderer.domElement);
-
-// --- LUCES ---
-const ambientLight = new THREE.AmbientLight(0x404060);
-scene.add(ambientLight);
-
-const coreLight = new THREE.PointLight(0xff8844, 2.0, 30);
-coreLight.position.set(0, 0, 0);
-scene.add(coreLight);
-
-// --- GENERACIÓN DE GALAXIA ---
-function createGalaxy() {
-    const count = 25000;        // Más estrellas para brazos más densos
-    const arms = 8;             // 8 brazos espirales
-    const radius = 28;          // Mayor diámetro (antes 18)
-    const spin = 2.8;           // Brazos más definidos (antes 2.2)
-    const randomness = 0.45;    // Menos dispersión = brazos más definidos (antes 0.65)
-    const coreRadius = 4.5;     // Núcleo más grande (antes 3.5)
-
-    const geometry = new THREE.BufferGeometry();
-    const positions = new Float32Array(count * 3);
-    const colors = new Float32Array(count * 3);
-
-    // Colores ORIGINALES (naranja centro → azul exterior)
-    const colorInside = new THREE.Color(0xff6633);  // Naranja
-    const colorOutside = new THREE.Color(0x44aaff); // Azul
-
-    for (let i = 0; i < count; i++) {
-        const r = Math.pow(Math.random(), 1.2) * radius;
-        const armAngle = (i % arms) * (Math.PI * 2 / arms);
-        const spinAngle = r * spin;
-        const randomAngle = (Math.random() - 0.5) * randomness * 1.5;
-        const randomRadial = (Math.random() - 0.5) * 0.8;
-        
-        const angle = armAngle + spinAngle + randomAngle;
-        
-        const x = Math.cos(angle) * (r + randomRadial);
-        const z = Math.sin(angle) * (r + randomRadial);
-        // Mayor altura (grosor) en los brazos
-        const y = (Math.random() - 0.5) * 4.0 * (r / 10);
-
-        positions[i*3] = x;
-        positions[i*3+1] = y;
-        positions[i*3+2] = z;
-
-        const mixFactor = Math.max(0, Math.min(1, (r - coreRadius) / (radius - coreRadius)));
-        const color = colorInside.clone().lerp(colorOutside, mixFactor);
-        color.multiplyScalar(0.7 + 0.5 * Math.random());
-        
-        colors[i*3] = color.r;
-        colors[i*3+1] = color.g;
-        colors[i*3+2] = color.b;
-    }
-
-    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-
-    const canvas = document.createElement('canvas');
-    canvas.width = 32;
-    canvas.height = 32;
-    const ctx = canvas.getContext('2d');
-    const grad = ctx.createRadialGradient(16, 16, 0, 16, 16, 16);
-    grad.addColorStop(0, 'rgba(255,255,255,1)');
-    grad.addColorStop(0.5, 'rgba(180,180,255,0.8)');
-    grad.addColorStop(1, 'rgba(255,255,255,0)');
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, 32, 32);
-    const texture = new THREE.CanvasTexture(canvas);
-
-    const material = new THREE.PointsMaterial({
-        size: 0.2,
-        map: texture,
-        vertexColors: true,
-        blending: THREE.AdditiveBlending,
-        depthWrite: false,
-        transparent: true,
-        sizeAttenuation: true
-    });
-
-    return new THREE.Points(geometry, material);
-}
-
-const galaxy = createGalaxy();
-scene.add(galaxy);
-
-
-// --- METEOROS ---
-const meteorGeo = new THREE.BufferGeometry();
-const meteorCount = 5;
-const meteorPositions = new Float32Array(meteorCount * 3);
-const meteorSpeeds = [];
-for (let i = 0; i < meteorCount; i++) {
-    meteorPositions[i*3] = (Math.random() - 0.5) * 60;
-    meteorPositions[i*3+1] = (Math.random() - 0.5) * 30;
-    meteorPositions[i*3+2] = (Math.random() - 0.5) * 60 - 30;
-    meteorSpeeds.push({
-        x: (Math.random() - 0.5) * 0.5,
-        y: (Math.random() - 0.5) * 0.5,
-        z: Math.random() * 0.8 + 0.5
-    });
-}
-meteorGeo.setAttribute('position', new THREE.BufferAttribute(meteorPositions, 3));
-
-const meteorCanvas = document.createElement('canvas');
-meteorCanvas.width = 16;
-meteorCanvas.height = 16;
-const mCtx = meteorCanvas.getContext('2d');
-mCtx.fillStyle = 'white';
-mCtx.beginPath();
-mCtx.arc(8, 8, 4, 0, 2*Math.PI);
-mCtx.fill();
-mCtx.fillStyle = 'orange';
-mCtx.beginPath();
-mCtx.arc(12, 8, 2, 0, 2*Math.PI);
-mCtx.fill();
-const meteorTexture = new THREE.CanvasTexture(meteorCanvas);
-
-const meteorMaterial = new THREE.PointsMaterial({
-    size: 0.5,
-    map: meteorTexture,
-    color: 0xffaa66,
-    blending: THREE.AdditiveBlending,
-    transparent: true
-});
-const meteors = new THREE.Points(meteorGeo, meteorMaterial);
-scene.add(meteors);
-
-// --- CONTROL DE SCROLL (página de inicio) ---
-let targetCamPos = new THREE.Vector3(0, 0, 0);
-const farPos = new THREE.Vector3(0, 0, 150);
-const nearPos = new THREE.Vector3(0, -2, 0);
-
-const fondoDiv = document.getElementById('fondo-estrellas');
-const contenidoInicio = document.getElementById('contenido-inicio');
-
-function updateScroll() {
-    if (!document.getElementById('page-inicio').classList.contains('active')) return;
-    
-    const scrollY = contenidoInicio.scrollTop;
-    const maxScroll = contenidoInicio.scrollHeight - contenidoInicio.clientHeight;
-    const progress = Math.min(1, scrollY / maxScroll);
-    
-    targetCamPos.x = nearPos.x + (farPos.x - nearPos.x) * progress;
-    targetCamPos.y = nearPos.y + (farPos.y - nearPos.y) * progress;
-    targetCamPos.z = nearPos.z + (farPos.z - nearPos.z) * progress;
-    
-    coreLight.intensity = 2.0 * (1 - progress * 0.7);
-    
-    if (fondoDiv) {
-        fondoDiv.style.transform = `scale(${1 + progress * 0.4})`;
-    }
-}
-
-contenidoInicio.addEventListener('scroll', updateScroll);
-
-// --- SISTEMA DE PÁGINAS ---
-const pages = {
-    inicio: document.getElementById('page-inicio')
-};
-
-let currentPage = 'inicio';
-
-function showPage(pageId) {
-    if (pageId === 'inicio') {
-        pages.inicio.classList.add('active');
-        contenidoInicio.scrollTop = 0;
-        targetCamPos.copy(nearPos);
-    } else {
-        console.warn('Página interna no disponible, se usa redirección externa');
-    }
-}
-
-// --- TRANSICIÓN CON HIPERESPACIO ---
-async function transitionToPage(pageId, passwordNeeded = false) {
-    if (passwordNeeded) {
-        const pwd = prompt('Contraseña para Poemitas:');
-        if (pwd !== 'Laura') {
-            alert('Contraseña incorrecta');
-            return;
-        }
-    }
-
-    document.body.classList.add('transition');
-    
-    const targetBtn = pageId === 'poemitas' ? btn1 : (pageId === 'prosa' ? btn2 : btn3);
-    const btnRect = targetBtn.getBoundingClientRect();
-    
-    const zoomBtn = document.createElement('div');
-    zoomBtn.style.position = 'fixed';
-    zoomBtn.style.left = btnRect.left + 'px';
-    zoomBtn.style.top = btnRect.top + 'px';
-    zoomBtn.style.width = btnRect.width + 'px';
-    zoomBtn.style.height = btnRect.height + 'px';
-    zoomBtn.style.borderRadius = '50%';
-    zoomBtn.style.backgroundImage = window.getComputedStyle(targetBtn).backgroundImage;
-    zoomBtn.style.backgroundSize = 'cover';
-    zoomBtn.style.backgroundPosition = 'center';
-    zoomBtn.style.boxShadow = '0 0 50px gold';
-    zoomBtn.style.zIndex = '1000';
-    zoomBtn.style.transition = 'all 1s ease';
-    document.body.appendChild(zoomBtn);
-    
-    zoomBtn.offsetHeight;
-    
-    zoomBtn.style.left = '0';
-    zoomBtn.style.top = '0';
-    zoomBtn.style.width = '100vw';
-    zoomBtn.style.height = '100vh';
-    zoomBtn.style.borderRadius = '0';
-    zoomBtn.style.transform = 'scale(1)';
-    
-    await new Promise(r => setTimeout(r, 1000));
-    
-    if (zoomBtn && zoomBtn.parentNode) {
-        zoomBtn.remove();
-    }
-    
-    document.body.classList.remove('transition');
-    
-    if (pageId === 'poemitas') {
-        window.location.href = 'poemitas.html';
-    } else if (pageId === 'prosa') {
-        window.location.href = 'prosa.html';
-    } else if (pageId === 'otros') {
-        window.location.href = 'otros.html';
-    }
-}
-
-// --- EVENTOS DE BOTONES ---
-document.getElementById('btn1').addEventListener('click', () => transitionToPage('poemitas', true));
-document.getElementById('btn2').addEventListener('click', () => transitionToPage('prosa', false));
-document.getElementById('btn3').addEventListener('click', () => transitionToPage('otros', false));
-
-// --- MODO MEDITACIÓN ---
-let modoMeditacionActivo = false;
-let audio = null;
-
-document.getElementById('modo-meditacion').addEventListener('click', () => {
-    modoMeditacionActivo = !modoMeditacionActivo;
-    
-    document.querySelectorAll('.cita').forEach(el => {
-        el.style.opacity = modoMeditacionActivo ? '0' : '1';
-    });
-    
-    const fondoEstrellas = document.getElementById('fondo-estrellas');
-    fondoEstrellas.style.opacity = modoMeditacionActivo ? '0' : '1';
-    
-    ambientLight.intensity = modoMeditacionActivo ? 0.1 : 0.5;
-    coreLight.intensity = modoMeditacionActivo ? 0.5 : 2.0;
-    
-    if (modoMeditacionActivo) {
-        if (!audio) {
-            audio = new Audio();
-            audio.src = 'https://raw.githubusercontent.com/socram98gg-cpu/poemas/main/Laura%20audio.mp3';
-            audio.loop = true;
-            audio.volume = 0.5;
-        }
-        audio.play().catch(e => console.log('Autoplay bloqueado:', e));
-    } else {
-        if (audio) audio.pause();
-    }
-});
-
-// ===== HISTORIA INTERACTIVA =====
-// Elementos del DOM para la historia
-const verHistoriaBtn = document.getElementById('ver-historia');
-const storyOverlay = document.getElementById('story-overlay');
-const storyText = document.getElementById('story-text');
-const storyPrev = document.getElementById('story-prev');
-const storyNext = document.getElementById('story-next');
-const storySkip = document.getElementById('story-skip');
-
-// Estado de la historia
-let storyMode = false;
-let currentSceneIndex = 0;
-let temblorAnim = null;
-let typingInterval = null;
-
-// Definición de las 6 escenas (posiciones progresivas)
-const scenes = [
-    {
-        camPos: new THREE.Vector3(0, 0, 0),
-        target: new THREE.Vector3(0, 20, 0),
-        text: "EN EL PRINCIPIO ERA MI ALIENTO,\ny con él extendí los cielos como quien despliega un lienzo.\nNo hubo testigos, solo una danza\n— de luz, tiempo y gravedad — que aún no cesa.",
-        oscuro: true
-    },{
-    camPos: new THREE.Vector3(0, -2, 2),
-    target: new THREE.Vector3(0, 0, 0),
-    text: "LO QUE CONTEMPLAS\nno es fuego inerte: es la memoria de mi Voz.\nEl corazón de una galaxia late y testifica.\nCada fotón que llega a tus ojos viajó milenios\npara contarte que hubo un 'Dijo Dios'.",
-    oscuro: true
-},
-    {
-        camPos: new THREE.Vector3(0, -2, 25),
-        target: new THREE.Vector3(0, -1, 0),
-        text: "CADA ESTRELLA\nsigue la ordenanza que le di.\nLas Pléyades se atan sin nudos, Orión camina sin brújula,\nla Osa Mayor guía a sus hijos por caminos que no entienden.\nYo las entiendo. A cada una puse nombre.\nTambién al polvo que ahora mira al cielo.",
-        oscuro: true
-    },
-    {
-        camPos: new THREE.Vector3(0, 10, 150),
-        target: new THREE.Vector3(0, 0, 0),
-        text: "MIRA MÁS ALLÁ\nhasta que todo sea diminuto.\nTan diminuto como tú, hecho del mismo polvo que brilla,\npero animado por un aliento que el polvo no tiene.",
-        oscuro: true
-    },
-    {
-        camPos: new THREE.Vector3(0, 20, 0),
-        target: new THREE.Vector3(0, 0, 0),
-        text: "NO TEMAS:\nlas mismas manos que sostienen la expansión\nfueron horadadas para sostenerte a ti también.",
-        temblor: true,
-        oscuro: true  
-    },
-    {
-        camPos: new THREE.Vector3(0, 20, 0),
-        target: new THREE.Vector3(0, 0, 0),
-        text: "CONFÍA:\nsi las Pléyades se dejan atar sin resistirse,\nsi la luz viaja milenios solo para hablarte de mí,\nsi la creación entera obedece en silencio,\n¿qué esperas tú?\n\nEscucha su aliento,\nes el mismo que ahora te llama\na inclinarte como se inclina, dócil y eterna:",
-        oscuro: true,
-        final: true
-    }
-];
-
-// Función para activar/desactivar modo oscuro (solo fondo y luces)
-function setModoOscuro(activo) {
-    const fondo = document.getElementById('fondo-estrellas');
-    fondo.style.opacity = activo ? 0 : 1;
-    ambientLight.intensity = activo ? 0.1 : 0.5;
-    coreLight.intensity = activo ? 0.5 : 2.0;
-}
-
-// Función para animar la cámara con GSAP
-function animateCameraTo(position, target, duration = 2) {
-    return new Promise(resolve => {
-        gsap.to(camera.position, {
-            x: position.x,
-            y: position.y,
-            z: position.z,
-            duration,
-            ease: "power2.inOut",
-            onUpdate: () => {
-                camera.lookAt(target);
-            },
-            onComplete: resolve
-        });
-    });
-}
-
-// Función para ir a una escena específica (con efecto de escritura)
-async function goToScene(index) {
-    if (index < 0 || index >= scenes.length) return;
-
-    if (typingInterval) {
-        clearInterval(typingInterval);
-        typingInterval = null;
-    }
-
-    currentSceneIndex = index;
-    const scene = scenes[index];
-
-    storyText.textContent = '';
-   
-    setModoOscuro(scene.oscuro);
-
-    if (temblorAnim) temblorAnim.kill();
-
-    await animateCameraTo(scene.camPos, scene.target, 2);
-
-    let i = 0;
-    const text = scene.text;
-    typingInterval = setInterval(() => {
-        if (i < text.length) {
-            storyText.textContent += text.charAt(i);
-            i++;
-        } else {
-            clearInterval(typingInterval);
-            typingInterval = null;
-        }
-    }, 30);
-
-    if (scene.temblor) {
-        const posOriginal = scene.camPos.clone();
-        temblorAnim = gsap.to({}, {
-            duration: 3,
-            onUpdate: function() {
-                const progress = this.progress();
-                if (progress < 0.9) {
-                    camera.position.x = posOriginal.x + (Math.random() - 0.5) * 1;
-                    camera.position.y = posOriginal.y + (Math.random() - 0.5) * 0.5;
-                    camera.position.z = posOriginal.z + (Math.random() - 0.5) * 1;
-                } else {
-                    gsap.to(camera.position, {
-                        x: posOriginal.x,
-                        y: posOriginal.y,
-                        z: posOriginal.z,
-                        duration: 0.3
-                    });
+        // Detectar cuando se vuelve a la página con el botón atrás
+        window.addEventListener('pageshow', function(event) {
+            if (event.persisted) {
+                const oldZoomBtn = document.querySelector('div[style*="z-index: 1000"]');
+                if (oldZoomBtn) oldZoomBtn.remove();
+                document.body.classList.remove('transition');
+                if (pages && pages.inicio) {
+                    pages.inicio.classList.add('active');
                 }
-            },
-            onComplete: () => {
-                camera.position.copy(posOriginal);
             }
         });
-    }
 
-    storyPrev.disabled = (index === 0);
-    storyNext.textContent = (index === scenes.length - 1) ? 'Finalizar' : 'Siguiente';
-}
+        // --- CONFIGURACIÓN INICIAL ---
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        scene.background = null;
 
-// Función para iniciar la historia
-function startStory() {
-    storyMode = true;
-    
-    targetCamPos.copy(camera.position);
+        const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(3, 1, 2);
+        camera.lookAt(0, 0, 0);
 
-    verHistoriaBtn.style.display = 'none';
-    document.getElementById('botonera').style.opacity = '0';
-    document.getElementById('botonera').style.pointerEvents = 'none';
-    document.getElementById('modo-meditacion').style.opacity = '0';
-    document.getElementById('modo-meditacion').style.pointerEvents = 'none';
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        container.appendChild(renderer.domElement);
 
-    document.querySelectorAll('.cita').forEach(el => el.style.opacity = '0');
+        // --- LUCES ---
+        const ambientLight = new THREE.AmbientLight(0x404060);
+        scene.add(ambientLight);
 
-    storyOverlay.style.display = 'flex';
+        const coreLight = new THREE.PointLight(0xff8844, 2.0, 30);
+        coreLight.position.set(0, 0, 0);
+        scene.add(coreLight);
 
-    contenidoInicio.removeEventListener('scroll', updateScroll);
-    window.addEventListener('wheel', preventScroll, { passive: false });
+        // --- GENERACIÓN DE GALAXIA (con dimensiones modificadas) ---
+        function createGalaxy() {
+            const count = 25000;
+            const arms = 8;
+            const radius = 28;
+            const spin = 2.8;
+            const randomness = 0.45;
+            const coreRadius = 4.5;
 
-    goToScene(0);
-}
+            const geometry = new THREE.BufferGeometry();
+            const positions = new Float32Array(count * 3);
+            const colors = new Float32Array(count * 3);
 
-// Función para salir de la historia
-function exitStory() {
-    storyMode = false;
+            const colorInside = new THREE.Color(0xff6633);
+            const colorOutside = new THREE.Color(0x44aaff);
 
-    if (typingInterval) {
-        clearInterval(typingInterval);
-        typingInterval = null;
-    }
+            for (let i = 0; i < count; i++) {
+                const r = Math.pow(Math.random(), 1.2) * radius;
+                const armAngle = (i % arms) * (Math.PI * 2 / arms);
+                const spinAngle = r * spin;
+                const randomAngle = (Math.random() - 0.5) * randomness * 1.5;
+                const randomRadial = (Math.random() - 0.5) * 0.8;
+                
+                const angle = armAngle + spinAngle + randomAngle;
+                
+                const x = Math.cos(angle) * (r + randomRadial);
+                const z = Math.sin(angle) * (r + randomRadial);
+                const y = (Math.random() - 0.5) * 4.0 * (r / 10);
 
-    verHistoriaBtn.style.display = 'block';
-    document.getElementById('botonera').style.opacity = '1';
-    document.getElementById('botonera').style.pointerEvents = 'auto';
-    document.getElementById('modo-meditacion').style.opacity = '1';
-    document.getElementById('modo-meditacion').style.pointerEvents = 'auto';
+                positions[i*3] = x;
+                positions[i*3+1] = y;
+                positions[i*3+2] = z;
 
-    document.querySelectorAll('.cita').forEach(el => {
-        el.style.opacity = modoMeditacionActivo ? '0' : '1';
-    });
+                const mixFactor = Math.max(0, Math.min(1, (r - coreRadius) / (radius - coreRadius)));
+                const color = colorInside.clone().lerp(colorOutside, mixFactor);
+                color.multiplyScalar(0.7 + 0.5 * Math.random());
+                
+                colors[i*3] = color.r;
+                colors[i*3+1] = color.g;
+                colors[i*3+2] = color.b;
+            }
 
-    storyOverlay.style.display = 'none';
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
-    contenidoInicio.addEventListener('scroll', updateScroll);
-    window.removeEventListener('wheel', preventScroll);
+            const canvas = document.createElement('canvas');
+            canvas.width = 32;
+            canvas.height = 32;
+            const ctx = canvas.getContext('2d');
+            const grad = ctx.createRadialGradient(16, 16, 0, 16, 16, 16);
+            grad.addColorStop(0, 'rgba(255,255,255,1)');
+            grad.addColorStop(0.5, 'rgba(180,180,255,0.8)');
+            grad.addColorStop(1, 'rgba(255,255,255,0)');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, 32, 32);
+            const texture = new THREE.CanvasTexture(canvas);
 
-    setModoOscuro(false);
-    updateScroll();
+            const material = new THREE.PointsMaterial({
+                size: 0.2,
+                map: texture,
+                vertexColors: true,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false,
+                transparent: true,
+                sizeAttenuation: true
+            });
 
-    if (temblorAnim) temblorAnim.kill();
-
-    mostrarTituloFinal();
-}
-
-// Prevenir scroll durante la historia
-function preventScroll(e) {
-    if (storyMode) e.preventDefault();
-}
-
-// Función para mostrar el título final
-function mostrarTituloFinal() {
-    const titulo = document.createElement('div');
-    titulo.textContent = 'RAQIA STELLA';
-    titulo.style.position = 'fixed';
-    titulo.style.top = '50%';
-    titulo.style.left = '50%';
-    titulo.style.transform = 'translate(-50%, -50%)';
-    titulo.style.fontSize = '6rem';
-    titulo.style.color = 'white';
-    titulo.style.textShadow = '0 0 40px gold, 0 0 80px cyan';
-    titulo.style.zIndex = '400';
-    titulo.style.fontFamily = 'Wide Latin, serif';
-    titulo.style.opacity = '0';
-    titulo.style.transition = 'opacity 2s';
-    document.body.appendChild(titulo);
-
-    setTimeout(() => { titulo.style.opacity = '1'; }, 100);
-    setTimeout(() => { titulo.style.opacity = '0'; }, 3000);
-    setTimeout(() => { titulo.remove(); }, 5000);
-}
-
-// --- ANIMACIÓN PRINCIPAL ---
-let clock = new THREE.Clock();
-
-function animate() {
-    requestAnimationFrame(animate);
-    
-    const delta = clock.getDelta();
-    
-    if (!storyMode) {
-        camera.position.lerp(targetCamPos, 0.05);
-        camera.lookAt(0, 1, 0);
-    }
-    
-    galaxy.rotation.y += 0.003;
-    galaxy.rotation.x = 0.15;
-    
-    const positions = meteors.geometry.attributes.position.array;
-    for (let i = 0; i < meteorCount; i++) {
-        positions[i*3+2] += meteorSpeeds[i].z * delta * 20;
-        if (positions[i*3+2] > 30) {
-            positions[i*3] = (Math.random() - 0.5) * 60;
-            positions[i*3+1] = (Math.random() - 0.5) * 30;
-            positions[i*3+2] = -30;
+            return new THREE.Points(geometry, material);
         }
-    }
-    meteors.geometry.attributes.position.needsUpdate = true;
-    
-    renderer.render(scene, camera);
-}
 
-animate();
+        const galaxy = createGalaxy();
+        scene.add(galaxy);
 
-window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-});
+        // --- METEOROS (más cantidad y colores brillantes) ---
+        const meteorCount = 50;
+        const meteorPositions = new Float32Array(meteorCount * 3);
+        const meteorColors = new Float32Array(meteorCount * 3);
+        const meteorSpeeds = [];
 
-showPage('inicio');
+        // Colores brillantes para meteoritos
+        const meteorColorPalette = [
+            new THREE.Color(0xffaa66), // naranja
+            new THREE.Color(0xff8844), // naranja intenso
+            new THREE.Color(0xff5533), // rojo-naranja
+            new THREE.Color(0xffcc88), // amarillo claro
+            new THREE.Color(0xffaa88)  // melocotón
+        ];
 
-// Eventos de los botones de historia
-storyPrev.addEventListener('click', () => {
-    if (storyMode && currentSceneIndex > 0) {
-        goToScene(currentSceneIndex - 1);
-    }
-});
+        for (let i = 0; i < meteorCount; i++) {
+            meteorPositions[i*3] = (Math.random() - 0.5) * 80;
+            meteorPositions[i*3+1] = (Math.random() - 0.5) * 40;
+            meteorPositions[i*3+2] = (Math.random() - 0.5) * 100 - 50;
+            
+            // Color aleatorio brillante
+            const col = meteorColorPalette[Math.floor(Math.random() * meteorColorPalette.length)].clone();
+            const brightness = 0.8 + Math.random() * 0.5;
+            meteorColors[i*3] = col.r * brightness;
+            meteorColors[i*3+1] = col.g * brightness;
+            meteorColors[i*3+2] = col.b * brightness;
+            
+            meteorSpeeds.push({
+                x: (Math.random() - 0.5) * 0.3,
+                y: (Math.random() - 0.5) * 0.3,
+                z: Math.random() * 1.2 + 0.6
+            });
+        }
 
-storyNext.addEventListener('click', () => {
-    if (!storyMode) return;
-    if (currentSceneIndex < scenes.length - 1) {
-        goToScene(currentSceneIndex + 1);
-    } else {
-        exitStory();
-    }
-});
+        const meteorGeo = new THREE.BufferGeometry();
+        meteorGeo.setAttribute('position', new THREE.BufferAttribute(meteorPositions, 3));
+        meteorGeo.setAttribute('color', new THREE.BufferAttribute(meteorColors, 3));
 
-storySkip.addEventListener('click', exitStory);
+        const meteorCanvas = document.createElement('canvas');
+        meteorCanvas.width = 16;
+        meteorCanvas.height = 16;
+        const mCtx = meteorCanvas.getContext('2d');
+        mCtx.fillStyle = 'white';
+        mCtx.beginPath();
+        mCtx.arc(8, 8, 4, 0, 2*Math.PI);
+        mCtx.fill();
+        mCtx.fillStyle = 'orange';
+        mCtx.beginPath();
+        mCtx.arc(12, 8, 2, 0, 2*Math.PI);
+        mCtx.fill();
+        const meteorTexture = new THREE.CanvasTexture(meteorCanvas);
 
-verHistoriaBtn.addEventListener('click', startStory);
+        const meteorMaterial = new THREE.PointsMaterial({
+            size: 0.4,
+            map: meteorTexture,
+            vertexColors: true,
+            blending: THREE.AdditiveBlending,
+            transparent: true
+        });
+        const meteors = new THREE.Points(meteorGeo, meteorMaterial);
+        scene.add(meteors);
+
+        // --- CONTROL DE SCROLL (página de inicio) ---
+        let targetCamPos = new THREE.Vector3(0, 0, 0);
+        const farPos = new THREE.Vector3(0, 0, 150);
+        const nearPos = new THREE.Vector3(0, -2, 0);
+
+        const fondoDiv = document.getElementById('fondo-estrellas');
+        const contenidoInicio = document.getElementById('contenido-inicio');
+        const tituloPrincipal = document.getElementById('titulo-principal');
+
+        function updateScroll() {
+            if (!document.getElementById('page-inicio').classList.contains('active')) return;
+            
+            const scrollY = contenidoInicio.scrollTop;
+            const maxScroll = contenidoInicio.scrollHeight - contenidoInicio.clientHeight;
+            const progress = Math.min(1, scrollY / maxScroll);
+            
+            targetCamPos.x = nearPos.x + (farPos.x - nearPos.x) * progress;
+            targetCamPos.y = nearPos.y + (farPos.y - nearPos.y) * progress;
+            targetCamPos.z = nearPos.z + (farPos.z - nearPos.z) * progress;
+            
+            coreLight.intensity = 2.0 * (1 - progress * 0.7);
+            
+            if (fondoDiv) {
+                fondoDiv.style.transform = `scale(${1 + progress * 0.4})`;
+            }
+        }
+
+        contenidoInicio.addEventListener('scroll', updateScroll);
+
+        // --- SISTEMA DE PÁGINAS ---
+        const pages = {
+            inicio: document.getElementById('page-inicio')
+        };
+
+        let currentPage = 'inicio';
+
+        function showPage(pageId) {
+            if (pageId === 'inicio') {
+                pages.inicio.classList.add('active');
+                contenidoInicio.scrollTop = 0;
+                targetCamPos.copy(nearPos);
+            } else {
+                console.warn('Página interna no disponible, se usa redirección externa');
+            }
+        }
+
+        // --- TRANSICIÓN CON HIPERESPACIO ---
+        async function transitionToPage(pageId, passwordNeeded = false) {
+            if (passwordNeeded) {
+                const pwd = prompt('Contraseña para Poemitas:');
+                if (pwd !== 'Laura') {
+                    alert('Contraseña incorrecta');
+                    return;
+                }
+            }
+
+            document.body.classList.add('transition');
+            
+            const targetBtn = pageId === 'poemitas' ? btn1 : (pageId === 'prosa' ? btn2 : btn3);
+            const btnRect = targetBtn.getBoundingClientRect();
+            
+            const zoomBtn = document.createElement('div');
+            zoomBtn.style.position = 'fixed';
+            zoomBtn.style.left = btnRect.left + 'px';
+            zoomBtn.style.top = btnRect.top + 'px';
+            zoomBtn.style.width = btnRect.width + 'px';
+            zoomBtn.style.height = btnRect.height + 'px';
+            zoomBtn.style.borderRadius = '50%';
+            zoomBtn.style.backgroundImage = window.getComputedStyle(targetBtn).backgroundImage;
+            zoomBtn.style.backgroundSize = 'cover';
+            zoomBtn.style.backgroundPosition = 'center';
+            zoomBtn.style.boxShadow = '0 0 50px gold';
+            zoomBtn.style.zIndex = '1000';
+            zoomBtn.style.transition = 'all 1s ease';
+            document.body.appendChild(zoomBtn);
+            
+            zoomBtn.offsetHeight;
+            
+            zoomBtn.style.left = '0';
+            zoomBtn.style.top = '0';
+            zoomBtn.style.width = '100vw';
+            zoomBtn.style.height = '100vh';
+            zoomBtn.style.borderRadius = '0';
+            zoomBtn.style.transform = 'scale(1)';
+            
+            await new Promise(r => setTimeout(r, 1000));
+            
+            if (zoomBtn && zoomBtn.parentNode) {
+                zoomBtn.remove();
+            }
+            
+            document.body.classList.remove('transition');
+            
+            if (pageId === 'poemitas') {
+                window.location.href = 'poemitas.html';
+            } else if (pageId === 'prosa') {
+                window.location.href = 'prosa.html';
+            } else if (pageId === 'otros') {
+                window.location.href = 'otros.html';
+            }
+        }
+
+        // --- EVENTOS DE BOTONES ---
+        document.getElementById('btn1').addEventListener('click', () => transitionToPage('poemitas', true));
+        document.getElementById('btn2').addEventListener('click', () => transitionToPage('prosa', false));
+        document.getElementById('btn3').addEventListener('click', () => transitionToPage('otros', false));
+
+        // --- MODO MEDITACIÓN ---
+        let modoMeditacionActivo = false;
+        let audio = null;
+
+        document.getElementById('modo-meditacion').addEventListener('click', () => {
+            modoMeditacionActivo = !modoMeditacionActivo;
+            
+            // El título principal también se oculta en modo meditación (opcional, según la idea)
+            if (tituloPrincipal) {
+                tituloPrincipal.style.opacity = modoMeditacionActivo ? '0' : '1';
+            }
+            
+            const fondoEstrellas = document.getElementById('fondo-estrellas');
+            fondoEstrellas.style.opacity = modoMeditacionActivo ? '0' : '1';
+            
+            ambientLight.intensity = modoMeditacionActivo ? 0.1 : 0.5;
+            coreLight.intensity = modoMeditacionActivo ? 0.5 : 2.0;
+            
+            if (modoMeditacionActivo) {
+                if (!audio) {
+                    audio = new Audio();
+                    audio.src = 'https://raw.githubusercontent.com/socram98gg-cpu/poemas/main/Laura%20audio.mp3';
+                    audio.loop = true;
+                    audio.volume = 0.5;
+                }
+                audio.play().catch(e => console.log('Autoplay bloqueado:', e));
+            } else {
+                if (audio) audio.pause();
+            }
+        });
+
+        // ===== HISTORIA INTERACTIVA =====
+        const verHistoriaBtn = document.getElementById('ver-historia');
+        const storyOverlay = document.getElementById('story-overlay');
+        const storyText = document.getElementById('story-text');
+        const storyPrev = document.getElementById('story-prev');
+        const storyNext = document.getElementById('story-next');
+        const storySkip = document.getElementById('story-skip');
+
+        let storyMode = false;
+        let currentSceneIndex = 0;
+        let typingInterval = null;
+
+        // Definición de las escenas (solo 5 escenas, la última se maneja aparte)
+        const scenes = [
+            {
+                camPos: new THREE.Vector3(0, 0, 0),
+                target: new THREE.Vector3(0, 20, 0),
+                text: "EN EL PRINCIPIO ERA MI ALIENTO,\ny con él extendí los cielos como quien despliega un lienzo.\nNo hubo testigos, solo una danza\n— de luz, tiempo y gravedad — que aún no cesa.",
+                oscuro: true,
+                duracionCam: 2.5
+            },
+            {
+                camPos: new THREE.Vector3(0, -2, 2),
+                target: new THREE.Vector3(0, 0, 0),
+                text: "LO QUE CONTEMPLAS\nno es fuego inerte: es la memoria de mi Voz.\nEl corazón de una galaxia late y testifica.\nCada fotón que llega a tus ojos viajó milenios\npara contarte que hubo un 'Dijo Dios'.",
+                oscuro: true,
+                duracionCam: 2.5
+            },
+            {
+                camPos: new THREE.Vector3(0, -2, 25),
+                target: new THREE.Vector3(0, -1, 0),
+                text: "CADA ESTRELLA\nsigue la ordenanza que le di.\nLas Pléyades se atan sin nudos, Orión camina sin brújula,\nla Osa Mayor guía a sus hijos por caminos que no entienden.\nYo las entiendo. A cada una puse nombre.\nTambién al polvo que ahora mira al cielo.",
+                oscuro: true,
+                duracionCam: 3.5
+            },
+            {
+                camPos: new THREE.Vector3(0, 10, 150),
+                target: new THREE.Vector3(0, 0, 0),
+                text: "MIRA MÁS ALLÁ\nhasta que todo sea diminuto.\nTan diminuto como tú, hecho del mismo polvo que brilla,\npero animado por un aliento que el polvo no tiene.",
+                oscuro: true,      // Inicia oscuro, se encenderá al final del movimiento
+                duracionCam: 5,
+                encenderAlFinal: true
+            },
+            {
+                camPos: new THREE.Vector3(0, 20, 0),
+                target: new THREE.Vector3(0, 0, 0),
+                text: "NO TEMAS:\nlas mismas manos que sostienen la expansión\nfueron horadadas para sostenerte a ti también.\n\nCONFÍA:\nsi las Pléyades se dejan atar sin resistirse,\nsi la luz viaja milenios solo para hablarte de mí,\nsi la creación entera obedece en silencio,\n¿qué esperas tú?\n\nEscucha su aliento,\nes el mismo que ahora te llama\na inclinarte como se inclina, dócil y eterna:",
+                oscuro: true,
+                duracionCam: 4,
+                finalConRaqia: true   // Después de escribir, mostrar "RAQIA STELLA" y aclarar
+            }
+        ];
+
+        // Función para animar el modo oscuro con transición suave
+        function setModoOscuroSuave(activo, duracion = 2) {
+            const fondo = document.getElementById('fondo-estrellas');
+            // Animación de opacidad del fondo
+            gsap.to(fondo, {
+                opacity: activo ? 0 : 1,
+                duration: duracion,
+                ease: "power2.inOut"
+            });
+            // Animación de intensidad de luces
+            gsap.to(ambientLight, {
+                intensity: activo ? 0.1 : 0.5,
+                duration: duracion,
+                ease: "power2.inOut"
+            });
+            gsap.to(coreLight, {
+                intensity: activo ? 0.5 : 2.0,
+                duration: duracion,
+                ease: "power2.inOut"
+            });
+        }
+
+        // Función para animar la cámara con duración personalizada
+        function animateCameraTo(position, target, duration = 2) {
+            return new Promise(resolve => {
+                gsap.to(camera.position, {
+                    x: position.x,
+                    y: position.y,
+                    z: position.z,
+                    duration,
+                    ease: "power2.inOut",
+                    onUpdate: () => {
+                        camera.lookAt(target);
+                    },
+                    onComplete: resolve
+                });
+            });
+        }
+
+        // Función para escribir texto letra por letra
+        function startTyping(text, callback) {
+            if (typingInterval) clearInterval(typingInterval);
+            storyText.textContent = '';
+            let i = 0;
+            typingInterval = setInterval(() => {
+                if (i < text.length) {
+                    storyText.textContent += text.charAt(i);
+                    i++;
+                } else {
+                    clearInterval(typingInterval);
+                    typingInterval = null;
+                    if (callback) callback();
+                }
+            }, 30);
+        }
+
+        // Función para ir a una escena (con escritura simultánea)
+        async function goToScene(index) {
+            if (index < 0 || index >= scenes.length) return;
+
+            if (typingInterval) {
+                clearInterval(typingInterval);
+                typingInterval = null;
+            }
+
+            currentSceneIndex = index;
+            const scene = scenes[index];
+
+            // Aplicar modo oscuro (si no es la escena que se encenderá al final)
+            if (!scene.encenderAlFinal) {
+                setModoOscuroSuave(scene.oscuro, 1.5);
+            } else {
+                // Para la escena 4, nos aseguramos que esté oscuro al inicio
+                setModoOscuroSuave(true, 1.0);
+            }
+
+            // Iniciar animación de cámara y escritura simultáneamente
+            const camPromise = animateCameraTo(scene.camPos, scene.target, scene.duracionCam);
+            startTyping(scene.text, () => {
+                // Al terminar de escribir, si es la escena con final con RAQIA STELLA, mostrar la palabra
+                if (scene.finalConRaqia) {
+                    mostrarPalabraFinal();
+                }
+            });
+
+            await camPromise;
+
+            // Si la escena tiene encenderAlFinal, ahora quitamos el modo oscuro
+            if (scene.encenderAlFinal) {
+                setModoOscuroSuave(false, 2.5); // transición más lenta
+            }
+
+            // Actualizar botones
+            storyPrev.disabled = (index === 0);
+            storyNext.textContent = (index === scenes.length - 1) ? 'Finalizar' : 'Siguiente';
+        }
+
+        // Función especial para mostrar "RAQIA STELLA" y aclarar
+        function mostrarPalabraFinal() {
+            // Agregar la palabra RAQIA STELLA debajo del texto existente
+            const raqiaSpan = document.createElement('div');
+            raqiaSpan.textContent = 'RAQIA STELLA';
+            raqiaSpan.style.fontSize = '5rem';
+            raqiaSpan.style.fontFamily = 'Wide Latin, serif';
+            raqiaSpan.style.color = 'white';
+            raqiaSpan.style.textShadow = '0 0 40px gold, 0 0 80px cyan';
+            raqiaSpan.style.marginTop = '40px';
+            raqiaSpan.style.animation = 'aparecer 1s ease-out';
+            storyText.appendChild(raqiaSpan);
+            
+            // Aclarar lentamente la escena
+            setModoOscuroSuave(false, 3);
+            
+            // Después de 3 segundos, hacer que el título central aparezca y desaparecer el overlay de historia
+            setTimeout(() => {
+                // Mostrar título principal con la palabra final
+                if (tituloPrincipal) {
+                    tituloPrincipal.style.opacity = '1';
+                }
+                // Finalizar la historia automáticamente
+                exitStory();
+            }, 3500);
+        }
+
+        // Función para iniciar la historia
+        function startStory() {
+            storyMode = true;
+            
+            targetCamPos.copy(camera.position);
+            
+            verHistoriaBtn.style.display = 'none';
+            document.getElementById('botonera').style.opacity = '0';
+            document.getElementById('botonera').style.pointerEvents = 'none';
+            document.getElementById('modo-meditacion').style.opacity = '0';
+            document.getElementById('modo-meditacion').style.pointerEvents = 'none';
+            
+            // Ocultar título principal
+            if (tituloPrincipal) tituloPrincipal.style.opacity = '0';
+            
+            storyOverlay.style.display = 'flex';
+            
+            contenidoInicio.removeEventListener('scroll', updateScroll);
+            window.addEventListener('wheel', preventScroll, { passive: false });
+            
+            goToScene(0);
+        }
+
+        // Función para salir de la historia
+        function exitStory() {
+            storyMode = false;
+            
+            if (typingInterval) {
+                clearInterval(typingInterval);
+                typingInterval = null;
+            }
+            
+            verHistoriaBtn.style.display = 'block';
+            document.getElementById('botonera').style.opacity = '1';
+            document.getElementById('botonera').style.pointerEvents = 'auto';
+            document.getElementById('modo-meditacion').style.opacity = '1';
+            document.getElementById('modo-meditacion').style.pointerEvents = 'auto';
+            
+            // Mostrar título principal con subtítulo
+            if (tituloPrincipal) {
+                tituloPrincipal.style.opacity = '1';
+                // Asegurar que el subtítulo esté presente
+                const subtitulo = tituloPrincipal.querySelector('.subtitulo');
+                if (!subtitulo) {
+                    const sub = document.createElement('div');
+                    sub.className = 'subtitulo';
+                    sub.textContent = '(Expansión de Estrellas)';
+                    tituloPrincipal.appendChild(sub);
+                }
+            }
+            
+            storyOverlay.style.display = 'none';
+            
+            contenidoInicio.addEventListener('scroll', updateScroll);
+            window.removeEventListener('wheel', preventScroll);
+            
+            setModoOscuroSuave(false, 1.5);
+            updateScroll();
+        }
+
+        // Prevenir scroll durante la historia
+        function preventScroll(e) {
+            if (storyMode) e.preventDefault();
+        }
+
+        // --- ANIMACIÓN PRINCIPAL ---
+        let clock = new THREE.Clock();
+
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            const delta = clock.getDelta();
+            
+            if (!storyMode) {
+                camera.position.lerp(targetCamPos, 0.05);
+                camera.lookAt(0, 1, 0);
+            }
+            
+            galaxy.rotation.y += 0.003;
+            galaxy.rotation.x = 0.15;
+            
+            // Mover meteoros
+            const positions = meteors.geometry.attributes.position.array;
+            for (let i = 0; i < meteorCount; i++) {
+                positions[i*3+2] += meteorSpeeds[i].z * delta * 20;
+                if (positions[i*3+2] > 60) {
+                    positions[i*3] = (Math.random() - 0.5) * 80;
+                    positions[i*3+1] = (Math.random() - 0.5) * 40;
+                    positions[i*3+2] = -60;
+                }
+            }
+            meteors.geometry.attributes.position.needsUpdate = true;
+            
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        showPage('inicio');
+
+        // Eventos de los botones de historia
+        storyPrev.addEventListener('click', () => {
+            if (storyMode && currentSceneIndex > 0) {
+                goToScene(currentSceneIndex - 1);
+            }
+        });
+
+        storyNext.addEventListener('click', () => {
+            if (!storyMode) return;
+            if (currentSceneIndex < scenes.length - 1) {
+                goToScene(currentSceneIndex + 1);
+            } else {
+                // En la última escena, ya se maneja el final automáticamente, pero si se pulsa Finalizar:
+                exitStory();
+            }
+        });
+
+        storySkip.addEventListener('click', exitStory);
+
+        verHistoriaBtn.addEventListener('click', startStory);
     </script>
 
     <!-- Botón Ver historia -->
