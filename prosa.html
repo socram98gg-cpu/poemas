@@ -1,254 +1,411 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>prosa</title>
-<style>
-  body {
-    font-family: Georgia, serif;
-    background: linear-gradient(to bottom, #1e1e2f, #2c2c3e);
-    margin: 0;
-    padding: 0;
-    color: #333;
-  }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Nebulosa del Cangrejo · Prosa Estelar</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none; /* Evita selección de texto al hacer clic en estrellas */
+        }
 
-.portada {
-  background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url("IMG_5262.jpeg");
-  background-size: cover;
-  background-position: center;
-  color: white;
-  text-align: center;
-  padding: 100px 20px;
-}
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            background: #000;
+            color: #f0e6d0;
+        }
 
-  .portada h1 {
-    margin: 0;
-    font-size: 40px;
-    letter-spacing: 2px;
-  }
+        /* Fondo de nebulosa (misma imagen del botón Prosa del index) */
+        #fondo-nebulosa {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background-image: url('https://raw.githubusercontent.com/socram98gg-cpu/poemas/main/IMG_5468.jpeg');
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.65) contrast(1.2) saturate(1.1);
+            transition: opacity 0.8s ease;
+        }
 
-  .portada p {
-    margin-top: 10px;
-    font-style: italic;
-    opacity: 0.8;
-  }
+       /* Título principal estilo "Raqia Stella" */
+        .titulo-nebulosa {
+            position: fixed;
+            top: 8%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 150;
+            text-align: center;
+            pointer-events: none;
+            white-space: nowrap;
+        }
 
-  .contenedor {
-    padding: 30px;
-    max-width: 800px;
-    margin: auto;
-  }
+        .titulo-nebulosa .cangrejo {
+            font-size: 4.5rem;
+            font-family: 'Wide Latin', 'Georgia', serif;
+            color: #fff5e6;
+            text-shadow: 0 0 25px #ffaa66, 0 0 45px #ff8844, 0 0 70px #cc66ff;
+            letter-spacing: 4px;
+            animation: brilloSuave 3s infinite alternate;
+        }
 
-  .poema {
-    background: white;
-    padding: 20px;
-    margin: 20px 0;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-  }
+        .titulo-nebulosa .subtitulo {
+            font-size: 1.2rem;
+            font-family: 'Georgia', serif;
+            font-style: italic;
+            color: #ffddbb;
+            text-shadow: 0 0 12px rgba(0, 0, 0, 0.6);
+            margin-top: 12px;
+            letter-spacing: 2px;
+        }
 
-  .poema h2 {
-    margin-top: 0;
-  }
+        @keyframes brilloSuave {
+            0% { text-shadow: 0 0 20px #ffaa66, 0 0 35px #ff8844; }
+            100% { text-shadow: 0 0 40px #ffdd99, 0 0 65px #ffaa44, 0 0 90px #dd88ff; }
+        }
 
-  button {
-    margin-top: 10px;
-    padding: 8px 12px;
-    background: #2c2c3e;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
+        /* Contenedor de las estrellas (semicírculo dinámico) */
+        #estrellas-container {
+            position: fixed;
+            bottom: 8%;
+            left: 0;
+            width: 100%;
+            height: auto;
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+        }
 
-  button:hover {
-    background: #44445a;
-  }
+        .estrella-planeta {
+            position: absolute;
+            pointer-events: auto;
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-weight: bold;
+            color: white;
+            font-size: 0.9rem;
+            font-family: 'Segoe UI', 'Georgia', serif;
+            text-shadow: 0 0 5px black;
+            backdrop-filter: blur(1px);
+            box-shadow: 0 0 30px rgba(255, 200, 100, 0.7), inset 0 0 15px rgba(255, 255, 200, 0.5);
+            background: radial-gradient(circle at 35% 30%, rgba(255,240,180,1) 0%, rgba(255,160,80,0.9) 70%, rgba(180,80,40,0.8) 100%);
+            animation: flotar 5s infinite alternate, rotarLenta 12s infinite linear;
+            will-change: transform;
+        }
 
-.contenido {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.5s ease;
-  margin-top: 15px;
-  white-space: pre-line;
-  line-height: 1.6;
-}
-</style>
+        /* Variedad de colores para cada estrella (se asignarán dinámicamente con JS o clases) */
+        .estrella-planeta[data-color="0"] { background: radial-gradient(circle at 35% 30%, #ffd89b, #ffb347, #cc7733); }
+        .estrella-planeta[data-color="1"] { background: radial-gradient(circle at 40% 25%, #f9f0b0, #e0aa3e, #b95f1a); }
+        .estrella-planeta[data-color="2"] { background: radial-gradient(circle at 30% 35%, #ffe0b5, #ffaa66, #dd8844); }
+        .estrella-planeta[data-color="3"] { background: radial-gradient(circle at 45% 30%, #ffcf9a, #ff9f4a, #c55a1c); }
+        .estrella-planeta[data-color="4"] { background: radial-gradient(circle at 30% 40%, #f7e5b3, #fcb36b, #c96f2e); }
+        .estrella-planeta[data-color="5"] { background: radial-gradient(circle at 50% 30%, #ffedc0, #ffad60, #c97d3a); }
+        .estrella-planeta[data-color="6"] { background: radial-gradient(circle at 35% 25%, #ffd5a4, #ffa559, #b2571a); }
+        .estrella-planeta[data-color="7"] { background: radial-gradient(circle at 40% 35%, #ffe2bc, #f7933c, #bb5e1c); }
+
+        /* Anillos para algunos planetas */
+        .estrella-planeta.con-anillo::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 130%;
+            height: 30%;
+            background: rgba(210, 180, 140, 0.5);
+            border-radius: 50%;
+            transform: translate(-50%, -50%) rotate(25deg);
+            border: 2px solid rgba(255, 215, 130, 0.7);
+            box-shadow: 0 0 15px rgba(255, 200, 100, 0.5);
+            pointer-events: none;
+        }
+
+        /* Efecto de brillo extra al hacer hover */
+        .estrella-planeta:hover {
+            transform: scale(1.12) rotate(2deg);
+            box-shadow: 0 0 55px rgba(255, 220, 100, 0.9);
+            filter: brightness(1.1);
+            transition: 0.2s;
+        }
+
+        /* Animaciones */
+        @keyframes flotar {
+            0% { transform: translateY(0px) rotate(0deg); }
+            100% { transform: translateY(-10px) rotate(3deg); }
+        }
+
+        @keyframes rotarLenta {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Pergamino modal (transparente, estilo luz desplegable) */
+        .pergamino-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            width: 85%;
+            max-width: 700px;
+            max-height: 75vh;
+            background: rgba(15, 10, 20, 0.75);
+            backdrop-filter: blur(16px);
+            border-radius: 28px;
+            border: 1px solid rgba(255, 215, 150, 0.6);
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.5), 0 0 0 2000px rgba(0, 0, 0, 0.4), 0 0 40px rgba(255, 180, 70, 0.4);
+            z-index: 300;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            padding: 30px 35px;
+            overflow-y: auto;
+            font-family: 'Georgia', serif;
+            color: #fef3e2;
+            text-shadow: 0 0 4px #00000066;
+            pointer-events: auto;
+        }
+
+        .pergamino-modal.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .pergamino-modal h3 {
+            font-size: 2rem;
+            font-family: 'Wide Latin', 'Georgia', serif;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #ffddaa;
+            border-bottom: 1px solid rgba(255, 220, 150, 0.5);
+            display: inline-block;
+            width: auto;
+            padding-bottom: 8px;
+            letter-spacing: 2px;
+        }
+
+        .pergamino-modal .poema-contenido {
+            white-space: pre-line;
+            line-height: 1.65;
+            font-size: 1.1rem;
+            margin-top: 15px;
+            text-align: left;
+            font-weight: 400;
+            max-height: 55vh;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .pergamino-modal .cerrar-pergamino {
+            position: absolute;
+            top: 18px;
+            right: 24px;
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #ffcc99;
+            filter: drop-shadow(0 0 6px black);
+            transition: 0.2s;
+        }
+
+        .pergamino-modal .cerrar-pergamino:hover {
+            color: #ffaa66;
+            transform: scale(1.1);
+        }
+
+        /* Scroll personalizado en pergamino */
+        .poema-contenido::-webkit-scrollbar {
+            width: 5px;
+        }
+        .poema-contenido::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+        }
+        .poema-contenido::-webkit-scrollbar-thumb {
+            background: #ffc285;
+            border-radius: 10px;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .boton { width: 100px; height: 100px; font-size: 0.75rem; }
+            .titulo-nebulosa .cangrejo { font-size: 2.4rem; white-space: normal; padding: 0 15px; }
+            .titulo-nebulosa { top: 14%; white-space: normal; width: 90%; }
+            .estrella-planeta { width: 80px; height: 80px; font-size: 0.7rem; }
+            .pergamino-modal { width: 90%; padding: 20px; }
+            .pergamino-modal h3 { font-size: 1.4rem; }
+        }
+
+        @media (max-width: 600px) {
+            .estrella-planeta { width: 70px; height: 70px; }
+            .boton { width: 80px; height: 80px; }
+            .boton span { font-size: 0.7rem; padding: 4px 8px; }
+        }
+    </style>
 </head>
 <body>
 
-<header class="portada">
-  <h1>Prosa Poética</h1>
-  <p>mua</p>
-</header>
+    <div id="fondo-nebulosa"></div>
 
-  <a href="Manos Abiertas .docx" target="_blank" style="
-display:inline-block;
-margin-top:20px;
-padding:10px 20px;
-background:#f8e7c9;
-color:#111;
-text-decoration:none;
-border-radius:20px;
-">
-descargar doc.
-</a>
 
-  <div class="contenedor">
-<div class="poema">
-  <h2>Manos Abiertas</h2>
-  <button onclick="mostrar(this)">Mostrar / Ocultar</button>
-  <div class="contenido">
+    <!-- Título principal: Nebulosa del Cangrejo -->
+    <div class="titulo-nebulosa">
+        <div class="cangrejo">NEBULOSA DEL CANGREJO</div>
+        <div class="subtitulo">⋆⁺₊☾ Fragmentos de luz escritos ☽₊⁺⋆</div>
+    </div>
 
-Allí estabas, después del humo y las cenizas, de los gritos y los adioses, del abismo, después del fondo, estabas allí. Como si nunca te hubieras marchado, sin añoranzas ni remordimientos, sin desviar la mirada, con la frente erguida y las… ¡las cicatrices en tus manos abiertas! Era yo el fugitivo, me había alejado y otra vez venías a mi encuentro. Con sólo un beso seduciste mi escamoso corazón. Lo cautivaste con uno de esos ‘’sígueme, ‘’no temas’’, ‘’sólo confía’’. Al instante, la ansiedad, el miedo y la confusión, leales compañeros de por vida, sin avisar se marcharían. Acariciaste las arrugas, favoreciste al despreciado, revindicaste al caído. Traspasaste el cielo, fuiste traspasado, traspasaste la muerte para traspasarme a la vida, y ahora puedo pasar un rato contigo, un rato como una eternidad, como un mundo de gentes traspasadas por tu amor, sin arrugas, manchas o impurezas, sin retazos de pecado ni secuelas de lo caído, sin nada más que tu presencia. 
-Fue como gotas de lluvia acabadas de caer, como grato rocío sobre mis hombros. Gracias por tanto, no quiero que termine, fluye sobre mí y desplázame a tu corazón, para correr entre aguaceros, sin paraguas ni itinerarios, correr a campo abierto. Qué éxtasis de calma y placentera quietud donde me llevas, nunca sabría llegar hasta aquí, fueron tus manos abiertas  en mis espaldas corrigiéndome, tu mirada… tu mirada, redarguyendo mi sequía con la ternura del rocío.
-Y aunque me encuentre debajo del cielo -donde el azul se destiñe y prevalecen las rocas, donde miles de secretos resuenan en mi orilla- aún así voy a tu encuentro, me lanzo hacia tí y recaigo en tus lomos. Tienes tanto que darme, aquí estaré, que nadie despierte a esta alma escondida, aquí soy y seré. Porque llegará ese día en que el cielo será mi suelo, -cuando el azul retome su carácter y las rocas desistan de su dureza, cuando los misterios emerjan a Su verdad- entonces, aquí seguiré, mucho más cerca, más profundo y sublime, contigo, más vivo que nunca, la muerte me habrá despertado.
-Mientras tanto camino este sendero angosto, marcado con la sangre de un cordero, con recodos anegados en lágrimas que apagan los infiernos, con canciones de redención que pronuncian mi nombre. Mientras tanto mis miedos persisten, en ser intimidados por tu amor. Mientras tanto puedo mirar más allá al cerrar mis ojos, en oración. Mientras tanto tus Palabras hacen su hogar en mi corazón, y lo esculpen al ritmo de salmos. Mientras tanto tus manos abiertas me sostienen, y me llevan a ese lugar donde no habrá más cenizas, gritos o abismos, no habrá más cicatrices que las que ahora me enseñas, en tus manos abiertas.
+    <!-- Contenedor donde se insertarán las 8 estrellas/planetas en semicírculo -->
+    <div id="estrellas-container"></div>
 
-  </div>
-</div>
+    <!-- Pergamino modal para mostrar poemas -->
+    <div id="pergamino" class="pergamino-modal">
+        <button class="cerrar-pergamino" id="cerrarPergamino">&times;</button>
+        <h3 id="tituloPoema">Título</h3>
+        <div id="contenidoPoema" class="poema-contenido"></div>
+    </div>
 
-<div class="poema">
-  <h2>Súper Mario</h2>
-  <button onclick="mostrar(this)">Mostrar / Ocultar</button>
-  <div class="contenido">
+    <script>
+        // ---------- POEMAS EXTRAÍDOS DEL CÓDIGO ORIGINAL (8 textos) ----------
+        const poemas = [
+            {
+                titulo: "Manos Abiertas",
+                texto: `Allí estabas, después del humo y las cenizas, de los gritos y los adioses, del abismo, después del fondo, estabas allí. Como si nunca te hubieras marchado, sin añoranzas ni remordimientos, sin desviar la mirada, con la frente erguida y las… ¡las cicatrices en tus manos abiertas! Era yo el fugitivo, me había alejado y otra vez venías a mi encuentro. Con sólo un beso seduciste mi escamoso corazón. Lo cautivaste con uno de esos ‘’sígueme, ‘’no temas’’, ‘’sólo confía’’. Al instante, la ansiedad, el miedo y la confusión, leales compañeros de por vida, sin avisar se marcharían. Acariciaste las arrugas, favoreciste al despreciado, revindicaste al caído. Traspasaste el cielo, fuiste traspasado, traspasaste la muerte para traspasarme a la vida, y ahora puedo pasar un rato contigo, un rato como una eternidad, como un mundo de gentes traspasadas por tu amor, sin arrugas, manchas o impurezas, sin retazos de pecado ni secuelas de lo caído, sin nada más que tu presencia. \nFue como gotas de lluvia acabadas de caer, como grato rocío sobre mis hombros. Gracias por tanto, no quiero que termine, fluye sobre mí y desplázame a tu corazón, para correr entre aguaceros, sin paraguas ni itinerarios, correr a campo abierto. Qué éxtasis de calma y placentera quietud donde me llevas, nunca sabría llegar hasta aquí, fueron tus manos abiertas en mis espaldas corrigiéndome, tu mirada… tu mirada, redarguyendo mi sequía con la ternura del rocío.\nY aunque me encuentre debajo del cielo -donde el azul se destiñe y prevalecen las rocas, donde miles de secretos resuenan en mi orilla- aún así voy a tu encuentro, me lanzo hacia tí y recaigo en tus lomos. Tienes tanto que darme, aquí estaré, que nadie despierte a esta alma escondida, aquí soy y seré. Porque llegará ese día en que el cielo será mi suelo, -cuando el azul retome su carácter y las rocas desistan de su dureza, cuando los misterios emerjan a Su verdad- entonces, aquí seguiré, mucho más cerca, más profundo y sublime, contigo, más vivo que nunca, la muerte me habrá despertado.\nMientras tanto camino este sendero angosto, marcado con la sangre de un cordero, con recodos anegados en lágrimas que apagan los infiernos, con canciones de redención que pronuncian mi nombre. Mientras tanto mis miedos persisten, en ser intimidados por tu amor. Mientras tanto puedo mirar más allá al cerrar mis ojos, en oración. Mientras tanto tus Palabras hacen su hogar en mi corazón, y lo esculpen al ritmo de salmos. Mientras tanto tus manos abiertas me sostienen, y me llevan a ese lugar donde no habrá más cenizas, gritos o abismos, no habrá más cicatrices que las que ahora me enseñas, en tus manos abiertas.`
+            },
+            {
+                titulo: "Súper Mario",
+                texto: `No estoy en contra de los videojuegos, pero desde niño siempre supe que jugar Súper Mario no era más súper que jugar con Mario. Aquellos juegos, que de ser enseñados a los adultos harían la vida mas profunda y menos abismal, más seria y menos aburida, más fantástica y menos fantasiosa, harían la vida más viva y menos muerta, más súper y más y mucho más\nJugar Súper Mario no era más súper que jugar con Mario. Aquellos juegos, cara a cara, hombro a hombro, corazón a corazón. Juegos que trascienden a las pantallas, al régimen de los espejos negros. No culpemos a los espejos, ellos tan sólo muestran reflejos del que asoma su semblante. Aunque, ¿por qué mirarnos de forma constante, cuando tenemos por delante un universo deslumbrante? Horizontes majestuosos que sobrepasan nuestra gloria y a nuestros ojos facinan, sin reclamarlo, nunca cobran. ¡Tinieblas! Endeudas a los hombres y te pagan con su vida, te adueñas de su identidad y a cambio los motivas a buscarla en los espejos por el resto de sus días. Faena insaciable, verdades con mentiras, vanidad de vanidades que al jugar evitarían.\nJugar Súper Mario no era más súper que jugar con Mario. Aquellos juegos, pasatiempos en los que el Tiempo no pasaba, a contemplarnos se recostaba, suspiraba conmovido y en su destino meditaba. En cierta ocación volvió hacia mí su mirada y con sus ojos quebrados la tragedia me anunciaba: Llegaría la hora y ya se acercaba, cuando nuestros juegos a un final arrivaran, cuando uno de los dos por siempre faltara. ¡Tinieblas! ¡Tinieblas! ¿quién desea tu llegada?\nJugamos al “veo veo” en medio de un apagón, allí no se puede ver nada y abunda la confusión. Mas esas fueron las horas mas claras para los ojos del corazón. No todos pueden jugar este juego, requiere una súper visión para mirar mas allá de tu ego, requiere un súper corazón. No estoy en contra de los videojuegos, pero desde niño siempre supe que jugar Super Mario no era más super que jugar con Mario, mi amado abuelo.`
+            },
+            {
+                titulo: "Fragmentos de Inocencia",
+                texto: `Tu inocencia convive entre los abrazos. Tu inocencia pregunta sin reparos, obedece con entusiasmo, se asombra sin ver milagros, encuentra una supernova en la piñata de su cumpleaños, descubre un firmamento en la palma de su mano y presta atención a los cuentos como si fueran un gran invento, un gran misterio revelado.\nÉrase una vez la inocencia, con el ombligo sucio y su limpia conciencia, con pantalones holgados que con amor adoptaron una pequeña mancha de helado, en un asiento del parque donde la habían abandonado. Menuda algarabía si su padre se hubiera enterado, pero por suerte traía sus bolsillos abarrotados con masa de plastilina que en la escuela se había robado. Taparle los huecos podría, los huecos tenebrosos e hinchados, los huecos que se cerraban y abrían, de la nariz de su padre enojado, lejos de casa se iría y por supuesto, llevaría sus pantalones holgados, pedazos de cielo en la mano y a su pequeña mancha de helado.\nPero aquí no termina la historia, porque la inocencia es una mente inédita, un nuevo mundo con su virgen cosmovisión que apenas comienza a ser colonizado por la civilización, o quizás, por las tendencias de un influencer anciano, un almirante adiestrado en los océanos del corazón: la experiencia… (Pero aún así, mi experiencia sólo sigue siendo un fragmento de tu inocencia)`
+            },
+            {
+                titulo: "Fragmentos de Experiencia",
+                texto: `Mi experiencia es tan longeva como mis dudas, saturada de nuevos comienzos y disculpas. Tengo experiencia suficiente para conocer mi ignorancia y de mi inconciencia estar siempre conciente. Lo que muchos llaman “experiencia personal", frecuentemente se construye con inexperiencias ajenas, y se confunde la obstinación con la perseverancia, la terquedad con la resolución, las arrugas con la experiencia. \nAunque, ciertamente la experiencia está hecha de papeles arrugados, cestos llenos de bolas de papel que conservamos como recordatorio de nuestra inexperiencia. Allí vamos con frecuencia a desarrugar algunos y darnos cuenta que nunca debieron estar alli, y darnos cuenta que nos falta experiencia, incluso, para ver las diferencias entre los papeles de la basura y las páginas de la vida.`
+            },
+            {
+                titulo: "Esa Luz Incorregible",
+                texto: `Cuando abrí por primera vez los ojos la Luz me enfocó. Pero no fue esa luz cegadora del mediodía, cuando intentas mirar el sol y tus ojos se lastiman, era una Luz cautivadora, agradable, facinante, perfecta, pura, idónea, incorregible. No exagero al decir que el sol, en sus jornadas de mayor intolerancia, luciría sombrío ante aquella Luz que traía tanto placer a mis ojos. Este sólo sería el primer vistazo de una realidad saturada de Luz por descubrir en lo adelante. \nTodo a mi alrededor la reflejaba, era omnipresente sin ser repetitiva, sublime pero nunca impersonal, era autosuficiente sin ser arrogante, inmejorable mas no monótona, sobrenatural pero no irracional, era una luz inescrutable pero conocible, cercana pero no manejable...\nCon cada paso que daba nuevas dimensiones de la Luz golpeaban mi frente y se abrían paso ante mis ojos. Así que simplemente empecé a caminar y caminar, y los nuevos paisajes de Luz me impregnaban de asombro y confianza. Sí, confianza, a pesar de estar totalmente desnudo en plena Luz, mi estado de íntima confidencialidad y dependencia con la Luz guardaban mi conciencia de abundante paz y seguridad. No había nada que esconder. Así que a los pocos vistazos ya estaba corriendo entre los bosques Iluminados, explorando valles de Luz, nadando en lagos de Luz, escalando montañas de Luz…\nAbría mis ojos, disfrutando de la Luz. Pero sorprendentemente, en la noche, cuando los cerraba, en el silencio, en la tranquilidad, el sueño, en el oscuro revés de mis párpados la Luz persistía, nunca me abandonaba.\nLa Luz me sobrecogía, también estaba en mí. Por un instante pensé que yo era su causa, eso explicaría su constante presencia, pero realmente era una idea absurda, la Luz me sobrepasaba por mucho, tenía un origen mucho más sublime y supremo, apuntaba a algo o alguien más grandioso, todo lo que fulgía luz, incluyéndome mí mismo, sería sólo un reflejo de eso grandioso, la Luz hablaba, daba testimonio y me invitaba a mirar a través de ella, hacia la fuente de Luz… entonces fue cuando percibí que era Su Luz.`
+            },
+            {
+                titulo: "Mandarina",
+                texto: `Al atardecer, a la luz del crepúsculo cuando el moribundo sol se deja contemplar sin que lastime los ojos, allí opaco es más bello que nunca, el imponente astro se torna accesible, vulnerable, cortés. Muchos creen que el atardecer es solo un acto de abnegación del sol para que podamos apreciarlo, y es que Él tiene la certeza de ser la mejor vista que jamás podremos tener. Sirviéndonos sin ser nuestro siervo (Mr l0.45) se muestra condescendiente, inclina su semblante y ensombrece su enardecido rostro. Su fulgor mandarina dibuja mi sonrisa, al atardecer. (Mal 4:2)`
+            },
+            {
+                titulo: "Simeón",
+                texto: `Es Él. \nLo sabía. La hora ha llegado: \nese instante cargado de siglos \ny generaciones a la expectativa.\n\nTodas las cosas se reúnen en Él. \nTodos los misterios se descubren en esta verdad. \nEspacio y tiempo existen \npara confesar que no pueden contenerlo\n\nY aquí estoy, \nnada menos que yo.\n¿Quién soy yo? \n\nLo tengo frente a mis ojos. \nSu mano pequeña aprieta mi meñique. \nDescansa en mis brazos, \naunque sé que es Él quien me sostiene. \n\nCargo un bebé inocente \ny, sin embargo, es la Sabiduría encarnada. \nParece frágil y vulnerable,\npero es el Dios Fuerte. \nNada extraordinario se percibe en su presencia, \ny aún así, \nÉl Es el que Es. \nNadie más posee ese nombre…\n\n—¿Cuál es su nombre? —pregunto a su madre.\n\nSin dudar, responde:\n\n—Su nombre es Jesús.`
+            },
+            {
+                titulo: "Llegada al cielo",
+                texto: `-¡Guao! ¡Si! ¡Esto sí es! ¡Ahora sí! ¡Aquí estoy! ¡Aleluya! ¡He llegado! Aquí estoy… \n-¿Eres tú?\n-¡¡Eres Tú!! Señor, mi Señor!! Te amo! \n-Gracias! No soy digno! Tú lo eres!! Solo tú lo eres! \n-Eres hermoso! Magnífico! Te adoro! Gracias!! Gracias!! \n-No tengo palabras pero tú las conoces, te he negado muchas veces, pero tu gracia me ha rescatado, solo es por ti que estoy aquí, no lo merezco, ahora lo sé más que nunca. Seas adorado Dios, te amo, te serviré por la eternidad ¡que deleite! \n-Aleluya! Tú eres digno! eres el rey! Soberano! el vencedor! solo tú!\n\n-Ven, hijo mío… quiero abrazarte`
+            }
+        ];
 
-No estoy en contra de los videojuegos, pero desde niño siempre supe que jugar Súper Mario no era más súper que jugar con Mario. Aquellos juegos, que de ser enseñados a los adultos harían la vida mas profunda y menos abismal, más seria y menos aburida, más fantástica y menos fantasiosa, harían la vida más viva y menos muerta, más súper y más y mucho más
-Jugar Súper Mario no era más súper que jugar con Mario. Aquellos juegos, cara a cara, hombro a hombro, corazón a corazón. Juegos que trascienden a las pantallas, al régimen de los espejos negros. No culpemos a los espejos, ellos tan sólo muestran reflejos del que asoma su semblante. Aunque, ¿por qué mirarnos de forma constante, cuando tenemos por delante un universo deslumbrante? Horizontes majestuosos que sobrepasan nuestra gloria y a nuestros ojos facinan, sin reclamarlo, nunca cobran. ¡Tinieblas! Endeudas a los hombres y te pagan con su vida, te adueñas de su identidad y a cambio los motivas a buscarla en los espejos por el resto de sus días. Faena insaciable, verdades con mentiras, vanidad de vanidades que al jugar evitarían.
-Jugar Súper Mario no era más súper que jugar con Mario. Aquellos juegos, pasatiempos en los que el Tiempo no pasaba, a contemplarnos se recostaba, suspiraba conmovido y en su destino meditaba. En cierta ocación volvió hacia mí su mirada y con sus ojos quebrados la tragedia me anunciaba: Llegaría la hora y ya se acercaba, cuando nuestros juegos a un final arrivaran, cuando uno de los dos por siempre faltara. ¡Tinieblas! ¡Tinieblas! ¿quién desea tu llegada?
-Jugamos al “veo veo” en medio de un apagón, allí no se puede ver nada y abunda la confusión. Mas esas fueron las horas mas claras para los ojos del corazón. No todos pueden jugar este juego, requiere una súper visión para mirar mas allá de tu ego, requiere un súper corazón. No estoy en contra de los videojuegos, pero desde niño siempre supe que jugar Super Mario no era más super que jugar con Mario, mi amado abuelo.
+        // ---------- CREACIÓN DE ESTRELLAS EN SEMICÍRCULO ----------
+        const container = document.getElementById('estrellas-container');
+        const total = poemas.length;
+        const radioX = window.innerWidth * 0.38;   // ancho del arco
+        const radioY = 90;                         // altura del arco (más plano)
+        const centroX = window.innerWidth / 2;
+        const baseY = window.innerHeight - 120;    // punto de partida Y (cerca del borde inferior)
 
-  </div>
-</div>
+        function colocarEstrellas() {
+            container.innerHTML = '';
+            for (let i = 0; i < total; i++) {
+                // Ángulo: desde -70° hasta 70° (semicírculo amplio)
+                const angle = -70 + (i * (140 / (total - 1)));
+                const rad = angle * Math.PI / 180;
+                const x = centroX + Math.cos(rad) * radioX;
+                const y = baseY + Math.sin(rad) * radioY;
 
-  <div class="poema">
-  <h2>Fragmentos de Inocencia</h2>
-  <button onclick="mostrar(this)">Mostrar / Ocultar</button>
-  <div class="contenido">
+                const estrella = document.createElement('div');
+                estrella.className = 'estrella-planeta';
+                // Asignar color según índice
+                estrella.setAttribute('data-color', (i % 8).toString());
+                // Algunos con anillo (índices pares o algunos específicos para variedad)
+                if (i === 1 || i === 3 || i === 5 || i === 7) {
+                    estrella.classList.add('con-anillo');
+                }
+                // Texto abreviado del título dentro de la estrella
+                const tituloCorto = poemas[i].titulo.length > 18 ? poemas[i].titulo.substring(0, 15) + '…' : poemas[i].titulo;
+                estrella.textContent = tituloCorto;
+                estrella.style.left = `${x}px`;
+                estrella.style.top = `${y}px`;
+                estrella.style.transform = `translate(-50%, -50%)`; // centrado exacto
+                estrella.style.position = 'absolute';
+                
+                // Evento clic para mostrar pergamino
+                estrella.addEventListener('click', (function(idx) {
+                    return function() { mostrarPoema(idx); };
+                })(i));
+                
+                container.appendChild(estrella);
+            }
+        }
 
-Tu inocencia convive entre los abrazos. Tu inocencia pregunta sin reparos, obedece con entusiasmo, se asombra sin ver milagros, encuentra una supernova en la piñata de su cumpleaños, descubre un firmamento en la palma de su mano y presta atención a los cuentos como si fueran un gran invento, un gran misterio revelado.
-Érase una vez la inocencia, con el ombligo sucio y su limpia conciencia, con pantalones holgados que con amor adoptaron una pequeña mancha de helado, en un asiento del parque donde la habían abandonado. Menuda algarabía si su padre se hubiera enterado, pero por suerte traía sus bolsillos abarrotados con masa de plastilina que en la escuela se había robado. Taparle los huecos podría, los huecos tenebrosos e hinchados, los huecos que se cerraban y abrían, de la nariz de su padre enojado, lejos de casa se iría y por supuesto, llevaría sus pantalones holgados, pedazos de cielo en la mano y a su pequeña mancha de helado.
-Pero aquí no termina la historia, porque la inocencia es una mente inédita, un nuevo mundo con su virgen cosmovisión que apenas comienza a ser colonizado por la civilización, o quizás, por las tendencias de un influencer anciano, un almirante adiestrado en los océanos del corazón: la experiencia… (Pero aún así, mi experiencia sólo sigue siendo un fragmento de tu inocencia)
+        // Ajustar posición al redimensionar ventana
+        window.addEventListener('resize', () => {
+            // Actualizar radioX y centroX dinámicamente
+            const newRadioX = window.innerWidth * 0.38;
+            const newBaseY = window.innerHeight - 120;
+            const newCentroX = window.innerWidth / 2;
+            const estrellasDOM = document.querySelectorAll('.estrella-planeta');
+            for (let i = 0; i < estrellasDOM.length; i++) {
+                const angle = -70 + (i * (140 / (total - 1)));
+                const rad = angle * Math.PI / 180;
+                const x = newCentroX + Math.cos(rad) * newRadioX;
+                const y = newBaseY + Math.sin(rad) * 90;
+                estrellasDOM[i].style.left = `${x}px`;
+                estrellasDOM[i].style.top = `${y}px`;
+            }
+        });
 
-  </div>
-</div>
+        // ---------- FUNCIÓN MOSTRAR PERGAMINO CON POEMA ----------
+        const pergamino = document.getElementById('pergamino');
+        const tituloElem = document.getElementById('tituloPoema');
+        const contenidoElem = document.getElementById('contenidoPoema');
+        const cerrarBtn = document.getElementById('cerrarPergamino');
 
-  <div class="poema">
-  <h2>Fragmentos de Experiencia</h2>
-  <button onclick="mostrar(this)">Mostrar / Ocultar</button>
-  <div class="contenido">
+        function mostrarPoema(indice) {
+            tituloElem.textContent = poemas[indice].titulo;
+            contenidoElem.textContent = poemas[indice].texto;
+            pergamino.classList.add('active');
+        }
 
-Mi experiencia es tan longeva como mis dudas, saturada de nuevos comienzos y disculpas. Tengo experiencia suficiente para conocer mi ignorancia y de mi inconciencia estar siempre conciente. Lo que muchos llaman “experiencia personal", frecuentemente se construye con inexperiencias ajenas, y se confunde la obstinación con la perseverancia, la terquedad con la resolución, las arrugas con la experiencia. 
-Aunque, ciertamente la experiencia está hecha de papeles arrugados, cestos llenos de bolas de papel que conservamos como recordatorio de nuestra inexperiencia. Allí vamos con frecuencia a desarrugar algunos y darnos cuenta que nunca debieron estar alli, y darnos cuenta que nos falta experiencia, incluso, para ver las diferencias entre los papeles de la basura y las páginas de la vida.
+        function cerrarPergamino() {
+            pergamino.classList.remove('active');
+        }
 
-  </div>
-</div>
+        cerrarBtn.addEventListener('click', cerrarPergamino);
+        // Cerrar si se hace clic fuera del pergamino (en el overlay oscuro generado por box-shadow gigante)
+        window.addEventListener('click', (e) => {
+            if (pergamino.classList.contains('active') && !pergamino.contains(e.target) && !e.target.classList.contains('estrella-planeta')) {
+                cerrarPergamino();
+            }
+        });
 
-  <div class="poema">
-  <h2>Esa Luz Incorregible</h2>
-  <button onclick="mostrar(this)">Mostrar / Ocultar</button>
-  <div class="contenido">
-  
-Cuando abrí por primera vez los ojos la Luz me enfocó. Pero no fue esa luz cegadora del mediodía, cuando intentas mirar el sol y tus ojos se lastiman, era una Luz cautivadora, agradable, facinante, perfecta, pura, idónea, incorregible. No exagero al decir que el sol, en sus jornadas de mayor intolerancia, luciría sombrío ante aquella Luz que traía tanto placer a mis ojos. Este sólo sería el primer vistazo de una realidad saturada de Luz por descubrir en lo adelante. 
-Todo a mi alrededor la reflejaba, era omnipresente sin ser repetitiva, sublime pero nunca impersonal, era autosuficiente sin ser arrogante, inmejorable mas no monótona, sobrenatural pero no irracional, era una luz inescrutable pero conocible, cercana pero no manejable...
-Con cada paso que daba nuevas dimensiones de la Luz golpeaban mi frente y se abrían paso ante mis ojos. Así que simplemente empecé a caminar y caminar, y los nuevos paisajes de Luz me impregnaban de asombro y confianza. Sí, confianza, a pesar de estar totalmente desnudo en plena Luz, mi estado de íntima confidencialidad y dependencia con la Luz guardaban mi conciencia de abundante paz y seguridad. No había nada que esconder. Así que a los pocos vistazos ya estaba corriendo entre los bosques Iluminados, explorando valles de Luz, nadando en lagos de Luz, escalando montañas de Luz…
-Abría mis ojos, disfrutando de la Luz. Pero sorprendentemente, en la noche, cuando los cerraba, en el silencio, en la tranquilidad, el sueño, en el oscuro revés de mis párpados la Luz persistía, nunca me abandonaba.
-La Luz me sobrecogía, también estaba en mí. Por un instante pensé que yo era su causa, eso explicaría su constante presencia, pero realmente era una idea absurda, la Luz me sobrepasaba por mucho, tenía un origen mucho más sublime y supremo, apuntaba a algo o alguien más grandioso, todo lo que fulgía luz, incluyéndome mí mismo, sería sólo un reflejo de eso grandioso, la Luz hablaba, daba testimonio y me invitaba a mirar a través de ella, hacia la fuente de Luz… entonces fue cuando percibí que era Su Luz.
+        // Inicializar estrellas
+        colocarEstrellas();
 
-  </div>
-</div>
-
-  <div class="poema">
-  <h2>Mandarina</h2>
-  <button onclick="mostrar(this)">Mostrar / Ocultar</button>
-  <div class="contenido">
-
-Al atardecer, a la luz del crepúsculo cuando el moribundo sol se deja contemplar sin que lastime los ojos, allí opaco es más bello que nunca, el imponente astro se torna accesible, vulnerable, cortés. Muchos creen que el atardecer es solo un acto de abnegación del sol para que podamos apreciarlo, y es que Él tiene la certeza de ser la mejor vista que jamás podremos tener. Sirviéndonos sin ser nuestro siervo (Mr l0.45) se muestra condescendiente, inclina su semblante y ensombrece su enardecido rostro. Su fulgor mandarina dibuja mi sonrisa, al atardecer. (Mal 4:2)
-
-  </div>
-</div>
-  
-  <div class="poema">
-  <h2>Simeón</h2>
-  <button onclick="mostrar(this)">Mostrar / Ocultar</button>
-  <div class="contenido">
-
-Es Él. 
-
-Lo sabía. La hora ha llegado: 
-ese instante cargado de siglos 
-y generaciones a la expectativa.
-
-Todas las cosas se reúnen en Él. 
-Todos los misterios se descubren en esta verdad. 
-Espacio y tiempo existen 
-para confesar que no pueden contenerlo
-
-Y aquí estoy, 
-nada menos que yo.
-¿Quién soy yo? 
-
-Lo tengo frente a mis ojos. 
-Su mano pequeña aprieta mi meñique. 
-Descansa en mis brazos, 
-aunque sé que es Él quien me sostiene. 
-
-Cargo un bebé inocente 
-y, sin embargo, es la Sabiduría encarnada. 
-Parece frágil y vulnerable,
-pero es el Dios Fuerte. 
-Nada extraordinario se percibe en su presencia, 
-y aún así, 
-Él Es el que Es. 
-Nadie más posee ese nombre…
-
-—¿Cuál es su nombre? —pregunto a su madre.
-
-Sin dudar, responde:
-
-—Su nombre es Jesús.
-
-  </div>
-</div>
-
-  <div class="poema">
-  <h2>Llegada al cielo</h2>
-  <button onclick="mostrar(this)">Mostrar / Ocultar</button>
-  <div class="contenido">
-
--¡Guao! ¡Si! ¡Esto sí es! ¡Ahora sí! ¡Aquí estoy! ¡Aleluya! ¡He llegado! Aquí estoy… 
--¿Eres tú?
--¡¡Eres Tú!! Señor, mi Señor!! Te amo! 
--Gracias! No soy digno! Tú lo eres!! Solo tú lo eres! 
--Eres hermoso! Magnífico! Te adoro! Gracias!! Gracias!! 
--No tengo palabras pero tú las conoces, te he negado muchas veces, pero tu gracia me ha rescatado, solo es por ti que estoy aquí, no lo merezco, ahora lo sé más que nunca. Seas adorado Dios, te amo, te serviré por la eternidad ¡que deleite! 
--Aleluya! Tú eres digno! eres el rey!  Soberano! el vencedor! solo tú!
-
--Ven, hijo mío… quiero abrazarte
-
-  </div>
-</div>
-
-  </div>
-<script>
-function mostrar(boton) {
-  var todos = document.querySelectorAll(".contenido");
-  
-  todos.forEach(function(item) {
-    if (item !== boton.nextElementSibling) {
-      item.style.maxHeight = null;
-    }
-  });
-
-  var contenido = boton.nextElementSibling;
-
-  if (contenido.style.maxHeight) {
-    contenido.style.maxHeight = null;
-  } else {
-    contenido.style.maxHeight = contenido.scrollHeight + "px";
-  }
-}
-</script>
-
+        // Pequeño efecto de consola amigable
+        console.log('✨ Nebulosa del Cangrejo activa — 8 luceros con poemas ✨');
+    </script>
 </body>
 </html>
