@@ -650,7 +650,7 @@
             }
         });
 
-        // ===== HISTORIA INTERACTIVA =====
+    // ===== HISTORIA INTERACTIVA =====
         const verHistoriaBtn = document.getElementById('ver-historia');
         const storyOverlay = document.getElementById('story-overlay');
         const storyText = document.getElementById('story-text');
@@ -662,7 +662,7 @@
         let currentSceneIndex = 0;
         let typingInterval = null;
 
-        // Definición de las escenas (solo 5 escenas, la última se maneja aparte)
+        // Definición de las escenas
         const scenes = [
             {
                 camPos: new THREE.Vector3(0, 0, 0),
@@ -689,30 +689,28 @@
                 camPos: new THREE.Vector3(0, 10, 150),
                 target: new THREE.Vector3(0, 0, 0),
                 text: "MIRA MÁS ALLÁ\nhasta que todo sea diminuto.\nTan diminuto como tú, hecho del mismo polvo que brilla,\npero animado por un aliento que el polvo no tiene.",
-                oscuro: true,      // Inicia oscuro, se encenderá al final del movimiento
+                oscuro: true,
                 duracionCam: 5,
                 encenderAlFinal: true
             },
             {
-                camPos: new THREE.Vector3(0, 50, 0),
+                camPos: new THREE.Vector3(0, 20, 0),
                 target: new THREE.Vector3(0, 0, 0),
                 text: "NO TEMAS:\nlas mismas manos que sostienen la expansión\nfueron horadadas para sostenerte a ti también.\n\nCONFÍA:\nsi las Pléyades se dejan atar sin resistirse,\nsi la luz viaja milenios solo para hablarte de mí,\nsi la creación entera obedece en silencio,\n¿qué esperas tú?\n\nEscucha su aliento,\nes el mismo que ahora te llama\na inclinarte como se inclina, dócil y eterna:",
                 oscuro: true,
                 duracionCam: 4,
-                finalConRaqia: true   // Después de escribir, mostrar "RAQIA STELLA" y aclarar
+                finalConRaqia: true
             }
         ];
 
         // Función para animar el modo oscuro con transición suave
         function setModoOscuroSuave(activo, duracion = 2) {
             const fondo = document.getElementById('fondo-estrellas');
-            // Animación de opacidad del fondo
             gsap.to(fondo, {
                 opacity: activo ? 0 : 1,
                 duration: duracion,
                 ease: "power2.inOut"
             });
-            // Animación de intensidad de luces
             gsap.to(ambientLight, {
                 intensity: activo ? 0.1 : 0.5,
                 duration: duracion,
@@ -771,18 +769,16 @@
             currentSceneIndex = index;
             const scene = scenes[index];
 
-            // Aplicar modo oscuro (si no es la escena que se encenderá al final)
+            // Aplicar modo oscuro
             if (!scene.encenderAlFinal) {
                 setModoOscuroSuave(scene.oscuro, 1.5);
             } else {
-                // Para la escena 4, nos aseguramos que esté oscuro al inicio
                 setModoOscuroSuave(true, 1.0);
             }
 
             // Iniciar animación de cámara y escritura simultáneamente
             const camPromise = animateCameraTo(scene.camPos, scene.target, scene.duracionCam);
             startTyping(scene.text, () => {
-                // Al terminar de escribir, si es la escena con final con RAQIA STELLA, mostrar la palabra
                 if (scene.finalConRaqia) {
                     mostrarPalabraFinal();
                 }
@@ -790,64 +786,64 @@
 
             await camPromise;
 
-            // Si la escena tiene encenderAlFinal, ahora quitamos el modo oscuro
             if (scene.encenderAlFinal) {
-                setModoOscuroSuave(false, 2.5); // transición más lenta
+                setModoOscuroSuave(false, 2.5);
             }
 
-           // Actualizar botones
-storyPrev.disabled = (index === 0);
-if (index === scenes.length - 1) {
-    storyNext.textContent = 'Finalizar';
-} else {
-    storyNext.textContent = 'Siguiente';
-}
+            // Actualizar botones
+            storyPrev.disabled = (index === 0);
+            if (index === scenes.length - 1) {
+                storyNext.textContent = 'Finalizar';
+            } else {
+                storyNext.textContent = 'Siguiente';
+            }
+        }  // <--- ¡CIERRE CORRECTO DE goToScene!
 
-        // Función especial para mostrar "RAQIA STELLA" y aclarar
+        // Función especial para mostrar "RAQIA STELLA" y aclarar (FUERA de goToScene)
         function mostrarPalabraFinal() {
-    // Agregar la palabra RAQIA STELLA debajo del texto existente
-    const raqiaSpan = document.createElement('div');
-    raqiaSpan.textContent = 'RAQIA STELLA';
-    raqiaSpan.style.fontSize = '5rem';
-    raqiaSpan.style.fontFamily = 'Wide Latin, serif';
-    raqiaSpan.style.color = 'white';
-    raqiaSpan.style.textShadow = '0 0 40px gold, 0 0 80px cyan';
-    raqiaSpan.style.marginTop = '40px';
-    raqiaSpan.style.animation = 'aparecer 1s ease-out';
-    storyText.appendChild(raqiaSpan);
-    
-    // Aclarar lentamente la escena
-    setModoOscuroSuave(false, 3);
-    
-    // Mostrar un botón "Finalizar" adicional
-    const finalizarBtn = document.createElement('button');
-    finalizarBtn.textContent = 'Finalizar Historia';
-    finalizarBtn.style.marginTop = '40px';
-    finalizarBtn.style.padding = '12px 30px';
-    finalizarBtn.style.fontSize = '1.2rem';
-    finalizarBtn.style.fontFamily = 'Georgia, serif';
-    finalizarBtn.style.background = 'rgba(100,50,150,0.8)';
-    finalizarBtn.style.color = 'white';
-    finalizarBtn.style.border = '2px solid gold';
-    finalizarBtn.style.borderRadius = '40px';
-    finalizarBtn.style.cursor = 'pointer';
-    finalizarBtn.style.backdropFilter = 'blur(5px)';
-    finalizarBtn.style.transition = 'all 0.3s';
-    finalizarBtn.onmouseenter = () => {
-        finalizarBtn.style.background = 'rgba(150,80,200,0.9)';
-        finalizarBtn.style.boxShadow = '0 0 30px gold';
-        finalizarBtn.style.transform = 'scale(1.05)';
-    };
-    finalizarBtn.onmouseleave = () => {
-        finalizarBtn.style.background = 'rgba(100,50,150,0.8)';
-        finalizarBtn.style.boxShadow = 'none';
-        finalizarBtn.style.transform = 'scale(1)';
-    };
-    finalizarBtn.onclick = () => {
-        exitStory();
-    };
-    storyText.appendChild(finalizarBtn);
-}
+            // Agregar la palabra RAQIA STELLA debajo del texto existente
+            const raqiaSpan = document.createElement('div');
+            raqiaSpan.textContent = 'RAQIA STELLA';
+            raqiaSpan.style.fontSize = '5rem';
+            raqiaSpan.style.fontFamily = 'Wide Latin, serif';
+            raqiaSpan.style.color = 'white';
+            raqiaSpan.style.textShadow = '0 0 40px gold, 0 0 80px cyan';
+            raqiaSpan.style.marginTop = '40px';
+            raqiaSpan.style.animation = 'aparecer 1s ease-out';
+            storyText.appendChild(raqiaSpan);
+            
+            // Aclarar lentamente la escena
+            setModoOscuroSuave(false, 3);
+            
+            // Mostrar un botón "Finalizar" adicional
+            const finalizarBtn = document.createElement('button');
+            finalizarBtn.textContent = 'Finalizar Historia';
+            finalizarBtn.style.marginTop = '40px';
+            finalizarBtn.style.padding = '12px 30px';
+            finalizarBtn.style.fontSize = '1.2rem';
+            finalizarBtn.style.fontFamily = 'Georgia, serif';
+            finalizarBtn.style.background = 'rgba(100,50,150,0.8)';
+            finalizarBtn.style.color = 'white';
+            finalizarBtn.style.border = '2px solid gold';
+            finalizarBtn.style.borderRadius = '40px';
+            finalizarBtn.style.cursor = 'pointer';
+            finalizarBtn.style.backdropFilter = 'blur(5px)';
+            finalizarBtn.style.transition = 'all 0.3s';
+            finalizarBtn.onmouseenter = () => {
+                finalizarBtn.style.background = 'rgba(150,80,200,0.9)';
+                finalizarBtn.style.boxShadow = '0 0 30px gold';
+                finalizarBtn.style.transform = 'scale(1.05)';
+            };
+            finalizarBtn.onmouseleave = () => {
+                finalizarBtn.style.background = 'rgba(100,50,150,0.8)';
+                finalizarBtn.style.boxShadow = 'none';
+                finalizarBtn.style.transform = 'scale(1)';
+            };
+            finalizarBtn.onclick = () => {
+                exitStory();
+            };
+            storyText.appendChild(finalizarBtn);
+        }
 
         // Función para iniciar la historia
         function startStory() {
@@ -861,7 +857,6 @@ if (index === scenes.length - 1) {
             document.getElementById('modo-meditacion').style.opacity = '0';
             document.getElementById('modo-meditacion').style.pointerEvents = 'none';
             
-            // Ocultar título principal
             if (tituloPrincipal) tituloPrincipal.style.opacity = '0';
             
             storyOverlay.style.display = 'flex';
@@ -887,10 +882,8 @@ if (index === scenes.length - 1) {
             document.getElementById('modo-meditacion').style.opacity = '1';
             document.getElementById('modo-meditacion').style.pointerEvents = 'auto';
             
-            // Mostrar título principal con subtítulo
             if (tituloPrincipal) {
                 tituloPrincipal.style.opacity = '1';
-                // Asegurar que el subtítulo esté presente
                 const subtitulo = tituloPrincipal.querySelector('.subtitulo');
                 if (!subtitulo) {
                     const sub = document.createElement('div');
@@ -930,7 +923,6 @@ if (index === scenes.length - 1) {
             galaxy.rotation.y += 0.003;
             galaxy.rotation.x = 0.15;
             
-            // Mover meteoros
             const positions = meteors.geometry.attributes.position.array;
             for (let i = 0; i < meteorCount; i++) {
                 positions[i*3+2] += meteorSpeeds[i].z * delta * 20;
@@ -967,7 +959,6 @@ if (index === scenes.length - 1) {
             if (currentSceneIndex < scenes.length - 1) {
                 goToScene(currentSceneIndex + 1);
             } else {
-                // En la última escena, ya se maneja el final automáticamente, pero si se pulsa Finalizar:
                 exitStory();
             }
         });
