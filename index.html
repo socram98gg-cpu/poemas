@@ -316,6 +316,19 @@
     </div>
 </div>
 
+    <!-- Botón Ver historia -->
+    <button id="ver-historia">📖 Ver historia</button>
+
+    <!-- Overlay de la historia (oculto por defecto) -->
+    <div id="story-overlay" style="display: none;">
+        <div id="story-text"></div>
+        <div id="story-controls">
+            <button id="story-prev" disabled>Anterior</button>
+            <button id="story-next">Siguiente</button>
+            <button id="story-skip">Saltar historia</button>
+        </div>
+    </div>
+
     <!-- Scripts -->
     <script type="importmap">
         { 
@@ -964,17 +977,5 @@ if (index === scenes.length - 1) {
         verHistoriaBtn.addEventListener('click', startStory);
     </script>
 
-    <!-- Botón Ver historia -->
-    <button id="ver-historia">📖 Ver historia</button>
-
-    <!-- Overlay de la historia (oculto por defecto) -->
-    <div id="story-overlay" style="display: none;">
-        <div id="story-text"></div>
-        <div id="story-controls">
-            <button id="story-prev" disabled>Anterior</button>
-            <button id="story-next">Siguiente</button>
-            <button id="story-skip">Saltar historia</button>
-        </div>
-    </div>
 </body>
 </html>
