@@ -37,16 +37,16 @@
         }
 
        /* Título principal estilo "Raqia Stella" */
-        .titulo-nebulosa {
-            position: fixed;
-            top: 8%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 150;
-            text-align: center;
-            pointer-events: none;
-            white-space: nowrap;
-        }
+     .titulo-nebulosa {
+    position: fixed;
+    top: 15%;  /* ← CAMBIADO de 8% a 15% */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 150;
+    text-align: center;
+    pointer-events: none;
+    white-space: nowrap;
+}
 
         .titulo-nebulosa .cangrejo {
             font-size: 4.5rem;
@@ -316,64 +316,59 @@
             }
         ];
 
-        // ---------- CREACIÓN DE ESTRELLAS EN SEMICÍRCULO ----------
-        const container = document.getElementById('estrellas-container');
-        const total = poemas.length;
-        const radioX = window.innerWidth * 0.38;   // ancho del arco
-        const radioY = 150;                         // altura del arco (más plano)
-        const centroX = window.innerWidth / 2;
-        const baseY = window.innerHeight - 250;    // punto de partida Y (cerca del borde inferior)
+    // ---------- CREACIÓN DE ESTRELLAS EN SEMICÍRCULO ----------
+const container = document.getElementById('estrellas-container');
+const total = poemas.length;
+let radioX = window.innerWidth * 0.38;
+const radioY = 150;
+let centroX = window.innerWidth / 2;
+let baseY = window.innerHeight * 0.75;  // ← CAMBIADO
 
-        function colocarEstrellas() {
-            container.innerHTML = '';
-            for (let i = 0; i < total; i++) {
-                // Ángulo: desde -70° hasta 70° (semicírculo amplio)
-                const angle = -70 + (i * (140 / (total - 1)));
-                const rad = angle * Math.PI / 180;
-                const x = centroX + Math.cos(rad) * radioX;
-                const y = baseY + Math.sin(rad) * radioY;
+function colocarEstrellas() {
+    container.innerHTML = '';
+    for (let i = 0; i < total; i++) {
+        const angle = -70 + (i * (140 / (total - 1)));
+        const rad = angle * Math.PI / 180;
+        const x = centroX + Math.cos(rad) * radioX;
+        const y = baseY + Math.sin(rad) * radioY;
 
-                const estrella = document.createElement('div');
-                estrella.className = 'estrella-planeta';
-                // Asignar color según índice
-                estrella.setAttribute('data-color', (i % 8).toString());
-                // Algunos con anillo (índices pares o algunos específicos para variedad)
-                if (i === 1 || i === 3 || i === 5 || i === 7) {
-                    estrella.classList.add('con-anillo');
-                }
-                // Texto abreviado del título dentro de la estrella
-                const tituloCorto = poemas[i].titulo.length > 18 ? poemas[i].titulo.substring(0, 15) + '…' : poemas[i].titulo;
-                estrella.textContent = tituloCorto;
-                estrella.style.left = `${x}px`;
-                estrella.style.top = `${y}px`;
-                estrella.style.transform = `translate(-50%, -50%)`; // centrado exacto
-                estrella.style.position = 'absolute';
-                
-                // Evento clic para mostrar pergamino
-                estrella.addEventListener('click', (function(idx) {
-                    return function() { mostrarPoema(idx); };
-                })(i));
-                
-                container.appendChild(estrella);
-            }
+        const estrella = document.createElement('div');
+        estrella.className = 'estrella-planeta';
+        estrella.setAttribute('data-color', (i % 8).toString());
+        if (i === 1 || i === 3 || i === 5 || i === 7) {
+            estrella.classList.add('con-anillo');
         }
+        const tituloCorto = poemas[i].titulo.length > 18 ? poemas[i].titulo.substring(0, 15) + '…' : poemas[i].titulo;
+        estrella.textContent = tituloCorto;
+        estrella.style.left = `${x}px`;
+        estrella.style.top = `${y}px`;
+        estrella.style.transform = `translate(-50%, -50%)`;
+        estrella.style.position = 'absolute';
+        
+        estrella.addEventListener('click', (function(idx) {
+            return function() { mostrarPoema(idx); };
+        })(i));
+        
+        container.appendChild(estrella);
+    }
+}
 
-        // Ajustar posición al redimensionar ventana
-        window.addEventListener('resize', () => {
-            // Actualizar radioX y centroX dinámicamente
-            const newRadioX = window.innerWidth * 0.38;
-            const newBaseY = window.innerHeight - 120;
-            const newCentroX = window.innerWidth / 2;
-            const estrellasDOM = document.querySelectorAll('.estrella-planeta');
-            for (let i = 0; i < estrellasDOM.length; i++) {
-                const angle = -70 + (i * (140 / (total - 1)));
-                const rad = angle * Math.PI / 180;
-                const x = newCentroX + Math.cos(rad) * newRadioX;
-                const y = newBaseY + Math.sin(rad) * 90;
-                estrellasDOM[i].style.left = `${x}px`;
-                estrellasDOM[i].style.top = `${y}px`;
-            }
-        });
+// Ajustar posición al redimensionar ventana
+window.addEventListener('resize', () => {
+    radioX = window.innerWidth * 0.38;
+    centroX = window.innerWidth / 2;
+    baseY = window.innerHeight * 0.75;  // ← CAMBIADO
+    
+    const estrellasDOM = document.querySelectorAll('.estrella-planeta');
+    for (let i = 0; i < estrellasDOM.length; i++) {
+        const angle = -70 + (i * (140 / (total - 1)));
+        const rad = angle * Math.PI / 180;
+        const x = centroX + Math.cos(rad) * radioX;
+        const y = baseY + Math.sin(rad) * radioY;  // ← AHORA USA radioY = 150
+        estrellasDOM[i].style.left = `${x}px`;
+        estrellasDOM[i].style.top = `${y}px`;
+    }
+});
 
         // ---------- FUNCIÓN MOSTRAR PERGAMINO CON POEMA ----------
         const pergamino = document.getElementById('pergamino');
