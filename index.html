@@ -125,31 +125,37 @@
             box-shadow: 0 0 30px cyan;
         }
         /* Título fijo principal */
-        .titulo-principal {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 150;
-            text-align: center;
-            pointer-events: none;
-            transition: opacity 0.5s;
-        }
-        .titulo-principal .raqia {
-            font-size: 6rem;
-            font-family: 'Wide Latin', 'Georgia', serif;
-            color: white;
-            text-shadow: 0 0 40px gold, 0 0 80px cyan;
-            line-height: 1.2;
-        }
-        .titulo-principal .subtitulo {
-            font-size: 1.5rem;
-            font-family: 'Georgia', serif;
-            font-style: italic;
-            color: #ffdd99;
-            text-shadow: 0 0 10px rgba(0,0,0,0.5);
-            margin-top: 10px;
-        }
+     .titulo-principal {
+    position: fixed;
+    top: 35%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 150;
+    text-align: center;
+    pointer-events: none;
+    transition: opacity 0.5s;
+}
+.titulo-principal .raqia {
+    font-size: 6rem;
+    font-family: 'Wide Latin', 'Georgia', serif;
+    color: white;
+    text-shadow: 0 0 40px gold, 0 0 80px cyan;
+    line-height: 1.2;
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+.titulo-principal .raqia span {
+    display: inline-block;
+}
+.titulo-principal .subtitulo {
+    font-size: 1.5rem;
+    font-family: 'Georgia', serif;
+    font-style: italic;
+    color: #ffdd99;
+    text-shadow: 0 0 10px rgba(0,0,0,0.5);
+    margin-top: 10px;
+}
         /* Contenido de la página (ya no tiene citas) */
         .contenido-pagina {
             position: relative;
@@ -292,9 +298,12 @@
 
     <!-- Título fijo principal (reemplaza los versículos) -->
     <div id="titulo-principal" class="titulo-principal">
-        <div class="raqia">RAQIA STELLA</div>
-        <div class="subtitulo">(Expansión de Estrellas)</div>
+    <div class="raqia">
+        <span>RAQIA</span>
+        <span>STELLA</span>
     </div>
+    <div class="subtitulo">(Expansión de Estrellas)</div>
+</div>
 
    <div id="pages">
     <div class="page active" id="page-inicio">
@@ -672,7 +681,7 @@
                 encenderAlFinal: true
             },
             {
-                camPos: new THREE.Vector3(0, 20, 0),
+                camPos: new THREE.Vector3(0, 50, 0),
                 target: new THREE.Vector3(0, 0, 0),
                 text: "NO TEMAS:\nlas mismas manos que sostienen la expansión\nfueron horadadas para sostenerte a ti también.\n\nCONFÍA:\nsi las Pléyades se dejan atar sin resistirse,\nsi la luz viaja milenios solo para hablarte de mí,\nsi la creación entera obedece en silencio,\n¿qué esperas tú?\n\nEscucha su aliento,\nes el mismo que ahora te llama\na inclinarte como se inclina, dócil y eterna:",
                 oscuro: true,
@@ -773,37 +782,59 @@
                 setModoOscuroSuave(false, 2.5); // transición más lenta
             }
 
-            // Actualizar botones
-            storyPrev.disabled = (index === 0);
-            storyNext.textContent = (index === scenes.length - 1) ? 'Finalizar' : 'Siguiente';
-        }
+           // Actualizar botones
+storyPrev.disabled = (index === 0);
+if (index === scenes.length - 1) {
+    storyNext.textContent = 'Finalizar';
+} else {
+    storyNext.textContent = 'Siguiente';
+}
 
         // Función especial para mostrar "RAQIA STELLA" y aclarar
         function mostrarPalabraFinal() {
-            // Agregar la palabra RAQIA STELLA debajo del texto existente
-            const raqiaSpan = document.createElement('div');
-            raqiaSpan.textContent = 'RAQIA STELLA';
-            raqiaSpan.style.fontSize = '5rem';
-            raqiaSpan.style.fontFamily = 'Wide Latin, serif';
-            raqiaSpan.style.color = 'white';
-            raqiaSpan.style.textShadow = '0 0 40px gold, 0 0 80px cyan';
-            raqiaSpan.style.marginTop = '40px';
-            raqiaSpan.style.animation = 'aparecer 1s ease-out';
-            storyText.appendChild(raqiaSpan);
-            
-            // Aclarar lentamente la escena
-            setModoOscuroSuave(false, 3);
-            
-            // Después de 3 segundos, hacer que el título central aparezca y desaparecer el overlay de historia
-            setTimeout(() => {
-                // Mostrar título principal con la palabra final
-                if (tituloPrincipal) {
-                    tituloPrincipal.style.opacity = '1';
-                }
-                // Finalizar la historia automáticamente
-                exitStory();
-            }, 3500);
-        }
+    // Agregar la palabra RAQIA STELLA debajo del texto existente
+    const raqiaSpan = document.createElement('div');
+    raqiaSpan.textContent = 'RAQIA STELLA';
+    raqiaSpan.style.fontSize = '5rem';
+    raqiaSpan.style.fontFamily = 'Wide Latin, serif';
+    raqiaSpan.style.color = 'white';
+    raqiaSpan.style.textShadow = '0 0 40px gold, 0 0 80px cyan';
+    raqiaSpan.style.marginTop = '40px';
+    raqiaSpan.style.animation = 'aparecer 1s ease-out';
+    storyText.appendChild(raqiaSpan);
+    
+    // Aclarar lentamente la escena
+    setModoOscuroSuave(false, 3);
+    
+    // Mostrar un botón "Finalizar" adicional
+    const finalizarBtn = document.createElement('button');
+    finalizarBtn.textContent = 'Finalizar Historia';
+    finalizarBtn.style.marginTop = '40px';
+    finalizarBtn.style.padding = '12px 30px';
+    finalizarBtn.style.fontSize = '1.2rem';
+    finalizarBtn.style.fontFamily = 'Georgia, serif';
+    finalizarBtn.style.background = 'rgba(100,50,150,0.8)';
+    finalizarBtn.style.color = 'white';
+    finalizarBtn.style.border = '2px solid gold';
+    finalizarBtn.style.borderRadius = '40px';
+    finalizarBtn.style.cursor = 'pointer';
+    finalizarBtn.style.backdropFilter = 'blur(5px)';
+    finalizarBtn.style.transition = 'all 0.3s';
+    finalizarBtn.onmouseenter = () => {
+        finalizarBtn.style.background = 'rgba(150,80,200,0.9)';
+        finalizarBtn.style.boxShadow = '0 0 30px gold';
+        finalizarBtn.style.transform = 'scale(1.05)';
+    };
+    finalizarBtn.onmouseleave = () => {
+        finalizarBtn.style.background = 'rgba(100,50,150,0.8)';
+        finalizarBtn.style.boxShadow = 'none';
+        finalizarBtn.style.transform = 'scale(1)';
+    };
+    finalizarBtn.onclick = () => {
+        exitStory();
+    };
+    storyText.appendChild(finalizarBtn);
+}
 
         // Función para iniciar la historia
         function startStory() {
