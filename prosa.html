@@ -245,7 +245,7 @@
 
         /* Responsive */
         @media (max-width: 900px) {
-            .boton { width: 100px; height: 100px; font-size: 0.75rem; }
+         
             .titulo-nebulosa .cangrejo { font-size: 2.4rem; white-space: normal; padding: 0 15px; }
             .titulo-nebulosa { top: 14%; white-space: normal; width: 90%; }
             .estrella-planeta { width: 80px; height: 80px; font-size: 0.7rem; }
@@ -255,8 +255,6 @@
 
         @media (max-width: 600px) {
             .estrella-planeta { width: 70px; height: 70px; }
-            .boton { width: 80px; height: 80px; }
-            .boton span { font-size: 0.7rem; padding: 4px 8px; }
         }
     </style>
 </head>
@@ -322,9 +320,9 @@
         const container = document.getElementById('estrellas-container');
         const total = poemas.length;
         const radioX = window.innerWidth * 0.38;   // ancho del arco
-        const radioY = 90;                         // altura del arco (más plano)
+        const radioY = 150;                         // altura del arco (más plano)
         const centroX = window.innerWidth / 2;
-        const baseY = window.innerHeight - 120;    // punto de partida Y (cerca del borde inferior)
+        const baseY = window.innerHeight - 250;    // punto de partida Y (cerca del borde inferior)
 
         function colocarEstrellas() {
             container.innerHTML = '';
