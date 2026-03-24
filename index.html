@@ -757,6 +757,21 @@
             }, 30);
         }
 
+        function speakText(text) {
+    if (window.speechSynthesis.speaking) {
+        window.speechSynthesis.cancel();
+    }
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'es-ES';
+    utterance.rate = 0.7;
+    utterance.pitch = 0.5;
+    utterance.volume = 1;
+    const voices = window.speechSynthesis.getVoices();
+    const spanishMaleVoice = voices.find(voice => voice.lang.includes('es') && voice.name.toLowerCase().includes('male'));
+    if (spanishMaleVoice) utterance.voice = spanishMaleVoice;
+    window.speechSynthesis.speak(utterance);
+}
+
         // Función para ir a una escena (con escritura simultánea)
         async function goToScene(index) {
             if (index < 0 || index >= scenes.length) return;
@@ -779,10 +794,11 @@
             // Iniciar animación de cámara y escritura simultáneamente
             const camPromise = animateCameraTo(scene.camPos, scene.target, scene.duracionCam);
             startTyping(scene.text, () => {
-                if (scene.finalConRaqia) {
-                    mostrarPalabraFinal();
-                }
-            });
+    speakText(scene.text);   // <-- AÑADIR ESTA LÍNEA
+    if (scene.finalConRaqia) {
+        mostrarPalabraFinal();
+    }
+});
 
             await camPromise;
 
@@ -836,7 +852,11 @@
         }
 
         // Función para salir de la historia
-        function exitStory() {
+        function exitStory() { 
+            
+            if (window.speechSynthesis.speaking) {
+    window.speechSynthesis.cancel();
+}
             storyMode = false;
             
             if (typingInterval) {
