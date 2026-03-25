@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Nebulosa del Cangrejo · Prosa Estelar</title>
     <style>
         * {
@@ -21,6 +21,7 @@
             color: #f0e6d0;
         }
 
+        /* Fondo de nebulosa */
         #fondo-nebulosa {
             position: fixed;
             top: 0;
@@ -35,6 +36,7 @@
             transition: opacity 0.8s ease;
         }
 
+        /* Título principal */
         .titulo-nebulosa {
             position: fixed;
             top: 15%;
@@ -70,85 +72,46 @@
             100% { text-shadow: 0 0 40px #ffdd99, 0 0 65px #ffaa44, 0 0 90px #dd88ff; }
         }
 
-     #estrellas-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 100;
-    pointer-events: none;
-}
-
-        .estrella-wrapper {
-            position: absolute;
-            transform: translate(-50%, -50%);
+        /* Columnas laterales de planetas */
+        .planetas-columna {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            z-index: 100;
             pointer-events: none;
         }
+        .izquierda {
+            left: max(20px, 3%);
+        }
+        .derecha {
+            right: max(20px, 3%);
+        }
 
-        .estrella-planeta {
-            position: relative;
-            pointer-events: auto;
+        /* Estilo de cada planeta (3D realista con imagen) */
+        .planeta-realista {
             width: 110px;
             height: 110px;
             border-radius: 50%;
             cursor: pointer;
-            transition: filter 0.2s ease, box-shadow 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            font-weight: bold;
-            color: white;
-            font-size: 0.9rem;
-            font-family: 'Segoe UI', 'Georgia', serif;
-            text-shadow: 0 0 5px black;
-            backdrop-filter: blur(1px);
-            box-shadow: 0 0 30px rgba(255, 200, 100, 0.7), inset 0 0 15px rgba(255, 255, 200, 0.5);
-            background: radial-gradient(circle at 35% 30%, rgba(255,240,180,1) 0%, rgba(255,160,80,0.9) 70%, rgba(180,80,40,0.8) 100%);
-            animation: orbitarSuave 12s infinite linear, flotarEscalar 5s infinite alternate ease-in-out;
-            will-change: transform;
+            pointer-events: auto;
+            background-size: cover;
+            background-position: center;
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.6),
+                        0 0 0 3px rgba(255, 235, 170, 0.3),
+                        inset 0 0 20px rgba(0, 0, 0, 0.5);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            filter: brightness(1.02) contrast(1.05);
+        }
+        .planeta-realista:hover {
+            transform: scale(1.08);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.8), 0 0 0 4px rgba(255, 220, 100, 0.7);
+            filter: brightness(1.1);
         }
 
-        .estrella-planeta[data-color="0"] { background: radial-gradient(circle at 35% 30%, #ffd89b, #ffb347, #cc7733); }
-        .estrella-planeta[data-color="1"] { background: radial-gradient(circle at 40% 25%, #f9f0b0, #e0aa3e, #b95f1a); }
-        .estrella-planeta[data-color="2"] { background: radial-gradient(circle at 30% 35%, #ffe0b5, #ffaa66, #dd8844); }
-        .estrella-planeta[data-color="3"] { background: radial-gradient(circle at 45% 30%, #ffcf9a, #ff9f4a, #c55a1c); }
-        .estrella-planeta[data-color="4"] { background: radial-gradient(circle at 30% 40%, #f7e5b3, #fcb36b, #c96f2e); }
-        .estrella-planeta[data-color="5"] { background: radial-gradient(circle at 50% 30%, #ffedc0, #ffad60, #c97d3a); }
-        .estrella-planeta[data-color="6"] { background: radial-gradient(circle at 35% 25%, #ffd5a4, #ffa559, #b2571a); }
-        .estrella-planeta[data-color="7"] { background: radial-gradient(circle at 40% 35%, #ffe2bc, #f7933c, #bb5e1c); }
-
-        .estrella-planeta.con-anillo::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 130%;
-            height: 30%;
-            background: rgba(210, 180, 140, 0.5);
-            border-radius: 50%;
-            transform: translate(-50%, -50%) rotate(25deg);
-            border: 2px solid rgba(255, 215, 130, 0.7);
-            box-shadow: 0 0 15px rgba(255, 200, 100, 0.5);
-            pointer-events: none;
-        }
-
-        .estrella-planeta:hover {
-            box-shadow: 0 0 55px rgba(255, 220, 100, 0.9);
-            filter: brightness(1.12);
-        }
-
-        @keyframes orbitarSuave {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        @keyframes flotarEscalar {
-            0% { scale: 1; translate: 0 0; }
-            100% { scale: 1.04; translate: 0 -10px; }
-        }
-
+        /* Pergamino (igual que antes) */
         .pergamino-modal {
             position: fixed;
             top: 50%;
@@ -173,13 +136,11 @@
             text-shadow: 0 0 4px #00000066;
             pointer-events: auto;
         }
-
         .pergamino-modal.active {
             opacity: 1;
             visibility: visible;
             transform: translate(-50%, -50%) scale(1);
         }
-
         .pergamino-modal h3 {
             font-size: 2rem;
             font-family: 'Wide Latin', 'Georgia', serif;
@@ -192,7 +153,6 @@
             padding-bottom: 8px;
             letter-spacing: 2px;
         }
-
         .pergamino-modal .poema-contenido {
             white-space: pre-line;
             line-height: 1.65;
@@ -205,7 +165,6 @@
             padding-right: 10px;
             user-select: text;
         }
-
         .pergamino-modal .cerrar-pergamino {
             position: absolute;
             top: 18px;
@@ -218,59 +177,63 @@
             filter: drop-shadow(0 0 6px black);
             transition: 0.2s;
         }
-
         .pergamino-modal .cerrar-pergamino:hover {
             color: #ffaa66;
             transform: scale(1.1);
         }
-
         .poema-contenido::-webkit-scrollbar {
             width: 5px;
         }
-
         .poema-contenido::-webkit-scrollbar-track {
             background: rgba(0,0,0,0.3);
             border-radius: 10px;
         }
-
         .poema-contenido::-webkit-scrollbar-thumb {
             background: #ffc285;
             border-radius: 10px;
         }
 
+        /* Responsive */
         @media (max-width: 900px) {
             .titulo-nebulosa .cangrejo {
                 font-size: 2.4rem;
                 white-space: normal;
                 padding: 0 15px;
             }
-
             .titulo-nebulosa {
                 top: 14%;
                 white-space: normal;
                 width: 90%;
             }
-
-            .estrella-planeta {
-                width: 80px;
-                height: 80px;
-                font-size: 0.7rem;
+            .planetas-columna {
+                gap: 1.2rem;
             }
-
+            .planeta-realista {
+                width: 75px;
+                height: 75px;
+            }
+            .izquierda {
+                left: 10px;
+            }
+            .derecha {
+                right: 10px;
+            }
             .pergamino-modal {
                 width: 90%;
                 padding: 20px;
             }
-
             .pergamino-modal h3 {
                 font-size: 1.4rem;
             }
         }
 
         @media (max-width: 600px) {
-            .estrella-planeta {
-                width: 70px;
-                height: 70px;
+            .planeta-realista {
+                width: 60px;
+                height: 60px;
+            }
+            .planetas-columna {
+                gap: 1rem;
             }
         }
     </style>
@@ -284,8 +247,11 @@
         <div class="subtitulo">⋆⁺₊☾ Fragmentos de luz escritos ☽₊⁺⋆</div>
     </div>
 
-    <div id="estrellas-container"></div>
+    <!-- Columnas laterales para los planetas -->
+    <div class="planetas-columna izquierda" id="planetasIzq"></div>
+    <div class="planetas-columna derecha" id="planetasDer"></div>
 
+    <!-- Pergamino modal -->
     <div id="pergamino" class="pergamino-modal">
         <button class="cerrar-pergamino" id="cerrarPergamino">&times;</button>
         <h3 id="tituloPoema">Título</h3>
@@ -293,6 +259,7 @@
     </div>
 
     <script>
+        // ---------- POEMAS (los mismos 8) ----------
         const poemas = [
             {
                 titulo: "Manos Abiertas",
@@ -397,70 +364,53 @@ Sin dudar, responde:
             }
         ];
 
-        const container = document.getElementById('estrellas-container');
-        const total = poemas.length;
-        let radioX = window.innerWidth * 0.38;
-        const radioY = 150;
-        let centroX = window.innerWidth / 2;
-        let baseY = window.innerHeight * 0.75;
+        // URLs de las imágenes de los planetas (en orden: izquierda 4, derecha 4)
+        // Ajusta las URLs según tu repositorio (ya están en raw.githubusercontent.com)
+        const imagenesIzq = [
+            "https://raw.githubusercontent.com/socram98gg-cpu/poemas/main/IMG_5606.jpeg",
+            "https://raw.githubusercontent.com/socram98gg-cpu/poemas/main/IMG_5607.jpeg",
+            "https://raw.githubusercontent.com/socram98gg-cpu/poemas/main/IMG_5603.jpeg",
+            "https://raw.githubusercontent.com/socram98gg-cpu/poemas/main/IMG_5604.jpeg"
+        ];
+        const imagenesDer = [
+            "https://raw.githubusercontent.com/socram98gg-cpu/poemas/main/IMG_5614.jpeg",
+            "https://raw.githubusercontent.com/socram98gg-cpu/poemas/main/IMG_5615.jpeg",
+            "https://raw.githubusercontent.com/socram98gg-cpu/poemas/main/IMG_5618.jpeg",
+            "https://raw.githubusercontent.com/socram98gg-cpu/poemas/main/IMG_5620.jpeg"
+        ];
 
-        function colocarEstrellas() {
-            container.innerHTML = '';
+        // Crear planetas en las columnas
+        const contenedorIzq = document.getElementById('planetasIzq');
+        const contenedorDer = document.getElementById('planetasDer');
 
-            for (let i = 0; i < total; i++) {
-                const angle = -70 + (i * (140 / (total - 1)));
-                const rad = angle * Math.PI / 180;
-                const x = centroX + Math.cos(rad) * radioX;
-                const y = baseY + Math.sin(rad) * radioY;
+        function crearPlanetas() {
+            contenedorIzq.innerHTML = '';
+            contenedorDer.innerHTML = '';
 
-                const wrapper = document.createElement('div');
-                wrapper.className = 'estrella-wrapper';
-                wrapper.style.left = `${x}px`;
-                wrapper.style.top = `${y}px`;
-
-                const estrella = document.createElement('div');
-                estrella.className = 'estrella-planeta';
-                estrella.setAttribute('data-color', (i % 8).toString());
-
-                if (i === 1 || i === 3 || i === 5 || i === 7) {
-                    estrella.classList.add('con-anillo');
-                }
-
-                const tituloCorto = poemas[i].titulo.length > 18
-                    ? poemas[i].titulo.substring(0, 15) + '…'
-                    : poemas[i].titulo;
-
-                estrella.textContent = tituloCorto;
-
-                estrella.addEventListener('click', ((idx) => {
-                    return function () {
-                        mostrarPoema(idx);
-                    };
+            // Izquierda: primeros 4 poemas (índices 0-3)
+            for (let i = 0; i < 4; i++) {
+                const planeta = document.createElement('div');
+                planeta.className = 'planeta-realista';
+                planeta.style.backgroundImage = `url('${imagenesIzq[i]}')`;
+                planeta.addEventListener('click', (function(idx) {
+                    return function() { mostrarPoema(idx); };
                 })(i));
+                contenedorIzq.appendChild(planeta);
+            }
 
-                wrapper.appendChild(estrella);
-                container.appendChild(wrapper);
+            // Derecha: últimos 4 poemas (índices 4-7)
+            for (let i = 4; i < 8; i++) {
+                const planeta = document.createElement('div');
+                planeta.className = 'planeta-realista';
+                planeta.style.backgroundImage = `url('${imagenesDer[i-4]}')`;
+                planeta.addEventListener('click', (function(idx) {
+                    return function() { mostrarPoema(idx); };
+                })(i));
+                contenedorDer.appendChild(planeta);
             }
         }
 
-        window.addEventListener('resize', () => {
-            radioX = window.innerWidth * 0.38;
-            centroX = window.innerWidth / 2;
-            baseY = window.innerHeight * 0.75;
-
-            const wrappers = document.querySelectorAll('.estrella-wrapper');
-
-            for (let i = 0; i < wrappers.length; i++) {
-                const angle = -70 + (i * (140 / (total - 1)));
-                const rad = angle * Math.PI / 180;
-                const x = centroX + Math.cos(rad) * radioX;
-                const y = baseY + Math.sin(rad) * radioY;
-
-                wrappers[i].style.left = `${x}px`;
-                wrappers[i].style.top = `${y}px`;
-            }
-        });
-
+        // Pergamino (mismo de antes)
         const pergamino = document.getElementById('pergamino');
         const tituloElem = document.getElementById('tituloPoema');
         const contenidoElem = document.getElementById('contenidoPoema');
@@ -477,20 +427,17 @@ Sin dudar, responde:
         }
 
         cerrarBtn.addEventListener('click', cerrarPergamino);
-
         window.addEventListener('click', (e) => {
-            if (
-                pergamino.classList.contains('active') &&
+            if (pergamino.classList.contains('active') &&
                 !pergamino.contains(e.target) &&
-                !e.target.classList.contains('estrella-planeta')
-            ) {
+                !e.target.classList.contains('planeta-realista')) {
                 cerrarPergamino();
             }
         });
 
-        colocarEstrellas();
-
-        console.log('✨ Nebulosa del Cangrejo activa — 8 luceros con poemas ✨');
+        // Inicializar
+        crearPlanetas();
+        console.log('🌌 Nebulosa del Cangrejo activa — 8 planetas realistas laterales');
     </script>
 </body>
 </html>
