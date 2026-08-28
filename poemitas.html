@@ -1,94 +1,269 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>poemitas</title>
-<style>
-  body {
-    font-family: Georgia, serif;
-    background: linear-gradient(to bottom, #1e1e2f, #2c2c3e);
-    margin: 0;
-    padding: 0;
-    color: #333;
-  }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Cinturón de Orión · Poemas Estelares</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
 
-.portada {
-  background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url("IMG_5262.jpeg");
-  background-size: cover;
-  background-position: center;
-  color: white;
-  text-align: center;
-  padding: 100px 20px;
-}
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            background: #000;
+            color: #f0e6d0;
+        }
 
-  .portada h1 {
-    margin: 0;
-    font-size: 40px;
-    letter-spacing: 2px;
-  }
+        /* Fondo de nebulosa */
+        #fondo-nebulosa {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background-image: url('https://raw.githubusercontent.com/socram98gg-cpu/poemas/main/IMG_5621.jpeg');
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.65) contrast(1.2) saturate(1.1);
+            transition: opacity 0.8s ease;
+        }
 
-  .portada p {
-    margin-top: 10px;
-    font-style: italic;
-    opacity: 0.8;
-  }
+        /* Título principal */
+        .titulo-orion {
+            position: fixed;
+            top: 12%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 150;
+            text-align: center;
+            pointer-events: none;
+            white-space: nowrap;
+        }
 
-  .contenedor {
-    padding: 30px;
-    max-width: 800px;
-    margin: auto;
-  }
+        .titulo-orion .orion {
+            font-size: 3rem;
+            font-family: 'Wide Latin', 'Georgia', serif;
+            color: #fff5e6;
+            text-shadow: 0 0 25px #66aaff, 0 0 45px #4488ff, 0 0 70px #aa88ff;
+            letter-spacing: 4px;
+            animation: brilloSuave 3s infinite alternate;
+        }
 
-  .poema {
-    background: white;
-    padding: 20px;
-    margin: 20px 0;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-  }
+        .titulo-orion .subtitulo {
+            font-size: 0.8rem;
+            font-family: 'Georgia', serif;
+            font-style: italic;
+            color: #ffddbb;
+            text-shadow: 0 0 12px rgba(0, 0, 0, 0.6);
+            margin-top: 12px;
+            letter-spacing: 2px;
+        }
 
-  .poema h2 {
-    margin-top: 0;
-  }
+        @keyframes brilloSuave {
+            0% { text-shadow: 0 0 20px #66aaff, 0 0 35px #4488ff; }
+            100% { text-shadow: 0 0 40px #88ddff, 0 0 65px #66aaff, 0 0 90px #aa88ff; }
+        }
 
-  button {
-    margin-top: 10px;
-    padding: 8px 12px;
-    background: #2c2c3e;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
+        /* Columnas laterales de planetas */
+        .planetas-columna {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            z-index: 100;
+            pointer-events: none;
+        }
+        .izquierda {
+            left: max(20px, 3%);
+        }
+        .derecha {
+            right: max(20px, 3%);
+        }
 
-  button:hover {
-    background: #44445a;
-  }
+        /* Estilo de cada planeta (con imagen) */
+        .planeta-realista {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            cursor: pointer;
+            pointer-events: auto;
+            background-size: cover;
+            background-position: center;
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.6),
+                        0 0 0 3px rgba(255, 235, 170, 0.3),
+                        inset 0 0 20px rgba(0, 0, 0, 0.5);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            filter: brightness(1.02) contrast(1.05);
+        }
+        .planeta-realista:hover {
+            transform: scale(1.08);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.8), 0 0 0 4px rgba(255, 220, 100, 0.7);
+            filter: brightness(1.1);
+        }
 
-.contenido {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.5s ease;
-  margin-top: 15px;
-  white-space: pre-line;
-  line-height: 1.6;
-}
-</style>
+        /* Pergamino modal */
+        .pergamino-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            width: 85%;
+            max-width: 700px;
+            max-height: 75vh;
+            background: rgba(15, 10, 20, 0.75);
+            backdrop-filter: blur(16px);
+            border-radius: 28px;
+            border: 1px solid rgba(255, 215, 150, 0.6);
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.5), 0 0 0 2000px rgba(0, 0, 0, 0.4), 0 0 40px rgba(255, 180, 70, 0.4);
+            z-index: 300;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            padding: 30px 35px;
+            overflow-y: auto;
+            font-family: 'Georgia', serif;
+            color: #fef3e2;
+            text-shadow: 0 0 4px #00000066;
+            pointer-events: auto;
+        }
+        .pergamino-modal.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -50%) scale(1);
+        }
+        .pergamino-modal h3 {
+            font-size: 2rem;
+            font-family: 'Wide Latin', 'Georgia', serif;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #ffddaa;
+            border-bottom: 1px solid rgba(255, 220, 150, 0.5);
+            display: inline-block;
+            width: auto;
+            padding-bottom: 8px;
+            letter-spacing: 2px;
+        }
+        .pergamino-modal .poema-contenido {
+            white-space: pre-line;
+            line-height: 1.65;
+            font-size: 1.1rem;
+            margin-top: 15px;
+            text-align: left;
+            font-weight: 400;
+            max-height: 55vh;
+            overflow-y: auto;
+            padding-right: 10px;
+            user-select: text;
+        }
+        .pergamino-modal .cerrar-pergamino {
+            position: absolute;
+            top: 18px;
+            right: 24px;
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #ffcc99;
+            filter: drop-shadow(0 0 6px black);
+            transition: 0.2s;
+        }
+        .pergamino-modal .cerrar-pergamino:hover {
+            color: #ffaa66;
+            transform: scale(1.1);
+        }
+        .poema-contenido::-webkit-scrollbar {
+            width: 5px;
+        }
+        .poema-contenido::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+        }
+        .poema-contenido::-webkit-scrollbar-thumb {
+            background: #ffc285;
+            border-radius: 10px;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .titulo-orion .orion {
+                font-size: 1.5rem;
+                white-space: normal;
+                padding: 0 15px;
+            }
+            .titulo-orion {
+                top: 14%;
+                white-space: normal;
+                width: 90%;
+            }
+            .planetas-columna {
+                gap: 0.8rem;
+            }
+            .planeta-realista {
+                width: 70px;
+                height: 70px;
+            }
+            .izquierda {
+                left: 10px;
+            }
+            .derecha {
+                right: 10px;
+            }
+            .pergamino-modal {
+                width: 90%;
+                padding: 20px;
+            }
+            .pergamino-modal h3 {
+                font-size: 1.4rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .planeta-realista {
+                width: 55px;
+                height: 55px;
+            }
+            .planetas-columna {
+                gap: 0.6rem;
+            }
+        }
+    </style>
 </head>
 <body>
 
-<header class="portada">
-  <h1>Poemitas para ti</h1>
-  <p>mua</p>
-</header>
+    <div id="fondo-nebulosa"></div>
 
-  <div class="contenedor">
-<div class="poema">
-  <h2>Advertencia</h2>
-  <button onclick="mostrar(this)">Mostrar / Ocultar</button>
-  <div class="contenido">
+    <div class="titulo-orion">
+        <div class="orion">CINTURÓN DE ORIÓN</div>
+        <div class="subtitulo">⋆⁺₊☾ Fragmentos de luz escritos ☽₊⁺⋆</div>
+    </div>
 
-Quienquiera que quiera querer 
+    <!-- Columnas laterales para los planetas -->
+    <div class="planetas-columna izquierda" id="planetasIzq"></div>
+    <div class="planetas-columna derecha" id="planetasDer"></div>
+
+    <!-- Pergamino modal -->
+    <div id="pergamino" class="pergamino-modal">
+        <button class="cerrar-pergamino" id="cerrarPergamino">&times;</button>
+        <h3 id="tituloPoema">Título</h3>
+        <div id="contenidoPoema" class="poema-contenido"></div>
+    </div>
+
+    <script>
+        // ---------- POEMAS (13, del Código 1) ----------
+        const poemas = [
+            {
+                titulo: "Advertencia",
+                texto: `Quienquiera que quiera querer 
 Primero se debe entregar 
 Sabiendo que para tener 
 Aquello que quiere tomar 
@@ -100,17 +275,11 @@ Propenso a ser lastimado
 Pues con el ego estimado 
 El corazón no es confiable 
 Lo que confiesa es en vano 
-Su autoengaño es probable
- 
-  </div>
-</div>
-
-    <div class="poema">
-  <h2>Pléyade</h2>
-  <button onclick="mostrar(this)">Mostrar / Ocultar</button>
-  <div class="contenido">
-
-¿Alguna vez te has encontrado con una Pléyade? Dicen que, cada cierto tiempo, bajan a habitar entre nosotros. A simple vista pasan desapercibidas, pero si te acercas lo suficiente y te quedas un rato, sabrás que no es una más del montón.
+Su autoengaño es probable`
+            },
+            {
+                titulo: "Pléyade",
+                texto: `¿Alguna vez te has encontrado con una Pléyade? Dicen que, cada cierto tiempo, bajan a habitar entre nosotros. A simple vista pasan desapercibidas, pero si te acercas lo suficiente y te quedas un rato, sabrás que no es una más del montón.
 Si se detiene a mirarte, no podrás sacarla de tu mente. Y si se sienta a tu lado en un lugar cualquiera  —en un asiento de la guagua, por ejemplo— tu corazón lo percibirá y te lo agradecerá de por vida. Desde ese momento, algo en ti siempre encuentra el camino de regreso.
 ¿Alguna vez te has hecho amigo de una Pléyade? Yo no lo esperaba. Es difícil estar frente a alguien así, te quedas sin palabras cuando te pregunta cómo estás. Descubres que no tienes una respuesta que esté a la altura de la pregunta, así que solo logras decir  “bien, y tú”,  ella se acomoda el pelo,  sonríe, y tú colapsas. 
 Entonces aprendes a no llenar todos los silencios. A observar sin prisa y disfrutar el momento. Descubres que las estrellas también ríen, sueñan, confían, sufren y aman. La vas conociendo un poco más de cerca, no solo por lo que refleja sino por lo que es. Empiezas a ver más allá de su luz, y ahí es donde, sin forzarlo, te enamoras.
@@ -119,17 +288,11 @@ Son palabras mayores porque el Creador y dueño de las Pléyades conoce los cora
 
 Y también son palabras mayores porque, entonces, debería escoger un día, reunir a las personas importantes en nuestras vidas, invitarla a ella sin que se lo imagine, y delante de todos —bajo las estrellas, por supuesto— pedirle que se case conmigo.
 
-¿Alguna vez le has pedido matrimonio a una Pléyade? Yo estoy a punto de hacerlo. Oren por mí.
-
-  </div>
-</div>
-
-    <div class="poema">
-  <h2>Nadie los mira como yo</h2>
-  <button onclick="mostrar(this)">Mostrar / Ocultar</button>
-  <div class="contenido">
-
-Ya sé que te han dicho muchas veces
+¿Alguna vez le has pedido matrimonio a una Pléyade? Yo estoy a punto de hacerlo. Oren por mí.`
+            },
+            {
+                titulo: "Nadie los mira como yo",
+                texto: `Ya sé que te han dicho muchas veces
 que tus ojos son hermosos.
 Pero nadie podría decirlo como yo.
 Porque nadie los necesita como yo.
@@ -152,33 +315,21 @@ porque tus ojos nunca terminan.
 Ya sé que te han dicho muchas veces
 que tus ojos son hermosos.
 Pero nadie podría decirlo como yo.
-Porque nadie los mira como yo.
-
-  </div>
-</div>
-    
-    <div class="poema">
-  <h2>Sin proponérmelo</h2>
-  <button onclick="mostrar(this)">Mostrar / Ocultar</button>
-  <div class="contenido">
-
-Hoy te vi hermosa sin proponérmelo.
+Porque nadie los mira como yo.`
+            },
+            {
+                titulo: "Sin proponérmelo",
+                texto: `Hoy te vi hermosa sin proponérmelo.
 Lo confieso: a veces la costumbre le gana al asombro. Lo extraordinario, incluso cuando sigue siendo bueno, termina pareciendo cotidiano —culpa de la rutina y de estos ojos necios, que nunca se sacian.
 Entonces intento ser romántico, disimular el asombro y elogiar lo que el corazón todavía no alcanza.
 Pero hoy fue distinto.
 Vestías casual, poco arreglada, y aun así algo en ti me sobrecogió. Fue como si nunca te hubiera visto; como aquellas veces en que subías a la guagua y me dejabas pensando en ti todo el día.
 Hoy te vi hermosa sin proponérmelo, y volví a enamorarme a primera vista.
-Y no creo que sea falta de memoria de mis ojos: es que cada día te veo más hermosa.
-
-  </div>
-</div>
-    
-<div class="poema">
-  <h2>Opacadora de astros</h2>
-  <button onclick="mostrar(this)">Mostrar / Ocultar</button>
-  <div class="contenido">
-
-Dile a la estrella que te quede más cerca, 
+Y no creo que sea falta de memoria de mis ojos: es que cada día te veo más hermosa.`
+            },
+            {
+                titulo: "Opacadora de astros",
+                texto: `Dile a la estrella que te quede más cerca, 
 que jamás se verá su brillo si permanece a tu lado,
 pero se apagaría si se aleja. 
 
@@ -190,17 +341,11 @@ tus destellos son mi vida,
 mis ojos, mi carne y mi ser.
 
 Dile que se aleje o se resigne…
-o se enamore.
-
-  </div>
-</div>
-
-  <div class="poema">
-  <h2>Serás</h2>
-  <button onclick="mostrar(this)">Mostrar / Ocultar</button>
-  <div class="contenido">
-
-Será de noche o de día,
+o se enamore.`
+            },
+            {
+                titulo: "Serás",
+                texto: `Será de noche o de día,
 en turbulencia o en calma,
 será en mi cuerpo o en mi alma,
 en donde tú lo decidas
@@ -215,17 +360,11 @@ será en la muerte o la vida
 en escasez o abundancia
 en donde tú lo decidas,
     
-serás
-
-  </div>
-</div>
-
-  <div class="poema">
-  <h2>Una Sola Carne</h2>
-  <button onclick="mostrar(this)">Mostrar / Ocultar</button>
-  <div class="contenido">
-
-Quiero darte todo de lo poco que tengo para ofrecer
+serás`
+            },
+            {
+                titulo: "Una Sola Carne",
+                texto: `Quiero darte todo de lo poco que tengo para ofrecer
 Quédate con mucho y conviértelo en parte de tu ser
 Vamos a fusionarnos hasta que llegue el amanecer
 Y cuando llegue la hora de padecer
@@ -233,64 +372,40 @@ Y las angustias comienzan a aparecer
 Cuando sintamos que va a suceder
 No habrá nada que devolver
 Porque entonces sabremos creer
-Que así es como siempre tuvo que ser
- 
-  </div>
-</div>
-
-  <div class="poema">
-  <h2>Oye</h2>
-  <button onclick="mostrar(this)">Mostrar / Ocultar</button>
-  <div class="contenido">
-  
-Oye… enséñame a no ser tan vulnerable a tu mirada
+Que así es como siempre tuvo que ser`
+            },
+            {
+                titulo: "Oye",
+                texto: `Oye… enséñame a no ser tan vulnerable a tu mirada
 Oye… escucha a esos latidos que no paran de gemir
 Oye… desiste de infiltrarte en cada sueño que me robas
 Oye… devuélveme mis ansias que se han ido tras de ti
 Oye… apaga mis tinieblas, luego enciéndeme una estrella
 Que dicte los caminos que debemos de seguir,
 acalla los infiernos, absórbeme en tus ojos,
-Reúne mis pedazos, ven y alumbra para mi
-
-  </div>
-</div>
-
-  <div class="poema">
-  <h2>¿Será?</h2>
-  <button onclick="mostrar(this)">Mostrar / Ocultar</button>
-  <div class="contenido">
-
-¿Será que aquel primer latido después de tu primer cruzar a mi lado tendría algo diferente, peculiar, decisivo?
+Reúne mis pedazos, ven y alumbra para mi`
+            },
+            {
+                titulo: "¿Será?",
+                texto: `¿Será que aquel primer latido después de tu primer cruzar a mi lado tendría algo diferente, peculiar, decisivo?
 ¿Será que apareciste para no irte y que las rutinas se tornarían en aventuras por sólo el hecho de saber que existes?
 ¿Será que la gracia del Creador me obsequia alguien como tú, de quien no soy digno y por quien le estoy agradecido por la eternidad?
 ¿Será que el tiempo y las horas no alcanzan cuando estoy a tu lado, y casi nunca lo percibo?
-¿Serás tú? ¡Como deseo que lo seas!
-
-  </div>
-</div>
-  
-  <div class="poema">
-  <h2>Acertijo</h2>
-  <button onclick="mostrar(this)">Mostrar / Ocultar</button>
-  <div class="contenido">
-
-Adivina lo que pienso, adivina lo que atrae mis latidos hasta aturdirme y lo envuelve de emoción.
+¿Serás tú? ¡Como deseo que lo seas!`
+            },
+            {
+                titulo: "Acertijo",
+                texto: `Adivina lo que pienso, adivina lo que atrae mis latidos hasta aturdirme y lo envuelve de emoción.
 Adivina lo que cada día, cada hora, ocupa mi atención, y tan solo por detrás del Creador obtiene mi devoción.
 Adivina eso que me ha enamorado, me ha gustado, me ha seducido sin proponerlo y los pedazos de este pecho gritan su nombre con despecho y los momentos de esta vida no tienen vida sin sus besos.
 Adivina lo que ha hecho que cada plan para el éxito sin tu presencia este desecho y cada mal, cada fracaso sea de bien porque te tengo.
 Adivina eso que es tan extraordinario, irrepetible y tan… tan bonito,
 Adivina la emoción, la esencia, la razón, el ser y los ojos que conmueven mis entrañas para estar inquieto o en paz en sosiego o tesón.
-Adivina lo que cambia mi rutina y me detiene a mirar las estrellas y pensar en ellas, y pensar en ella
-
-  </div>
-</div>
-
-  <div class="poema">
-  <h2>Es Amor</h2>
-  <button onclick="mostrar(this)">Mostrar / Ocultar</button>
-  <div class="contenido">
-
-Ya no es solo pasión, es amor
+Adivina lo que cambia mi rutina y me detiene a mirar las estrellas y pensar en ellas, y pensar en ella`
+            },
+            {
+                titulo: "Es Amor",
+                texto: `Ya no es solo pasión, es amor
 Ya no es el sentir enardecido, es la sublime calma a tu lado
 Ya no es el anhelo de verte, es no dejar de mirarte
 Ya no solo quiero soñarte sino vivirte
@@ -302,17 +417,11 @@ Ya no te necesito, ahora me entrego
 Ya no es solo romance, es amor
 Ya no son las cosquillas sino las lágrimas
 Ya no me gustas sino te amo
-Es amor
-
-  </div>
-</div>
-
-<div class="poema">
-  <h2>Silencio</h2>
-  <button onclick="mostrar(this)">Mostrar / Ocultar</button>
-  <div class="contenido">
-
-Para cuando las palabras no salgan
+Es amor`
+            },
+            {
+                titulo: "Silencio",
+                texto: `Para cuando las palabras no salgan
 y los labios queden enmudecidos,
 para cuando el feroz silencio 
 entre desapercibido
@@ -332,17 +441,11 @@ como testigo de todo lo que dijimos.
 Y si no es suficiente para ponerle fin
 a la barrera inquietante del enemigo.
 Ahí estaré como un suspiro
-repitiéndote al oído que eres mi destino (...)
-
-  </div>
-</div>
-
-  <div class="poema">
-  <h2>Indulto</h2>
-  <button onclick="mostrar(this)">Mostrar / Ocultar</button>
-  <div class="contenido">
-   
-Aunque le tenga confianza
+repitiéndote al oído que eres mi destino (...)`
+            },
+            {
+                titulo: "Indulto",
+                texto: `Aunque le tenga confianza
 No le diré que he fallado
 Pues con sus ojos de lanza
 Traspasará mi costado
@@ -361,31 +464,96 @@ En condenar el agravio
 Estoy dispuesto a ofrecerle
 Mi corazón como pago
 Como mi voto a quererle
-Mi redención su recaudo
+Mi redención su recaudo`
+            }
+        ];
 
-  </div>
-</div>
+        // ---------- IMÁGENES DE PLANETAS (13 imágenes) ----------
+        // Usamos las que me diste, en el orden que aparecen en tu lista.
+        const imagenesPlanetas = [
+            "https://raw.githubusercontent.com/socram98gg-cpu/poemas/main/IMG_5602.jpeg",
+            "https://raw.githubusercontent.com/socram98gg-cpu/poemas/main/IMG_5603.jpeg",
+            "https://raw.githubusercontent.com/socram98gg-cpu/poemas/main/IMG_5604.jpeg",
+            "https://raw.githubusercontent.com/socram98gg-cpu/poemas/main/IMG_5606.jpeg",
+            "https://raw.githubusercontent.com/socram98gg-cpu/poemas/main/IMG_5607.jpeg",
+            "https://raw.githubusercontent.com/socram98gg-cpu/poemas/main/IMG_5608.jpeg",
+            "https://raw.githubusercontent.com/socram98gg-cpu/poemas/main/IMG_5612.jpeg",
+            "https://raw.githubusercontent.com/socram98gg-cpu/poemas/main/IMG_5613.jpeg",
+            "https://raw.githubusercontent.com/socram98gg-cpu/poemas/main/IMG_5614.jpeg",
+            "https://raw.githubusercontent.com/socram98gg-cpu/poemas/main/IMG_5615.jpeg",
+            "https://raw.githubusercontent.com/socram98gg-cpu/poemas/main/IMG_5618.jpeg"
+            // Nota: solo tengo 11 nombres, pero necesito 13. Para completar, reutilizo algunas o añado otras.
+            // Como no tengo más, usaré las primeras dos de nuevo para los últimos dos poemas.
+        ];
 
-  </div>
-<script>
-function mostrar(boton) {
-  var todos = document.querySelectorAll(".contenido");
-  
-  todos.forEach(function(item) {
-    if (item !== boton.nextElementSibling) {
-      item.style.maxHeight = null;
-    }
-  });
+        // Aseguramos que haya 13 imágenes (rellenamos con las primeras si falta)
+        while (imagenesPlanetas.length < 13) {
+            imagenesPlanetas.push(imagenesPlanetas[imagenesPlanetas.length % imagenesPlanetas.length]);
+        }
 
-  var contenido = boton.nextElementSibling;
+        // Distribución: 7 a la izquierda, 6 a la derecha
+        const total = poemas.length; // 13
+        const izqCount = 7;
+        const derCount = total - izqCount;
 
-  if (contenido.style.maxHeight) {
-    contenido.style.maxHeight = null;
-  } else {
-    contenido.style.maxHeight = contenido.scrollHeight + "px";
-  }
-}
-</script>
+        const contenedorIzq = document.getElementById('planetasIzq');
+        const contenedorDer = document.getElementById('planetasDer');
 
+        function crearPlanetas() {
+            contenedorIzq.innerHTML = '';
+            contenedorDer.innerHTML = '';
+
+            // Izquierda: primeros 7 poemas (índices 0-6)
+            for (let i = 0; i < izqCount; i++) {
+                const planeta = document.createElement('div');
+                planeta.className = 'planeta-realista';
+                planeta.style.backgroundImage = `url('${imagenesPlanetas[i]}')`;
+                planeta.addEventListener('click', (function(idx) {
+                    return function() { mostrarPoema(idx); };
+                })(i));
+                contenedorIzq.appendChild(planeta);
+            }
+
+            // Derecha: siguientes 6 poemas (índices 7-12)
+            for (let i = izqCount; i < total; i++) {
+                const planeta = document.createElement('div');
+                planeta.className = 'planeta-realista';
+                planeta.style.backgroundImage = `url('${imagenesPlanetas[i]}')`;
+                planeta.addEventListener('click', (function(idx) {
+                    return function() { mostrarPoema(idx); };
+                })(i));
+                contenedorDer.appendChild(planeta);
+            }
+        }
+
+        // ---------- PERGAMINO ----------
+        const pergamino = document.getElementById('pergamino');
+        const tituloElem = document.getElementById('tituloPoema');
+        const contenidoElem = document.getElementById('contenidoPoema');
+        const cerrarBtn = document.getElementById('cerrarPergamino');
+
+        function mostrarPoema(indice) {
+            tituloElem.textContent = poemas[indice].titulo;
+            contenidoElem.textContent = poemas[indice].texto;
+            pergamino.classList.add('active');
+        }
+
+        function cerrarPergamino() {
+            pergamino.classList.remove('active');
+        }
+
+        cerrarBtn.addEventListener('click', cerrarPergamino);
+        window.addEventListener('click', (e) => {
+            if (pergamino.classList.contains('active') &&
+                !pergamino.contains(e.target) &&
+                !e.target.classList.contains('planeta-realista')) {
+                cerrarPergamino();
+            }
+        });
+
+        // Inicializar
+        crearPlanetas();
+        console.log('🌌 Cinturón de Orión activo — 13 planetas con poemas');
+    </script>
 </body>
 </html>
